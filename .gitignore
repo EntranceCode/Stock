@@ -1,0 +1,7 @@
+.deps/
+.test-tmp/
+__pycache__/
+*.pyc
+data/normalized/
+data/external/
+

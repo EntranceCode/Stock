@@ -1,0 +1,17 @@
+{
+  "checked_on": "2026-10-07",
+  "events": [
+    {
+      "symbol": "159915",
+      "exchange": "SZSE",
+      "type": "trading_suspension",
+      "effective_date": "2021-02-08",
+      "source_type": "issuer_announcement",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202102081459963456_1.pdf",
+      "announcement_title": "易方达创业板交易型开放式指数证券投资基金持有人大会计票日停牌的提示性公告",
+      "interpretation": "Trading suspension on counting day explains the absent daily bar. Do not manufacture a zero-volume bar or allow execution on this date.",
+      "resume_time": null,
+      "resume_time_status": "requires the decision-effective announcement; original notice specifies 10:30 on that announcement day"
+    }
+  ]
+}

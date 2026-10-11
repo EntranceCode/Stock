@@ -1,0 +1,158 @@
+{
+  "registry_baseline_as_of": "2026-10-07",
+  "registry_updated_on": "2026-10-09",
+  "evaluated_at": "2026-10-09T10:42:05.154156+00:00",
+  "datasets": {
+    "stock_daily": {
+      "manifest": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 4272,
+      "snapshot_cutoff": null,
+      "rows": 15077555,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "full_history_adjustment_and_corporate_actions",
+        "historical_security_status",
+        "historical_exchange_calendar",
+        "historical_volume_units",
+        "turnover_amount"
+      ],
+      "errors": 0,
+      "source_download_errors": 0,
+      "source_error_history": 0,
+      "unknown_announcement_rows": 0,
+      "files_with_unknown_source_retrieval_time": 0,
+      "quarantined_events": 0
+    },
+    "etf_daily": {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\etf\\20261007T082601Z_01b20f93\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 6,
+      "snapshot_cutoff": "2026-10-07",
+      "rows": 12737,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "corporate_actions_and_total_returns",
+        "historical_etf_universe",
+        "historical_rules_and_status",
+        "verified_turnover_and_units"
+      ],
+      "errors": 0,
+      "source_download_errors": 0,
+      "source_error_history": 0,
+      "unknown_announcement_rows": 0,
+      "files_with_unknown_source_retrieval_time": 0,
+      "quarantined_events": 0
+    },
+    "financials": {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\financials\\20261008T235336Z_a4fbe81c\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 4272,
+      "snapshot_cutoff": "2026-10-07",
+      "rows": 137714,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "original_announcement_vintages_and_restatements",
+        "full_stock_universe_coverage",
+        "historical_share_counts_and_corporate_actions"
+      ],
+      "errors": 0,
+      "source_download_errors": 0,
+      "source_error_history": 0,
+      "unknown_announcement_rows": 2,
+      "files_with_unknown_source_retrieval_time": 4272,
+      "quarantined_events": 0
+    },
+    "action_samples": {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\normalized_actions\\20261008T235317Z_4b3baeb5\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 1,
+      "snapshot_cutoff": "2026-10-09",
+      "rows": 26621,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "original_announcement_validation",
+        "stock_payment_dates_and_tax",
+        "full_event_type_and_security_coverage",
+        "historical_issuer_event_completeness",
+        "ratio_precision_and_effective_date",
+        "quarantined_event_field_disagreements"
+      ],
+      "errors": 5,
+      "source_download_errors": 0,
+      "source_error_history": 2,
+      "unknown_announcement_rows": 0,
+      "files_with_unknown_source_retrieval_time": 0,
+      "quarantined_events": 5
+    },
+    "sse_calendar": {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\calendar\\20261009T102739Z_8a620589\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 1,
+      "snapshot_cutoff": "2026-10-09",
+      "rows": 3204,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "SZSE_calendar_independent_validation",
+        "security_level_status"
+      ],
+      "errors": 0,
+      "source_download_errors": 0,
+      "source_error_history": 0,
+      "unknown_announcement_rows": 0,
+      "files_with_unknown_source_retrieval_time": 0,
+      "quarantined_events": 0,
+      "scheduled_open_days": 2125,
+      "observed_comparison_end": "2026-09-30",
+      "all_sse_etf_comparisons_exact": true
+    },
+    "security_metadata": {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\security_metadata\\20261009T104055Z_f66ddd14\\manifest.json",
+      "state": "downloaded_or_staged",
+      "file_count": 3,
+      "snapshot_cutoff": "2026-10-09",
+      "rows": 13662,
+      "backtest_ready": false,
+      "readiness_gaps": [
+        "full_exchange_and_lifecycle_coverage",
+        "delisting_date_boundary_and_relisting",
+        "historical_initial_status_and_risk_warning",
+        "historical_suspensions_and_execution_eligibility",
+        "historical_industry_and_share_counts",
+        "original_status_announcement_time"
+      ],
+      "errors": 0,
+      "source_download_errors": 0,
+      "source_error_history": 0,
+      "unknown_announcement_rows": 0,
+      "files_with_unknown_source_retrieval_time": 0,
+      "quarantined_events": 0,
+      "rows_by_dataset": {
+        "listing_candidates": 3268,
+        "name_events": 7490,
+        "current_metadata_snapshot": 2904
+      },
+      "coverage": {
+        "local_codes_with_listing_reference": 2894,
+        "local_codes_without_listing_reference": 1378,
+        "research_window_candidate": [
+          "2018-01-01",
+          "2026-07-07"
+        ],
+        "retired_A_codes_overlapping_research": 236,
+        "retired_A_codes_overlapping_research_missing_local_prices": 232,
+        "listing_date_conflicts": 4,
+        "multiple_listing_record_rows": 12
+      }
+    }
+  },
+  "mixed_strategy_backtest_ready": false,
+  "remaining": [
+    "delisted_and_full_historical_universe_prices",
+    "complete_exchange_calendars",
+    "original_financial_versions",
+    "full_corporate_actions_and_payments",
+    "historical_security_status_industry_and_etf_constituents",
+    "accurate_turnover_and_historical_rules"
+  ]
+}

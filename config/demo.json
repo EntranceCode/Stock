@@ -1,0 +1,34 @@
+{
+  "purpose": "synthetic_engineering_demo",
+  "seed": 42,
+  "history_sessions": 360,
+  "evaluation_start_session": 280,
+  "stock_count": 30,
+  "initial_cash": 1000000,
+  "budgets": {"stock": 0.4, "etf_rotation": 0.35, "defensive": 0.25},
+  "fees": {
+    "commission_rate": 0.0003,
+    "minimum_commission": 5.0,
+    "stock_sell_tax_rate": 0.0005,
+    "slippage_bps": 5.0
+  },
+  "risk": {
+    "stock_cap": 0.03,
+    "etf_cap": 0.20,
+    "bond_etf_cap": 0.15,
+    "industry_cap": 0.25,
+    "equity_cap": 0.80,
+    "min_cash": 0.05,
+    "target_annual_vol": 0.12,
+    "annualization": 252,
+    "vol_window": 60,
+    "recovery_sessions": 10
+  },
+  "assumptions": [
+    "Synthetic weekday sessions are a fixture calendar, not a Chinese exchange calendar",
+    "Synthetic prices have no corporate actions; adjusted_close equals close only in this fixture",
+    "Fixture metadata, industry exposures, factor availability, and execution flags are stipulated",
+    "Costs and settlement settings are engineering assumptions, not verified historical market rules",
+    "Account values are test outputs, not evidence of investment performance"
+  ]
+}

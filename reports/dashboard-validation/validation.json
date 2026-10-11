@@ -1,0 +1,185 @@
+{
+  "generated_at": "2026-10-09T11:27:12.827062+00:00",
+  "project": "D:\\vscode\\Stock",
+  "system_version": "0.2.0",
+  "automated_checks": {
+    "full_suite_passed": 121,
+    "dashboard_adapter_rechecked": 20,
+    "javascript_syntax": "passed"
+  },
+  "browser_checks": {
+    "overview": "passed",
+    "nav_drawdown_toggle": "passed",
+    "stock_search_000001": "passed",
+    "etf_search_sh510300": "passed",
+    "empty_and_cross_dataset_search": "passed",
+    "readonly_configuration": "passed",
+    "demo_button_and_archive_refresh": "passed",
+    "order_pagination_31_60_of_197": "passed",
+    "decision_log_80_rows": "passed",
+    "empty_dividend_log": "passed",
+    "console_errors_or_warnings": [],
+    "width_390": {
+      "navigation_names": "passed",
+      "budget_ratios": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "horizontal_page_overflow": false
+    }
+  },
+  "real_data_admission": {
+    "status": "blocked",
+    "reason": "historical evidence incomplete: stock_daily, etf_daily, financials, action_samples, sse_calendar, security_metadata"
+  },
+  "dataset_count": 6,
+  "stock_date_range": {
+    "start": "1990-12-19",
+    "end": "2026-07-07"
+  },
+  "retired_prices": {
+    "status": "available",
+    "candidate_codes": 236,
+    "missing_codes": 232,
+    "research_window": [
+      "2018-01-01",
+      "2026-07-07"
+    ],
+    "scope": "Observed terminated A-share codes in acquired exchange exports; not a complete historical universe"
+  },
+  "evidence_warnings": [],
+  "verified_demo": {
+    "run_id": "20261009T112157Z_f0a9deb7",
+    "evaluation_sessions": 80,
+    "orders": 197,
+    "fills": 197,
+    "output_files_sha256_validated": 8,
+    "python_code_hashes_match_current": {
+      "__init__.py": true,
+      "__main__.py": true,
+      "accounting.py": true,
+      "backtest.py": true,
+      "cli.py": true,
+      "dashboard_store.py": true,
+      "data_registry.py": true,
+      "demo.py": true,
+      "market_data.py": true,
+      "models.py": true,
+      "portfolio.py": true,
+      "server.py": true,
+      "strategies.py": true
+    },
+    "validation_only": true,
+    "investment_performance": false
+  },
+  "current_runs": [
+    {
+      "run_id": "20261009T112340Z_b14df263",
+      "valid": true,
+      "error": null,
+      "generated_at": "2026-10-09T11:23:40.458693+00:00",
+      "system_version": "0.2.0",
+      "purpose": "synthetic_engineering_demo",
+      "validation_only": true,
+      "investment_performance": false,
+      "synthetic": true,
+      "evaluation_sessions": 80,
+      "orders": 197,
+      "fills": 197,
+      "summary": {
+        "start_date": "2022-01-31",
+        "end_date": "2022-05-20",
+        "initial_nav": 1000000.0,
+        "final_nav": 1034842.1446657607,
+        "final_cash": 249063.38755160387,
+        "max_drawdown": 0.002703976836201716,
+        "holding_count": 28
+      }
+    },
+    {
+      "run_id": "20261009T112230Z_a7455485",
+      "valid": true,
+      "error": null,
+      "generated_at": "2026-10-09T11:22:30.151753+00:00",
+      "system_version": "0.2.0",
+      "purpose": "synthetic_engineering_demo",
+      "validation_only": true,
+      "investment_performance": false,
+      "synthetic": true,
+      "evaluation_sessions": 80,
+      "orders": 197,
+      "fills": 197,
+      "summary": {
+        "start_date": "2022-01-31",
+        "end_date": "2022-05-20",
+        "initial_nav": 1000000.0,
+        "final_nav": 1034842.1446657607,
+        "final_cash": 249063.38755160387,
+        "max_drawdown": 0.002703976836201716,
+        "holding_count": 28
+      }
+    },
+    {
+      "run_id": "20261009T112157Z_f0a9deb7",
+      "valid": true,
+      "error": null,
+      "generated_at": "2026-10-09T11:21:57.051070+00:00",
+      "system_version": "0.2.0",
+      "purpose": "synthetic_engineering_demo",
+      "validation_only": true,
+      "investment_performance": false,
+      "synthetic": true,
+      "evaluation_sessions": 80,
+      "orders": 197,
+      "fills": 197,
+      "summary": {
+        "start_date": "2022-01-31",
+        "end_date": "2022-05-20",
+        "initial_nav": 1000000.0,
+        "final_nav": 1034842.1446657607,
+        "final_cash": 249063.38755160387,
+        "max_drawdown": 0.002703976836201716,
+        "holding_count": 28
+      }
+    },
+    {
+      "run_id": "20261009T105850Z_48901e2a",
+      "valid": true,
+      "error": null,
+      "generated_at": "2026-10-09T10:58:50.371623+00:00",
+      "system_version": "0.1.0",
+      "purpose": "synthetic_engineering_demo",
+      "validation_only": true,
+      "investment_performance": false,
+      "synthetic": true,
+      "evaluation_sessions": 80,
+      "orders": 197,
+      "fills": 197,
+      "summary": {
+        "start_date": "2022-01-31",
+        "end_date": "2022-05-20",
+        "initial_nav": 1000000.0,
+        "final_nav": 1034842.1446657607,
+        "final_cash": 249063.38755160387,
+        "max_drawdown": 0.002703976836201716,
+        "holding_count": 28
+      }
+    }
+  ],
+  "screenshot": "reports/dashboard-validation/workbench-overview.jpg",
+  "source_hashes": {
+    "hybrid_quant\\market_data.py": "b757c46fd667c98533b7150e65cc32513e8b6b492e8fd7df009b600887ce42d1",
+    "hybrid_quant\\dashboard_store.py": "56a5388094622d4cbd04573e587b403efa882e5de15c8b87ad645bc5545b4c22",
+    "hybrid_quant\\server.py": "31bcdf07a1f62fbb68c489534412c8811dec70173be6813803364b5dd359e40d",
+    "hybrid_quant\\web\\index.html": "0aebc22fb687ef54f980016399dfabeec1c3cf882341a68382fc1988515c8183",
+    "hybrid_quant\\web\\app.css": "058b0d6a8e7d20456cfccf282aaa7688822a1f958e5e212bf940582fef882b5a",
+    "hybrid_quant\\web\\app.js": "786125275e283cb5e40a340e867b3ae91e922f7835d0c3d131567728d3afd4ff"
+  },
+  "limitations": [
+    "Synthetic engineering checks do not establish investment performance",
+    "Real historical backtest admission remains blocked",
+    "No broker or live trading connection",
+    "Historical bundle structural validation does not supply missing historical evidence"
+  ]
+}

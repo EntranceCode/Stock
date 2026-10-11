@@ -1,0 +1,535 @@
+{
+  "generated_at": "2026-10-08T23:57:17.944235+00:00",
+  "snapshot_as_of": "2026-10-07",
+  "manifest": "D:\\vscode\\Stock\\data\\external\\financials\\20261008T235336Z_a4fbe81c\\manifest.json",
+  "manifest_sha256": "c4c2e2996016139bf0aa3f6d25531fb4f63513f6905ea424b107d2dd71f02917",
+  "files_read": 4272,
+  "source_backtest_ready": false,
+  "backtest_ready": false,
+  "semantics_verified_against_original_reports": false,
+  "readiness_gaps": [
+    "original_announcement_vintages_and_restatements",
+    "full_stock_universe_coverage",
+    "historical_share_counts_and_corporate_actions"
+  ],
+  "audit": {
+    "rows": 137714,
+    "symbols": 4272,
+    "date_quality": {
+      "REPORT_DATE": {
+        "missing": 0,
+        "invalid_nonmissing": 0
+      },
+      "NOTICE_DATE": {
+        "missing": 2,
+        "invalid_nonmissing": 0
+      },
+      "UPDATE_DATE": {
+        "missing": 2,
+        "invalid_nonmissing": 0
+      },
+      "report_period": {
+        "missing": 0,
+        "invalid_nonmissing": 0
+      },
+      "announcement_date": {
+        "missing": 2,
+        "invalid_nonmissing": 0
+      },
+      "earliest_candidate_available_date": {
+        "missing": 2,
+        "invalid_nonmissing": 0
+      }
+    },
+    "report_period_classes": {
+      "H1_cumulative": 36262,
+      "Q1_cumulative": 35619,
+      "annual": 33932,
+      "Q3_cumulative": 31901
+    },
+    "report_type_labels": {
+      "中报": 36262,
+      "一季报": 35619,
+      "年报": 33932,
+      "三季报": 31901
+    },
+    "currency_counts": {
+      "CNY": 137712,
+      "[missing]": 2
+    },
+    "organization_type_counts": {
+      "通用": 134387,
+      "证券": 1634,
+      "银行": 1523,
+      "保险": 170
+    },
+    "date_relationships": {
+      "announcement_before_period": 0,
+      "announcement_after_snapshot_as_of": 0,
+      "update_after_snapshot_as_of": 0,
+      "update_after_notice": 117557,
+      "update_same_as_notice": 20155,
+      "update_before_notice": 0,
+      "update_notice_relation_unknown": 2,
+      "update_minus_notice_days_quantiles": {
+        "0.5": 365.0,
+        "0.9": 374.0,
+        "0.99": 733.0
+      },
+      "update_minus_notice_days_buckets": {
+        "negative": 0,
+        "zero": 20155,
+        "1_to_30": 293,
+        "31_to_365": 65647,
+        "above_365": 51617
+      },
+      "announcement_lag_days_min": 2,
+      "announcement_lag_days_max": 1500,
+      "normalized_report_period_mismatch": 0,
+      "normalized_announcement_date_mismatch": 0,
+      "candidate_not_day_after_notice": 0,
+      "candidate_date_present_without_notice": 0
+    },
+    "fields": {
+      "EPSJB": {
+        "kind": "per_share_period",
+        "meaning": "基本每股收益",
+        "candidate_unit": "报告币种/股",
+        "restriction": "不可直接季度年度化，也不可在股数变化时机械相加为TTM",
+        "present_in_loaded_frame": true,
+        "missing": 1417,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 136297,
+        "negative": 23713,
+        "zero": 34,
+        "positive": 112550,
+        "min": -16.4603,
+        "median": 0.15,
+        "max": 68.64
+      },
+      "BPS": {
+        "kind": "per_share_balance",
+        "meaning": "每股净资产",
+        "candidate_unit": "报告币种/股",
+        "restriction": "期末时点值；非正值不得用于常规正PB估值",
+        "present_in_loaded_frame": true,
+        "missing": 3181,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 134533,
+        "negative": 774,
+        "zero": 0,
+        "positive": 133759,
+        "min": -12.644906286625,
+        "median": 4.764233987588,
+        "max": 218.915290433333
+      },
+      "MGJYXJJE": {
+        "kind": "per_share_period",
+        "meaning": "每股经营活动现金流",
+        "candidate_unit": "报告币种/股",
+        "restriction": "每股分母口径需核验，不按总额流量直接相加",
+        "present_in_loaded_frame": true,
+        "missing": 3004,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 134710,
+        "negative": 47278,
+        "zero": 2,
+        "positive": 87430,
+        "min": -35.3116684528,
+        "median": 0.1177103747455,
+        "max": 149.118518705882
+      },
+      "TOTALOPERATEREVE": {
+        "kind": "cumulative_flow",
+        "meaning": "营业总收入",
+        "candidate_unit": "报告币种元",
+        "restriction": "中期候选TTM=本期累计+上年全年-上年同期累计，先核验口径与历史版本",
+        "present_in_loaded_frame": true,
+        "missing": 11,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137703,
+        "negative": 9,
+        "zero": 9,
+        "positive": 137685,
+        "min": -673495950.57,
+        "median": 1097145314.3,
+        "max": 3318168000000.0
+      },
+      "PARENTNETPROFIT": {
+        "kind": "cumulative_flow",
+        "meaning": "归母净利润",
+        "candidate_unit": "报告币种元",
+        "restriction": "非正TTM不得用于常规正PE；总市值还需同一时点全部股权价值",
+        "present_in_loaded_frame": true,
+        "missing": 9,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137705,
+        "negative": 23737,
+        "zero": 0,
+        "positive": 113968,
+        "min": -88556470495.64,
+        "median": 64783399.66,
+        "max": 368562000000.0
+      },
+      "KCFJCXSYJLR": {
+        "kind": "cumulative_flow",
+        "meaning": "扣非归母净利润",
+        "candidate_unit": "报告币种元",
+        "restriction": "须按累计总额拼接TTM，不能混用每股分母",
+        "present_in_loaded_frame": true,
+        "missing": 589,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137125,
+        "negative": 29973,
+        "zero": 0,
+        "positive": 107152,
+        "min": -85917363120.34,
+        "median": 50811159.04,
+        "max": 368126000000.0
+      },
+      "NETCASH_OPERATE_PK": {
+        "kind": "cumulative_flow",
+        "meaning": "经营活动现金流净额",
+        "candidate_unit": "报告币种元",
+        "restriction": "累计流量口径需核验；不要对每股现金流套相同公式",
+        "present_in_loaded_frame": true,
+        "missing": 219,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137495,
+        "negative": 48261,
+        "zero": 0,
+        "positive": 89234,
+        "min": -768830000000.0,
+        "median": 46928502.27,
+        "max": 2112907000000.0
+      },
+      "ROEJQ": {
+        "kind": "period_ratio",
+        "meaning": "加权净资产收益率",
+        "candidate_unit": "%",
+        "restriction": "报告期比率，不能简单相加/乘四得到年度ROE；单位需原始报告复核",
+        "present_in_loaded_frame": true,
+        "missing": 2876,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 134838,
+        "negative": 23035,
+        "zero": 14,
+        "positive": 111789,
+        "min": -25346.35,
+        "median": 3.2,
+        "max": 3039.37
+      },
+      "ROEKCJQ": {
+        "kind": "period_ratio",
+        "meaning": "扣非加权净资产收益率",
+        "candidate_unit": "%",
+        "restriction": "报告期比率，不能简单相加/乘四得到年度ROE",
+        "present_in_loaded_frame": true,
+        "missing": 66311,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 71403,
+        "negative": 14683,
+        "zero": 5,
+        "positive": 56715,
+        "min": -31040.42,
+        "median": 3.7,
+        "max": 2848.07
+      },
+      "TOTAL_ASSETS_PK": {
+        "kind": "balance",
+        "meaning": "总资产",
+        "candidate_unit": "报告币种元",
+        "restriction": "期末时点值，不滚动求和",
+        "present_in_loaded_frame": true,
+        "missing": 2433,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 135281,
+        "negative": 0,
+        "zero": 0,
+        "positive": 135281,
+        "min": 12628054.66,
+        "median": 4187991760.26,
+        "max": 57070593000000.0
+      },
+      "TOTAL_EQUITY_PK": {
+        "kind": "balance",
+        "meaning": "权益总额",
+        "candidate_unit": "报告币种元",
+        "restriction": "期末时点值；是否归母口径须独立核验",
+        "present_in_loaded_frame": true,
+        "missing": 2582,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 135132,
+        "negative": 612,
+        "zero": 0,
+        "positive": 134520,
+        "min": -31171741000.0,
+        "median": 2367193638.9849997,
+        "max": 4355844000000.0
+      },
+      "TOTAL_SHARE": {
+        "kind": "share_count",
+        "meaning": "总股本",
+        "candidate_unit": "股",
+        "restriction": "仅为报表记录，不能假定每日可用或全部股份以A股同价计值",
+        "present_in_loaded_frame": true,
+        "missing": 0,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137714,
+        "negative": 0,
+        "zero": 0,
+        "positive": 137714,
+        "min": 40000000.0,
+        "median": 609936032.0,
+        "max": 356406257089.0
+      },
+      "A_FREE_SHARE": {
+        "kind": "share_count",
+        "meaning": "流通A股",
+        "candidate_unit": "股",
+        "restriction": "仅为报表记录，不能替代历史自由流通股本或总股本",
+        "present_in_loaded_frame": true,
+        "missing": 0,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 137714,
+        "negative": 0,
+        "zero": 0,
+        "positive": 137714,
+        "min": 14000000.0,
+        "median": 551418185.0,
+        "max": 319244210777.0
+      },
+      "ZCFZL": {
+        "kind": "balance_ratio",
+        "meaning": "资产负债率",
+        "candidate_unit": "%",
+        "restriction": "单位与行业可比性需核验；金融与非金融企业不直接统一排名",
+        "present_in_loaded_frame": true,
+        "missing": 2552,
+        "invalid_nonmissing": 0,
+        "nonfinite_nonmissing": 0,
+        "finite": 135162,
+        "negative": 0,
+        "zero": 0,
+        "positive": 135162,
+        "min": 0.6171037393,
+        "median": 42.10941495465,
+        "max": 19173.8860647282
+      }
+    },
+    "original_vintage_verified_true": 0,
+    "ttm_dependency_coverage": {
+      "TOTALOPERATEREVE": {
+        "annual_arithmetic_candidate": 33931,
+        "interim_arithmetic_candidate": 90804,
+        "missing_required_report": 12965,
+        "currency_unknown": 3,
+        "currency_mismatch": 0,
+        "missing_or_nonfinite_amount": 11,
+        "nonstandard_report_period": 0
+      },
+      "PARENTNETPROFIT": {
+        "annual_arithmetic_candidate": 33930,
+        "interim_arithmetic_candidate": 90809,
+        "missing_required_report": 12965,
+        "currency_unknown": 3,
+        "currency_mismatch": 0,
+        "missing_or_nonfinite_amount": 7,
+        "nonstandard_report_period": 0
+      },
+      "KCFJCXSYJLR": {
+        "annual_arithmetic_candidate": 33929,
+        "interim_arithmetic_candidate": 90167,
+        "missing_required_report": 12965,
+        "currency_unknown": 3,
+        "currency_mismatch": 0,
+        "missing_or_nonfinite_amount": 650,
+        "nonstandard_report_period": 0
+      },
+      "NETCASH_OPERATE_PK": {
+        "annual_arithmetic_candidate": 33932,
+        "interim_arithmetic_candidate": 90601,
+        "missing_required_report": 12965,
+        "currency_unknown": 3,
+        "currency_mismatch": 0,
+        "missing_or_nonfinite_amount": 213,
+        "nonstandard_report_period": 0
+      }
+    },
+    "bounded_examples": {
+      "missing_notice_date": [
+        {
+          "SECURITY_CODE": "601187",
+          "REPORT_DATE": "2019-03-31 00:00:00",
+          "NOTICE_DATE": null,
+          "EPSJB": null,
+          "BPS": null
+        },
+        {
+          "SECURITY_CODE": "601187",
+          "REPORT_DATE": "2018-09-30 00:00:00",
+          "NOTICE_DATE": null,
+          "EPSJB": null,
+          "BPS": null
+        }
+      ],
+      "nonpositive_EPSJB": [
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2026-06-30 00:00:00",
+          "NOTICE_DATE": "2026-08-28 00:00:00",
+          "EPSJB": -1.25,
+          "BPS": 8.56
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2026-03-31 00:00:00",
+          "NOTICE_DATE": "2026-04-30 00:00:00",
+          "EPSJB": -0.5,
+          "BPS": 9.264763303
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2025-12-31 00:00:00",
+          "NOTICE_DATE": "2026-04-01 00:00:00",
+          "EPSJB": -7.45,
+          "BPS": 9.8
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2025-09-30 00:00:00",
+          "NOTICE_DATE": "2025-10-31 00:00:00",
+          "EPSJB": -2.3578,
+          "BPS": 14.7313812313
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2025-06-30 00:00:00",
+          "NOTICE_DATE": "2025-08-23 00:00:00",
+          "EPSJB": -1.01,
+          "BPS": 16.05
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2025-03-31 00:00:00",
+          "NOTICE_DATE": "2025-04-30 00:00:00",
+          "EPSJB": -0.53,
+          "BPS": 16.4892858366
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2024-12-31 00:00:00",
+          "NOTICE_DATE": "2025-04-01 00:00:00",
+          "EPSJB": -4.17,
+          "BPS": 17.09
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2024-09-30 00:00:00",
+          "NOTICE_DATE": "2024-10-31 00:00:00",
+          "EPSJB": -1.5132,
+          "BPS": 19.6233043945
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2024-06-30 00:00:00",
+          "NOTICE_DATE": "2024-08-31 00:00:00",
+          "EPSJB": -0.83,
+          "BPS": 20.38
+        },
+        {
+          "SECURITY_CODE": "000002",
+          "REPORT_DATE": "2024-03-31 00:00:00",
+          "NOTICE_DATE": "2024-04-30 00:00:00",
+          "EPSJB": -0.0305,
+          "BPS": 21.0074067201
+        }
+      ],
+      "nonpositive_BPS": [
+        {
+          "SECURITY_CODE": "000016",
+          "REPORT_DATE": "2026-06-30 00:00:00",
+          "NOTICE_DATE": "2026-08-28 00:00:00",
+          "EPSJB": -0.0718,
+          "BPS": -4.6626060064
+        },
+        {
+          "SECURITY_CODE": "000016",
+          "REPORT_DATE": "2026-03-31 00:00:00",
+          "NOTICE_DATE": "2026-04-29 00:00:00",
+          "EPSJB": -0.0763,
+          "BPS": -4.674566186
+        },
+        {
+          "SECURITY_CODE": "000016",
+          "REPORT_DATE": "2025-12-31 00:00:00",
+          "NOTICE_DATE": "2026-04-29 00:00:00",
+          "EPSJB": -5.2254,
+          "BPS": -4.6027088709
+        },
+        {
+          "SECURITY_CODE": "000056",
+          "REPORT_DATE": "2026-06-30 00:00:00",
+          "NOTICE_DATE": "2026-08-25 00:00:00",
+          "EPSJB": -0.23,
+          "BPS": -2.2370571567
+        },
+        {
+          "SECURITY_CODE": "000056",
+          "REPORT_DATE": "2026-03-31 00:00:00",
+          "NOTICE_DATE": "2026-04-29 00:00:00",
+          "EPSJB": -0.03,
+          "BPS": -2.0341733929
+        },
+        {
+          "SECURITY_CODE": "000056",
+          "REPORT_DATE": "2025-12-31 00:00:00",
+          "NOTICE_DATE": "2026-04-24 00:00:00",
+          "EPSJB": -2.29,
+          "BPS": -2.0068443167
+        },
+        {
+          "SECURITY_CODE": "000056",
+          "REPORT_DATE": "2025-09-30 00:00:00",
+          "NOTICE_DATE": "2025-10-25 00:00:00",
+          "EPSJB": -2.1,
+          "BPS": -1.7646295283
+        },
+        {
+          "SECURITY_CODE": "000410",
+          "REPORT_DATE": "2022-09-30 00:00:00",
+          "NOTICE_DATE": "2022-10-31 00:00:00",
+          "EPSJB": 0.002,
+          "BPS": -0.2975287673
+        },
+        {
+          "SECURITY_CODE": "000410",
+          "REPORT_DATE": "2022-06-30 00:00:00",
+          "NOTICE_DATE": "2022-08-30 00:00:00",
+          "EPSJB": 0.01,
+          "BPS": -0.2883640157
+        },
+        {
+          "SECURITY_CODE": "000410",
+          "REPORT_DATE": "2022-03-31 00:00:00",
+          "NOTICE_DATE": "2022-04-30 00:00:00",
+          "EPSJB": 0.01,
+          "BPS": -0.2838957134
+        }
+      ]
+    }
+  }
+}

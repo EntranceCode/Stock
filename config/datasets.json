@@ -1,0 +1,30 @@
+{
+  "as_of": "2026-10-07",
+  "updated_on": "2026-10-09",
+  "datasets": {
+    "stock_daily": {
+      "manifest": "data/normalized/20261007T082337Z_34eda55f/manifest.json",
+      "purpose": "normalized raw prices with recovered dates and retained provenance"
+    },
+    "etf_daily": {
+      "manifest": "data/external/etf/20261007T082601Z_01b20f93/manifest.json",
+      "purpose": "six ETF engineering samples; unadjusted"
+    },
+    "financials": {
+      "manifest": "data/external/financials/20261008T235336Z_a4fbe81c/manifest.json",
+      "purpose": "offline reprocessed 2026-10-07 current financial snapshot; source retrieval timestamps unknown, original historical vintages unverified"
+    },
+    "action_samples": {
+      "manifest": "data/external/normalized_actions/20261008T235317Z_4b3baeb5/manifest.json",
+      "purpose": "local stock-pool dividend/bonus snapshot plus six ETF event sources; incomplete event types and five quarantined disagreements"
+    },
+    "sse_calendar": {
+      "manifest": "data/external/calendar/20261009T102739Z_8a620589/manifest.json",
+      "purpose": "SSE scheduled sessions from official annual notices and amendments; independently compared with five ETF samples, not security tradability"
+    },
+    "security_metadata": {
+      "manifest": "data/external/security_metadata/20261009T104055Z_f66ddd14/manifest.json",
+      "purpose": "official listing and termination candidates, SZSE name events, and separate current metadata; lifecycle and historical trading eligibility remain unverified"
+    }
+  }
+}

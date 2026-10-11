@@ -1,0 +1,4 @@
+# Each demo archive records sha256 of the raw bytes of hybrid_quant/*.py
+# (see cli.py code_hashes). Git must never rewrite line endings on commit or
+# checkout, or those archived hashes stop matching the working tree.
+* -text

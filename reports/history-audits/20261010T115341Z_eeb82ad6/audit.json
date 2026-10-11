@@ -1,0 +1,170 @@
+{
+  "evaluated_at": "2026-10-10T11:53:41.165152+00:00",
+  "backtest_ready": false,
+  "base_manifest": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\manifest.json",
+  "base_manifest_sha256": "c63b9f778f037bc3c8d30d9241ebc01f079a6ab3a8b544440973d85d9e46d18f",
+  "price_tolerance": "0.0001 + abs(original) * float32_epsilon * 2",
+  "limitations": [
+    "source flags do not grant account execution eligibility",
+    "sample agreement does not validate the full original universe",
+    "original volume estimate is not promoted to verified shares"
+  ],
+  "audits": [
+    {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\baostock_history\\20261010T113544Z_525b1364\\manifest.json",
+      "manifest_sha256": "6f579a4461e5c9010fe3485ba6fc7ded63ca3774b12591447ec76b59db090356",
+      "request_count": 8,
+      "acquired_price_files": 8,
+      "errors": [],
+      "all_raw_response_hashes_verified": true,
+      "price_files": [
+        {
+          "symbol": "600000",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600004",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600006",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2058,
+          "halted_observations": 5,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600007",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600008",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2057,
+          "halted_observations": 6,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600009",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2052,
+          "halted_observations": 11,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600010",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2054,
+          "halted_observations": 9,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600011",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        }
+      ],
+      "existing_price_controls": [
+        {
+          "symbol": "600000",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 2038,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600000_daily.parquet",
+          "original_price_sha256": "9c02833990a0f114e840d4b04b39f6f87f78b49d85e2fd5d0e8c77f59de5b5ba"
+        },
+        {
+          "symbol": "600004",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 9.155273446026513e-07,
+          "original_volume_estimate_differs_from_provider_days": 1981,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600004_daily.parquet",
+          "original_price_sha256": "4a1a1590fb5f636256788f2d1a3b532a5b93e2b7d9d54127f97ea586d1795062"
+        },
+        {
+          "symbol": "600006",
+          "shared_active_days": 2058,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 1869,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600006_daily.parquet",
+          "original_price_sha256": "a813d72d4a2bcd311d3a6305b53df07ad0c6052228fbeaf530b7c0843780b002"
+        },
+        {
+          "symbol": "600007",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 9.155273446026513e-07,
+          "original_volume_estimate_differs_from_provider_days": 1716,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600007_daily.parquet",
+          "original_price_sha256": "4cffa87c69db73d15b42c33565fc7c0fd6f9bce92f286f4c37cb40e6e45e9d73"
+        },
+        {
+          "symbol": "600008",
+          "shared_active_days": 2057,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 2.2888183615066282e-07,
+          "original_volume_estimate_differs_from_provider_days": 1990,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600008_daily.parquet",
+          "original_price_sha256": "6549aef62780b6096124ee4ddb547c5f2fd3bc0abf22205b99bbc88d1d7ce1bc"
+        },
+        {
+          "symbol": "600009",
+          "shared_active_days": 2052,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 3.662109378410605e-06,
+          "original_volume_estimate_differs_from_provider_days": 2005,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600009_daily.parquet",
+          "original_price_sha256": "5e410b27423261ffe0bcf6e477294315c47e60e9f4b9007cd5accc23cc7d6b66"
+        },
+        {
+          "symbol": "600010",
+          "shared_active_days": 2054,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 1.3351440397713077e-07,
+          "original_volume_estimate_differs_from_provider_days": 2015,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600010_daily.parquet",
+          "original_price_sha256": "4b6c99248814621f63ec7d814e5a94045184544132705ce7e499753cd9abaca2"
+        },
+        {
+          "symbol": "600011",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 2006,
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600011_daily.parquet",
+          "original_price_sha256": "d5a17b9918e76abe1e3d190f8d62cab1340c040e254e04e6cd413175a5142aae"
+        }
+      ]
+    }
+  ]
+}

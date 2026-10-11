@@ -1,0 +1,31 @@
+{
+  "retrieved_at": "2026-10-07T08:16:43.651229+00:00",
+  "server": [
+    "115.238.90.165",
+    7709
+  ],
+  "source": "pytdx get_security_bars(category=9), unadjusted reference",
+  "securities": {},
+  "errors": [
+    {
+      "symbol": "000001",
+      "error": "calling function error"
+    },
+    {
+      "symbol": "000002",
+      "error": "calling function error"
+    },
+    {
+      "symbol": "300750",
+      "error": "calling function error"
+    },
+    {
+      "symbol": "600000",
+      "error": "calling function error"
+    },
+    {
+      "symbol": "600519",
+      "error": "calling function error"
+    }
+  ]
+}

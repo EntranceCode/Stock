@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock-hybrid-quant"
+version = "0.2.1"
+description = "Independent daily stock and ETF quantitative research system"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+hybrid-quant = "hybrid_quant.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["hybrid_quant*"]
+
+[tool.setuptools.package-data]
+hybrid_quant = ["web/*.html", "web/*.css", "web/*.js"]

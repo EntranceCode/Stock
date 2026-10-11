@@ -1,0 +1,50 @@
+{
+  "verified_at": "2026-10-07",
+  "reference": "D:\\vscode\\Stock\\reports\\source-verification\\http-reference.json",
+  "reference_sha256": "ecfb87dc7db628b2cb7c4a1a9f9ed8098fe35b3af2530bdb6ec11a16ed7053c3",
+  "reference_window": [
+    "2026-06-01",
+    "2026-07-07"
+  ],
+  "symbols": [
+    {
+      "symbol": "sz000001",
+      "reference_rows": 26,
+      "ohlc_matches": 26,
+      "volume_max_abs_difference": 1.0,
+      "rows_different_from_current_qfq": 26
+    },
+    {
+      "symbol": "sz000002",
+      "reference_rows": 26,
+      "ohlc_matches": 26,
+      "volume_max_abs_difference": 1.0,
+      "rows_different_from_current_qfq": 0
+    },
+    {
+      "symbol": "sz300750",
+      "reference_rows": 26,
+      "ohlc_matches": 26,
+      "volume_max_abs_difference": 1.0,
+      "rows_different_from_current_qfq": 26
+    },
+    {
+      "symbol": "sh600000",
+      "reference_rows": 26,
+      "ohlc_matches": 26,
+      "volume_max_abs_difference": 1.0,
+      "rows_different_from_current_qfq": 26
+    },
+    {
+      "symbol": "sh600519",
+      "reference_rows": 26,
+      "ohlc_matches": 26,
+      "volume_max_abs_difference": 1.0,
+      "rows_different_from_current_qfq": 18
+    }
+  ],
+  "sample_check_passed": true,
+  "date_rule": "floor(naive wall-clock date 15:00 epoch seconds / 1000), date only",
+  "price_basis": "Unadjusted OHLC matches on sampled dates only; no full-history corporate-action verification",
+  "volume_rule": "Raw daily volumes match reference within 1; hands-to-shares multiplier 100 is a source-based inference, not a per-file historical proof"
+}

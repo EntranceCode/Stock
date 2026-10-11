@@ -1,0 +1,81 @@
+{
+  "run_id": "20261009T112230Z_a7455485",
+  "generated_at": "2026-10-09T11:22:30.151753+00:00",
+  "system_version": "0.2.0",
+  "purpose": "synthetic_engineering_demo",
+  "validation_only": true,
+  "investment_performance": false,
+  "uses_alpha_master_runtime": false,
+  "historical_data_admitted": false,
+  "config_source": "D:\\vscode\\Stock\\config\\demo.json",
+  "config_sha256": "029e6d4798859cd22f0de75a88d320b5cfb50a94e7f1c6c7405b2a99c83e30e4",
+  "code_hashes": {
+    "__init__.py": "32af6070727bb919b526f6672f73b2444c49bc1f093d7e7ae1c96b4fe5ce664b",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "accounting.py": "28fbd13ee06752da039d9f8dfd79e16b767d6f13b3a573ea6fc1cd495fa3c288",
+    "backtest.py": "e2bf3013d75576fa9f65b0c231e0763b7cb41d9751829ecb69d9ecd68bead4ed",
+    "cli.py": "d285954a6cbf70ae6c2ab7fc1427ac962f9f5edb4f33ee08058535937cba158d",
+    "dashboard_store.py": "56a5388094622d4cbd04573e587b403efa882e5de15c8b87ad645bc5545b4c22",
+    "data_registry.py": "4b6103b6d1844b698db0e3fbd8d80811f8dee40fd8981a951133fd57ab0b093d",
+    "demo.py": "5146b57dd4cd1cf72cbb8e088fe7a97de210f4a03a334e5135c29ccb1c729cbf",
+    "market_data.py": "b757c46fd667c98533b7150e65cc32513e8b6b492e8fd7df009b600887ce42d1",
+    "models.py": "1257b96215cc965fca025afd575b8b8c077d4bacc86e59947eb866b6ec81423a",
+    "portfolio.py": "4d9582ee4e5de680298fdb0debda64ad804b91b06af0d217f306ab6f996ab68a",
+    "server.py": "31bcdf07a1f62fbb68c489534412c8811dec70173be6813803364b5dd359e40d",
+    "strategies.py": "e57ecf1f3db350b477a82fb849ca462530bf52a0647dfd87447d344fcd309d06"
+  },
+  "evaluation_sessions": 80,
+  "orders": 197,
+  "fills": 197,
+  "assumptions": [
+    "Synthetic weekday sessions are a fixture calendar, not a Chinese exchange calendar",
+    "Synthetic prices have no corporate actions; adjusted_close equals close only in this fixture",
+    "Fixture metadata, industry exposures, factor availability, and execution flags are stipulated",
+    "Costs and settlement settings are engineering assumptions, not verified historical market rules",
+    "Account values are test outputs, not evidence of investment performance"
+  ],
+  "limitations": [
+    "This is an explicit daily fixture replay, not evidence of investment performance.",
+    "Published fixture dates determine rebalance boundaries; no next-session price or factor determines original order quantity.",
+    "Daily open plus configured slippage approximates execution; opening auctions, queues and intraday liquidity are not reconstructed.",
+    "Only verified supplied execution metadata and tradability flags are used; these cannot establish real historical tradeability.",
+    "Cash dividend fixtures accrue before ex-date orders and become available on the first supplied session on/after pay-date.",
+    "Splits, rights offerings, mergers, precise historical fees and dividend taxes are not implemented.",
+    "Per-strategy virtual-account contribution attribution is not implemented.",
+    "Stale holdings remain in NAV and desired limits may be unachievable; actual violations are recorded."
+  ],
+  "files": [
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\config.json",
+      "sha256": "a1e0fb2af5b26316344cf89c8e0b2141759dd23a57bb754cbb2b647ec8a34390"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\decisions.jsonl",
+      "sha256": "6710f2e340c27944eecee88468df1bac78b9fe9456664910b28903cc48737ce1"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\dividend_events.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\equity.csv",
+      "sha256": "60a3a6c1751e86f86ecfd2edf71073b29ca6d42f8a901f06deaae3162eee96e9"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\execution_events.jsonl",
+      "sha256": "5bdb62c347711c2f97a7b0b0ea884c7ad039863892c691c2554c59a6eef32449"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\fills.jsonl",
+      "sha256": "1977551dc37d8ef9a2f3fd5da6f2e3341eb7b62a8b9d05a1c8e64c1566a7edbc"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\orders.jsonl",
+      "sha256": "2bfddbc77525f0c492431ba3839f11c57f83cc34e7e9f07fe6e16eb94b5aacc8"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261009T112230Z_a7455485\\report.md",
+      "sha256": "a11946fc67631ce798d4836d803724f93306510d06cd8698a725effcbc81bfe5"
+    }
+  ]
+}

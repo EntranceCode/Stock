@@ -1,0 +1,9 @@
+[
+  {"id":"600025_20190705_sina_original","symbol":"600025","ex_date":"2019-07-05","announcement_date":"2019-06-29","url":"https://file.finance.sina.com.cn/211.154.219.97%3A9494/MRGG/CNSESH_STOCK/2019/2019-6/2019-06-29/5465379.PDF"},
+  {"id":"600989_20200604_cnstock_original","symbol":"600989","ex_date":"2020-06-04","announcement_date":"2020-05-29","url":"https://paper.cnstock.com/images_new/3/2020-05/29/83/2020052983_pdf.pdf"},
+  {"id":"600025_20200612_notice_index","url":"https://np-anotice-stock.eastmoney.com/api/security/ann?sr=-1&page_size=100&page_index=1&ann_type=A&stock_list=600025&begin_time=2020-06-12&end_time=2020-06-12"},
+  {"id":"600989_20190923_notice_index","url":"https://np-anotice-stock.eastmoney.com/api/security/ann?sr=-1&page_size=100&page_index=1&ann_type=A&stock_list=600989&begin_time=2019-09-23&end_time=2019-09-23"},
+  {"id":"600989_20200529_notice_index","url":"https://np-anotice-stock.eastmoney.com/api/security/ann?sr=-1&page_size=100&page_index=1&ann_type=A&stock_list=600989&begin_time=2020-05-29&end_time=2020-05-29"},
+  {"id":"000650_20260709_notice_index","url":"https://np-anotice-stock.eastmoney.com/api/security/ann?sr=-1&page_size=100&page_index=1&ann_type=A&stock_list=000650&begin_time=2026-07-09&end_time=2026-07-09"},
+  {"id":"sse_table_config_js","url":"https://www.sse.com.cn/xhtml/js/common/table_config.js?v=V3.7.9"}
+]
