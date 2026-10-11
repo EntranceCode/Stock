@@ -1,0 +1,4187 @@
+{
+  "evaluated_at": "2026-10-11T04:05:47.080328+00:00",
+  "backtest_ready": false,
+  "base_manifest": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\manifest.json",
+  "base_manifest_sha256": "c63b9f778f037bc3c8d30d9241ebc01f079a6ab3a8b544440973d85d9e46d18f",
+  "price_tolerance": "0.0001 + abs(original) * float32_epsilon * 2",
+  "limitations": [
+    "source flags do not grant account execution eligibility",
+    "sample agreement does not validate the full original universe",
+    "original volume estimate is not promoted to verified shares"
+  ],
+  "audits": [
+    {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\baostock_history\\20261010T113544Z_525b1364\\manifest.json",
+      "manifest_sha256": "6f579a4461e5c9010fe3485ba6fc7ded63ca3774b12591447ec76b59db090356",
+      "request_count": 8,
+      "acquired_price_files": 8,
+      "errors": [],
+      "all_raw_response_hashes_verified": true,
+      "price_files": [
+        {
+          "symbol": "600000",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600004",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600006",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2058,
+          "halted_observations": 5,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600007",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600008",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2057,
+          "halted_observations": 6,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600009",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2052,
+          "halted_observations": 11,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600010",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2054,
+          "halted_observations": 9,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600011",
+          "source_pages": 2,
+          "observations": 2063,
+          "active_price_rows": 2063,
+          "halted_observations": 0,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        }
+      ],
+      "existing_price_controls": [
+        {
+          "symbol": "600000",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 2038,
+          "original_estimate_minus_provider_shares_min": -99,
+          "original_estimate_minus_provider_shares_max": 8,
+          "share_differences_at_least_100": 0,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600000_daily.parquet",
+          "original_price_sha256": "9c02833990a0f114e840d4b04b39f6f87f78b49d85e2fd5d0e8c77f59de5b5ba"
+        },
+        {
+          "symbol": "600004",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 9.155273446026513e-07,
+          "original_volume_estimate_differs_from_provider_days": 1981,
+          "original_estimate_minus_provider_shares_min": -99,
+          "original_estimate_minus_provider_shares_max": 1,
+          "share_differences_at_least_100": 0,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600004_daily.parquet",
+          "original_price_sha256": "4a1a1590fb5f636256788f2d1a3b532a5b93e2b7d9d54127f97ea586d1795062"
+        },
+        {
+          "symbol": "600006",
+          "shared_active_days": 2058,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 1869,
+          "original_estimate_minus_provider_shares_min": -99,
+          "original_estimate_minus_provider_shares_max": 17,
+          "share_differences_at_least_100": 0,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600006_daily.parquet",
+          "original_price_sha256": "a813d72d4a2bcd311d3a6305b53df07ad0c6052228fbeaf530b7c0843780b002"
+        },
+        {
+          "symbol": "600007",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 9.155273446026513e-07,
+          "original_volume_estimate_differs_from_provider_days": 1716,
+          "original_estimate_minus_provider_shares_min": -99,
+          "original_estimate_minus_provider_shares_max": 0,
+          "share_differences_at_least_100": 0,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600007_daily.parquet",
+          "original_price_sha256": "4cffa87c69db73d15b42c33565fc7c0fd6f9bce92f286f4c37cb40e6e45e9d73"
+        },
+        {
+          "symbol": "600008",
+          "shared_active_days": 2057,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 2.2888183615066282e-07,
+          "original_volume_estimate_differs_from_provider_days": 1990,
+          "original_estimate_minus_provider_shares_min": -100,
+          "original_estimate_minus_provider_shares_max": 16,
+          "share_differences_at_least_100": 1,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600008_daily.parquet",
+          "original_price_sha256": "6549aef62780b6096124ee4ddb547c5f2fd3bc0abf22205b99bbc88d1d7ce1bc"
+        },
+        {
+          "symbol": "600009",
+          "shared_active_days": 2052,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 3.662109378410605e-06,
+          "original_volume_estimate_differs_from_provider_days": 2005,
+          "original_estimate_minus_provider_shares_min": -99,
+          "original_estimate_minus_provider_shares_max": 1,
+          "share_differences_at_least_100": 0,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600009_daily.parquet",
+          "original_price_sha256": "5e410b27423261ffe0bcf6e477294315c47e60e9f4b9007cd5accc23cc7d6b66"
+        },
+        {
+          "symbol": "600010",
+          "shared_active_days": 2054,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 1.3351440397713077e-07,
+          "original_volume_estimate_differs_from_provider_days": 2015,
+          "original_estimate_minus_provider_shares_min": -224,
+          "original_estimate_minus_provider_shares_max": 132,
+          "share_differences_at_least_100": 27,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600010_daily.parquet",
+          "original_price_sha256": "4b6c99248814621f63ec7d814e5a94045184544132705ce7e499753cd9abaca2"
+        },
+        {
+          "symbol": "600011",
+          "shared_active_days": 2063,
+          "OHLC_mismatched_cells": 0,
+          "maximum_absolute_price_difference": 4.5776367230132564e-07,
+          "original_volume_estimate_differs_from_provider_days": 2006,
+          "original_estimate_minus_provider_shares_min": -100,
+          "original_estimate_minus_provider_shares_max": 37,
+          "share_differences_at_least_100": 3,
+          "provider_active_dates_missing_from_original": [],
+          "original_price_dates_with_provider_halt_flag": [],
+          "original_price_dates_absent_from_all_provider_observations": [],
+          "original_price_file": "D:\\vscode\\Stock\\data\\normalized\\20261007T082337Z_34eda55f\\stocks\\600011_daily.parquet",
+          "original_price_sha256": "d5a17b9918e76abe1e3d190f8d62cab1340c040e254e04e6cd413175a5142aae"
+        }
+      ]
+    },
+    {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\baostock_history\\20261010T114629Z_481ee8e9\\manifest.json",
+      "manifest_sha256": "b34e30072d7b6696091c5a89d80b1ebcb21adc7718d650b0dc2c978ad0bf82ab",
+      "request_count": 232,
+      "acquired_price_files": 168,
+      "errors": [
+        {
+          "code": "sh.603056",
+          "start": "2018-01-16",
+          "end": "2026-03-31",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SSE",
+              "source_listing_date": "2018-01-16",
+              "source_termination_date": "2026-03-31",
+              "acquisition_window_candidate": [
+                "2018-01-16",
+                "2026-03-31"
+              ],
+              "display_name_at_collection": "德邦股份",
+              "source_dataset": "sse_delisted_main",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\sse_delisted_main.xls",
+              "source_sha256": "23d3e24561cb9e80ea531d18a446cdb815425ebc3d4ac3537848aa35d8f0815c",
+              "source_row": 142,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sh.603133",
+          "start": "2018-01-01",
+          "end": "2024-07-03",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SSE",
+              "source_listing_date": "2017-03-20",
+              "source_termination_date": "2024-07-03",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-07-03"
+              ],
+              "display_name_at_collection": "退市碳元",
+              "source_dataset": "sse_delisted_main",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\sse_delisted_main.xls",
+              "source_sha256": "23d3e24561cb9e80ea531d18a446cdb815425ebc3d4ac3537848aa35d8f0815c",
+              "source_row": 143,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sh.603157",
+          "start": "2018-01-01",
+          "end": "2022-05-24",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SSE",
+              "source_listing_date": "2017-09-25",
+              "source_termination_date": "2022-05-24",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-05-24"
+              ],
+              "display_name_at_collection": "退市拉夏",
+              "source_dataset": "sse_delisted_main",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\sse_delisted_main.xls",
+              "source_sha256": "23d3e24561cb9e80ea531d18a446cdb815425ebc3d4ac3537848aa35d8f0815c",
+              "source_row": 144,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sh.603388",
+          "start": "2018-01-01",
+          "end": "2025-12-05",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SSE",
+              "source_listing_date": "2017-03-24",
+              "source_termination_date": "2025-12-05",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-12-05"
+              ],
+              "display_name_at_collection": "*ST元成",
+              "source_dataset": "sse_delisted_main",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\sse_delisted_main.xls",
+              "source_sha256": "23d3e24561cb9e80ea531d18a446cdb815425ebc3d4ac3537848aa35d8f0815c",
+              "source_row": 145,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sz.000584",
+          "start": "2018-01-01",
+          "end": "2025-07-11",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "1995-11-28",
+              "source_termination_date": "2025-07-11",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-07-11"
+              ],
+              "display_name_at_collection": "工智退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 37,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sz.000585",
+          "start": "2018-01-01",
+          "end": "2022-05-24",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "1995-12-13",
+              "source_termination_date": "2022-05-24",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-05-24"
+              ],
+              "display_name_at_collection": "东电退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 38,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sz.000587",
+          "start": "2018-01-01",
+          "end": "2023-04-03",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "1996-04-25",
+              "source_termination_date": "2023-04-03",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-04-03"
+              ],
+              "display_name_at_collection": "*ST金洲",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 39,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Only an undecodable or misdirected wire reply is retained; the batch failure message was never written",
+          "recovered_from_wire_capture": true
+        },
+        {
+          "code": "sz.002504",
+          "start": "2018-01-01",
+          "end": "2023-08-21",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-11-18",
+              "source_termination_date": "2023-08-21",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-08-21"
+              ],
+              "display_name_at_collection": "*ST弘高",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 127,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002505",
+          "start": "2018-01-01",
+          "end": "2024-08-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-11-18",
+              "source_termination_date": "2024-08-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-08-30"
+              ],
+              "display_name_at_collection": "鹏都农牧",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 128,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002509",
+          "start": "2018-01-01",
+          "end": "2020-07-20",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-11-23",
+              "source_termination_date": "2020-07-20",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-07-20"
+              ],
+              "display_name_at_collection": "天茂退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 129,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002604",
+          "start": "2018-01-01",
+          "end": "2020-07-15",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-07-28",
+              "source_termination_date": "2020-07-15",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-07-15"
+              ],
+              "display_name_at_collection": "龙力退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 130,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002610",
+          "start": "2018-01-01",
+          "end": "2024-08-12",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-08-15",
+              "source_termination_date": "2024-08-12",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-08-12"
+              ],
+              "display_name_at_collection": "ST爱康",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 131,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002618",
+          "start": "2018-01-01",
+          "end": "2022-06-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-09-20",
+              "source_termination_date": "2022-06-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-22"
+              ],
+              "display_name_at_collection": "丹邦退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 132,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002619",
+          "start": "2018-01-01",
+          "end": "2022-04-28",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-09-29",
+              "source_termination_date": "2022-04-28",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-04-28"
+              ],
+              "display_name_at_collection": "*ST艾格",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 133,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002621",
+          "start": "2018-01-01",
+          "end": "2024-08-05",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-09-29",
+              "source_termination_date": "2024-08-05",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-08-05"
+              ],
+              "display_name_at_collection": "*ST美吉",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 134,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002665",
+          "start": "2018-01-01",
+          "end": "2024-08-26",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-03-27",
+              "source_termination_date": "2024-08-26",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-08-26"
+              ],
+              "display_name_at_collection": "ST航高",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 135,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002680",
+          "start": "2018-01-01",
+          "end": "2019-11-27",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-06-05",
+              "source_termination_date": "2019-11-27",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2019-11-27"
+              ],
+              "display_name_at_collection": "长生退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 136,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002684",
+          "start": "2018-01-01",
+          "end": "2022-06-27",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-06-12",
+              "source_termination_date": "2022-06-27",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-27"
+              ],
+              "display_name_at_collection": "猛狮退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 137,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002699",
+          "start": "2018-01-01",
+          "end": "2024-06-05",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-09-11",
+              "source_termination_date": "2024-06-05",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-06-05"
+              ],
+              "display_name_at_collection": "*ST美盛",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 138,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002711",
+          "start": "2018-01-01",
+          "end": "2021-07-15",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-01-27",
+              "source_termination_date": "2021-07-15",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2021-07-15"
+              ],
+              "display_name_at_collection": "欧浦退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 139,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002740",
+          "start": "2018-01-01",
+          "end": "2024-03-04",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-01-22",
+              "source_termination_date": "2024-03-04",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-03-04"
+              ],
+              "display_name_at_collection": "*ST爱迪",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 140,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002750",
+          "start": "2018-01-01",
+          "end": "2025-06-27",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-03-24",
+              "source_termination_date": "2025-06-27",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-06-27"
+              ],
+              "display_name_at_collection": "龙津退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 141,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002751",
+          "start": "2018-01-01",
+          "end": "2023-07-13",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-04-24",
+              "source_termination_date": "2023-07-13",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-13"
+              ],
+              "display_name_at_collection": "易尚退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 142,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002770",
+          "start": "2018-01-01",
+          "end": "2022-06-23",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-06-30",
+              "source_termination_date": "2022-06-23",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-23"
+              ],
+              "display_name_at_collection": "科迪退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 143,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002776",
+          "start": "2018-01-01",
+          "end": "2024-01-25",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-06-26",
+              "source_termination_date": "2024-01-25",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-01-25"
+              ],
+              "display_name_at_collection": "*ST柏龙",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 144,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.002781",
+          "start": "2018-01-01",
+          "end": "2023-07-05",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-12-22",
+              "source_termination_date": "2023-07-05",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-05"
+              ],
+              "display_name_at_collection": "奇信退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 145,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300023",
+          "start": "2018-01-01",
+          "end": "2022-06-29",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2009-10-30",
+              "source_termination_date": "2022-06-29",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-29"
+              ],
+              "display_name_at_collection": "宝德退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 169,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300028",
+          "start": "2018-01-01",
+          "end": "2020-08-03",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2009-10-30",
+              "source_termination_date": "2020-08-03",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-08-03"
+              ],
+              "display_name_at_collection": "金亚退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 170,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300038",
+          "start": "2018-01-01",
+          "end": "2022-06-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-01-08",
+              "source_termination_date": "2022-06-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-30"
+              ],
+              "display_name_at_collection": "数知退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 172,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300064",
+          "start": "2018-01-01",
+          "end": "2022-06-27",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-03-26",
+              "source_termination_date": "2022-06-27",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-27"
+              ],
+              "display_name_at_collection": "金刚退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 173,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300089",
+          "start": "2018-01-01",
+          "end": "2023-07-13",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-06-25",
+              "source_termination_date": "2023-07-13",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-13"
+              ],
+              "display_name_at_collection": "文化退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 174,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300090",
+          "start": "2018-01-01",
+          "end": "2020-08-25",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-06-25",
+              "source_termination_date": "2020-08-25",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-08-25"
+              ],
+              "display_name_at_collection": "盛运退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 175,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300104",
+          "start": "2018-01-01",
+          "end": "2020-07-21",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-08-12",
+              "source_termination_date": "2020-07-21",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-07-21"
+              ],
+              "display_name_at_collection": "乐视退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 176,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300108",
+          "start": "2018-01-01",
+          "end": "2025-05-29",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-08-25",
+              "source_termination_date": "2025-05-29",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-05-29"
+              ],
+              "display_name_at_collection": "*ST吉药",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 177,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300116",
+          "start": "2018-01-01",
+          "end": "2024-07-25",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-09-02",
+              "source_termination_date": "2024-07-25",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-07-25"
+              ],
+              "display_name_at_collection": "*ST保力",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 178,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300117",
+          "start": "2018-01-01",
+          "end": "2025-04-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2010-09-02",
+              "source_termination_date": "2025-04-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-04-30"
+              ],
+              "display_name_at_collection": "*ST嘉寓",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 179,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300156",
+          "start": "2018-01-01",
+          "end": "2020-08-25",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-01-07",
+              "source_termination_date": "2020-08-25",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-08-25"
+              ],
+              "display_name_at_collection": "神雾退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 180,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300178",
+          "start": "2018-01-01",
+          "end": "2022-06-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-02-15",
+              "source_termination_date": "2022-06-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-22"
+              ],
+              "display_name_at_collection": "腾邦退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 181,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300202",
+          "start": "2018-01-01",
+          "end": "2022-07-04",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-04-15",
+              "source_termination_date": "2022-07-04",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-07-04"
+              ],
+              "display_name_at_collection": "聚龙退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 183,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300208",
+          "start": "2018-01-01",
+          "end": "2025-07-21",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-04-26",
+              "source_termination_date": "2025-07-21",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-07-21"
+              ],
+              "display_name_at_collection": "中程退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 184,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300216",
+          "start": "2018-01-01",
+          "end": "2020-09-16",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-05-11",
+              "source_termination_date": "2020-09-16",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-09-16"
+              ],
+              "display_name_at_collection": "千山退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 185,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300262",
+          "start": "2018-01-01",
+          "end": "2024-08-19",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-09-16",
+              "source_termination_date": "2024-08-19",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-08-19"
+              ],
+              "display_name_at_collection": "*ST巴安",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 186,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300273",
+          "start": "2018-01-01",
+          "end": "2023-07-06",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-10-26",
+              "source_termination_date": "2023-07-06",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-06"
+              ],
+              "display_name_at_collection": "和佳退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 187,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300280",
+          "start": "2018-01-01",
+          "end": "2025-10-14",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-12-29",
+              "source_termination_date": "2025-10-14",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-10-14"
+              ],
+              "display_name_at_collection": "紫天退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 188,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300282",
+          "start": "2018-01-01",
+          "end": "2024-07-18",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-12-29",
+              "source_termination_date": "2024-07-18",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-07-18"
+              ],
+              "display_name_at_collection": "三盛退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 189,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300297",
+          "start": "2018-01-01",
+          "end": "2023-07-31",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-03-15",
+              "source_termination_date": "2023-07-31",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-31"
+              ],
+              "display_name_at_collection": "蓝盾退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 190,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300309",
+          "start": "2018-01-01",
+          "end": "2023-05-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-04-10",
+              "source_termination_date": "2023-05-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-05-30"
+              ],
+              "display_name_at_collection": "吉艾退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 191,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300312",
+          "start": "2018-01-01",
+          "end": "2022-07-04",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-05-08",
+              "source_termination_date": "2022-07-04",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-07-04"
+              ],
+              "display_name_at_collection": "邦讯退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 192,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300325",
+          "start": "2018-01-01",
+          "end": "2022-06-28",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-06-01",
+              "source_termination_date": "2022-06-28",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-28"
+              ],
+              "display_name_at_collection": "德威退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 193,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300330",
+          "start": "2018-01-01",
+          "end": "2023-05-24",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-06-19",
+              "source_termination_date": "2023-05-24",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-05-24"
+              ],
+              "display_name_at_collection": "计通退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 194,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300336",
+          "start": "2018-01-01",
+          "end": "2023-07-05",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-07-10",
+              "source_termination_date": "2023-07-05",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-05"
+              ],
+              "display_name_at_collection": "新文退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 195,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300344",
+          "start": "2018-01-01",
+          "end": "2026-04-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-08-01",
+              "source_termination_date": "2026-04-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2026-04-22"
+              ],
+              "display_name_at_collection": "立方退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 196,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300356",
+          "start": "2018-01-01",
+          "end": "2023-07-13",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2012-10-09",
+              "source_termination_date": "2023-07-13",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-13"
+              ],
+              "display_name_at_collection": "光一退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 197,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300362",
+          "start": "2018-01-01",
+          "end": "2021-08-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-01-21",
+              "source_termination_date": "2021-08-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2021-08-30"
+              ],
+              "display_name_at_collection": "天翔退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 198,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300367",
+          "start": "2018-01-01",
+          "end": "2022-06-30",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-01-29",
+              "source_termination_date": "2022-06-30",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-30"
+              ],
+              "display_name_at_collection": "网力退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 199,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300379",
+          "start": "2018-01-01",
+          "end": "2026-01-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-01-28",
+              "source_termination_date": "2026-01-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2026-01-22"
+              ],
+              "display_name_at_collection": "东通退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 201,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300391",
+          "start": "2018-01-01",
+          "end": "2026-04-13",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-08-01",
+              "source_termination_date": "2026-04-13",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2026-04-13"
+              ],
+              "display_name_at_collection": "长药退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 202,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300392",
+          "start": "2018-01-01",
+          "end": "2023-07-10",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2014-09-10",
+              "source_termination_date": "2023-07-10",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-10"
+              ],
+              "display_name_at_collection": "腾信退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 203,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300431",
+          "start": "2018-01-01",
+          "end": "2020-11-10",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-03-24",
+              "source_termination_date": "2020-11-10",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2020-11-10"
+              ],
+              "display_name_at_collection": "暴风退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 204,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300495",
+          "start": "2018-01-01",
+          "end": "2024-09-20",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2015-12-22",
+              "source_termination_date": "2024-09-20",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2024-09-20"
+              ],
+              "display_name_at_collection": "*ST美尚",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 205,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300526",
+          "start": "2018-01-01",
+          "end": "2023-07-12",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2016-08-02",
+              "source_termination_date": "2023-07-12",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2023-07-12"
+              ],
+              "display_name_at_collection": "中潜退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 206,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300630",
+          "start": "2018-01-01",
+          "end": "2025-05-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2017-03-28",
+              "source_termination_date": "2025-05-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2025-05-22"
+              ],
+              "display_name_at_collection": "普利退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 207,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300742",
+          "start": "2018-05-08",
+          "end": "2024-07-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2018-05-08",
+              "source_termination_date": "2024-07-22",
+              "acquisition_window_candidate": [
+                "2018-05-08",
+                "2024-07-22"
+              ],
+              "display_name_at_collection": "越博退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 208,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        },
+        {
+          "code": "sz.300799",
+          "start": "2019-10-29",
+          "end": "2024-07-29",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2019-10-29",
+              "source_termination_date": "2024-07-29",
+              "acquisition_window_candidate": [
+                "2019-10-29",
+                "2024-07-29"
+              ],
+              "display_name_at_collection": "左江退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 209,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Batch terminated before this request was sent",
+          "recovered_from_wire_capture": false
+        }
+      ],
+      "all_raw_response_hashes_verified": true,
+      "price_files": [
+        {
+          "symbol": "600068",
+          "source_pages": 1,
+          "observations": 901,
+          "active_price_rows": 882,
+          "halted_observations": 19,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600069",
+          "source_pages": 1,
+          "observations": 646,
+          "active_price_rows": 563,
+          "halted_observations": 83,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600070",
+          "source_pages": 1,
+          "observations": 1777,
+          "active_price_rows": 1757,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600074",
+          "source_pages": 1,
+          "observations": 586,
+          "active_price_rows": 348,
+          "halted_observations": 238,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600077",
+          "source_pages": 1,
+          "observations": 1350,
+          "active_price_rows": 1321,
+          "halted_observations": 29,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600083",
+          "source_pages": 1,
+          "observations": 1738,
+          "active_price_rows": 1706,
+          "halted_observations": 32,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600086",
+          "source_pages": 1,
+          "observations": 778,
+          "active_price_rows": 562,
+          "halted_observations": 216,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600090",
+          "source_pages": 1,
+          "observations": 1095,
+          "active_price_rows": 1050,
+          "halted_observations": 45,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600091",
+          "source_pages": 1,
+          "observations": 1083,
+          "active_price_rows": 1062,
+          "halted_observations": 21,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600093",
+          "source_pages": 1,
+          "observations": 1085,
+          "active_price_rows": 1013,
+          "halted_observations": 72,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600112",
+          "source_pages": 1,
+          "observations": 1608,
+          "active_price_rows": 1513,
+          "halted_observations": 95,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600122",
+          "source_pages": 1,
+          "observations": 1329,
+          "active_price_rows": 1195,
+          "halted_observations": 134,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600139",
+          "source_pages": 1,
+          "observations": 1270,
+          "active_price_rows": 1248,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600145",
+          "source_pages": 1,
+          "observations": 1049,
+          "active_price_rows": 422,
+          "halted_observations": 627,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600146",
+          "source_pages": 1,
+          "observations": 1090,
+          "active_price_rows": 1013,
+          "halted_observations": 77,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600175",
+          "source_pages": 1,
+          "observations": 637,
+          "active_price_rows": 554,
+          "halted_observations": 83,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600190",
+          "source_pages": 1,
+          "observations": 1834,
+          "active_price_rows": 1771,
+          "halted_observations": 63,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600193",
+          "source_pages": 2,
+          "observations": 2061,
+          "active_price_rows": 2027,
+          "halted_observations": 34,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600200",
+          "source_pages": 1,
+          "observations": 1941,
+          "active_price_rows": 1920,
+          "halted_observations": 21,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600209",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 1042,
+          "halted_observations": 42,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600213",
+          "source_pages": 1,
+          "observations": 1646,
+          "active_price_rows": 1602,
+          "halted_observations": 44,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600220",
+          "source_pages": 1,
+          "observations": 1582,
+          "active_price_rows": 1562,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600225",
+          "source_pages": 1,
+          "observations": 1739,
+          "active_price_rows": 1701,
+          "halted_observations": 38,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600240",
+          "source_pages": 1,
+          "observations": 506,
+          "active_price_rows": 481,
+          "halted_observations": 25,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600242",
+          "source_pages": 1,
+          "observations": 1332,
+          "active_price_rows": 1283,
+          "halted_observations": 49,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600247",
+          "source_pages": 1,
+          "observations": 781,
+          "active_price_rows": 759,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600260",
+          "source_pages": 1,
+          "observations": 1242,
+          "active_price_rows": 1231,
+          "halted_observations": 11,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600270",
+          "source_pages": 1,
+          "observations": 243,
+          "active_price_rows": 174,
+          "halted_observations": 69,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600275",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 1063,
+          "halted_observations": 21,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600277",
+          "source_pages": 1,
+          "observations": 1588,
+          "active_price_rows": 1548,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600290",
+          "source_pages": 1,
+          "observations": 1468,
+          "active_price_rows": 1392,
+          "halted_observations": 76,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600291",
+          "source_pages": 1,
+          "observations": 1078,
+          "active_price_rows": 1064,
+          "halted_observations": 14,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600297",
+          "source_pages": 1,
+          "observations": 1617,
+          "active_price_rows": 1587,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600306",
+          "source_pages": 1,
+          "observations": 1572,
+          "active_price_rows": 1486,
+          "halted_observations": 86,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600311",
+          "source_pages": 1,
+          "observations": 1270,
+          "active_price_rows": 1250,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600317",
+          "source_pages": 1,
+          "observations": 750,
+          "active_price_rows": 728,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600321",
+          "source_pages": 1,
+          "observations": 1573,
+          "active_price_rows": 1548,
+          "halted_observations": 25,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600355",
+          "source_pages": 2,
+          "observations": 2015,
+          "active_price_rows": 2000,
+          "halted_observations": 15,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600385",
+          "source_pages": 1,
+          "observations": 1095,
+          "active_price_rows": 1061,
+          "halted_observations": 34,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600387",
+          "source_pages": 1,
+          "observations": 1824,
+          "active_price_rows": 1787,
+          "halted_observations": 37,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600393",
+          "source_pages": 1,
+          "observations": 1345,
+          "active_price_rows": 1250,
+          "halted_observations": 95,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600401",
+          "source_pages": 1,
+          "observations": 371,
+          "active_price_rows": 55,
+          "halted_observations": 316,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600421",
+          "source_pages": 2,
+          "observations": 2055,
+          "active_price_rows": 1984,
+          "halted_observations": 71,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600432",
+          "source_pages": 1,
+          "observations": 129,
+          "active_price_rows": 30,
+          "halted_observations": 99,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600462",
+          "source_pages": 1,
+          "observations": 1830,
+          "active_price_rows": 1777,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600466",
+          "source_pages": 1,
+          "observations": 1317,
+          "active_price_rows": 1294,
+          "halted_observations": 23,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600485",
+          "source_pages": 1,
+          "observations": 828,
+          "active_price_rows": 188,
+          "halted_observations": 640,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600532",
+          "source_pages": 1,
+          "observations": 1331,
+          "active_price_rows": 1254,
+          "halted_observations": 77,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600555",
+          "source_pages": 1,
+          "observations": 1099,
+          "active_price_rows": 1064,
+          "halted_observations": 35,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600565",
+          "source_pages": 1,
+          "observations": 1602,
+          "active_price_rows": 1568,
+          "halted_observations": 34,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600599",
+          "source_pages": 2,
+          "observations": 2055,
+          "active_price_rows": 2025,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600608",
+          "source_pages": 2,
+          "observations": 2060,
+          "active_price_rows": 2031,
+          "halted_observations": 29,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600614",
+          "source_pages": 1,
+          "observations": 863,
+          "active_price_rows": 554,
+          "halted_observations": 309,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600634",
+          "source_pages": 1,
+          "observations": 863,
+          "active_price_rows": 687,
+          "halted_observations": 176,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600636",
+          "source_pages": 2,
+          "observations": 2056,
+          "active_price_rows": 2031,
+          "halted_observations": 25,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600647",
+          "source_pages": 1,
+          "observations": 1577,
+          "active_price_rows": 1511,
+          "halted_observations": 66,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600652",
+          "source_pages": 1,
+          "observations": 1083,
+          "active_price_rows": 1059,
+          "halted_observations": 24,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600677",
+          "source_pages": 1,
+          "observations": 779,
+          "active_price_rows": 564,
+          "halted_observations": 215,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600680",
+          "source_pages": 1,
+          "observations": 337,
+          "active_price_rows": 77,
+          "halted_observations": 260,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600687",
+          "source_pages": 1,
+          "observations": 768,
+          "active_price_rows": 700,
+          "halted_observations": 68,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600695",
+          "source_pages": 1,
+          "observations": 1078,
+          "active_price_rows": 1025,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600696",
+          "source_pages": 2,
+          "observations": 2056,
+          "active_price_rows": 2029,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600701",
+          "source_pages": 1,
+          "observations": 809,
+          "active_price_rows": 487,
+          "halted_observations": 322,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600705",
+          "source_pages": 1,
+          "observations": 1792,
+          "active_price_rows": 1757,
+          "halted_observations": 35,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600723",
+          "source_pages": 1,
+          "observations": 923,
+          "active_price_rows": 892,
+          "halted_observations": 31,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600747",
+          "source_pages": 1,
+          "observations": 474,
+          "active_price_rows": 447,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600766",
+          "source_pages": 1,
+          "observations": 1577,
+          "active_price_rows": 1432,
+          "halted_observations": 145,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600767",
+          "source_pages": 1,
+          "observations": 1332,
+          "active_price_rows": 1304,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600781",
+          "source_pages": 1,
+          "observations": 1331,
+          "active_price_rows": 1261,
+          "halted_observations": 70,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600804",
+          "source_pages": 1,
+          "observations": 1818,
+          "active_price_rows": 1770,
+          "halted_observations": 48,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600806",
+          "source_pages": 1,
+          "observations": 129,
+          "active_price_rows": 30,
+          "halted_observations": 99,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600811",
+          "source_pages": 1,
+          "observations": 1777,
+          "active_price_rows": 1685,
+          "halted_observations": 92,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600823",
+          "source_pages": 1,
+          "observations": 1564,
+          "active_price_rows": 1541,
+          "halted_observations": 23,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600836",
+          "source_pages": 1,
+          "observations": 1583,
+          "active_price_rows": 1562,
+          "halted_observations": 21,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600837",
+          "source_pages": 1,
+          "observations": 1737,
+          "active_price_rows": 1701,
+          "halted_observations": 36,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600856",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 978,
+          "halted_observations": 106,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600870",
+          "source_pages": 1,
+          "observations": 1090,
+          "active_price_rows": 1000,
+          "halted_observations": 90,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600890",
+          "source_pages": 1,
+          "observations": 1083,
+          "active_price_rows": 1060,
+          "halted_observations": 23,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600891",
+          "source_pages": 1,
+          "observations": 814,
+          "active_price_rows": 542,
+          "halted_observations": 272,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600896",
+          "source_pages": 1,
+          "observations": 1107,
+          "active_price_rows": 1014,
+          "halted_observations": 93,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600898",
+          "source_pages": 1,
+          "observations": 1721,
+          "active_price_rows": 1701,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "600978",
+          "source_pages": 1,
+          "observations": 781,
+          "active_price_rows": 760,
+          "halted_observations": 21,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "601028",
+          "source_pages": 1,
+          "observations": 1792,
+          "active_price_rows": 1750,
+          "halted_observations": 42,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "601258",
+          "source_pages": 1,
+          "observations": 1333,
+          "active_price_rows": 1303,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "601558",
+          "source_pages": 1,
+          "observations": 606,
+          "active_price_rows": 580,
+          "halted_observations": 26,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "601989",
+          "source_pages": 1,
+          "observations": 1864,
+          "active_price_rows": 1837,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603003",
+          "source_pages": 1,
+          "observations": 1818,
+          "active_price_rows": 1790,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603555",
+          "source_pages": 1,
+          "observations": 1515,
+          "active_price_rows": 1495,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603603",
+          "source_pages": 1,
+          "observations": 1532,
+          "active_price_rows": 1397,
+          "halted_observations": 135,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603963",
+          "source_pages": 1,
+          "observations": 1750,
+          "active_price_rows": 1717,
+          "halted_observations": 33,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603996",
+          "source_pages": 1,
+          "observations": 1064,
+          "active_price_rows": 1042,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "605081",
+          "source_pages": 1,
+          "observations": 1304,
+          "active_price_rows": 1271,
+          "halted_observations": 33,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000005",
+          "source_pages": 1,
+          "observations": 1533,
+          "active_price_rows": 1496,
+          "halted_observations": 37,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000018",
+          "source_pages": 1,
+          "observations": 491,
+          "active_price_rows": 463,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000023",
+          "source_pages": 1,
+          "observations": 1620,
+          "active_price_rows": 1590,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000038",
+          "source_pages": 1,
+          "observations": 1341,
+          "active_price_rows": 1183,
+          "halted_observations": 158,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000040",
+          "source_pages": 1,
+          "observations": 1777,
+          "active_price_rows": 1658,
+          "halted_observations": 119,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000046",
+          "source_pages": 1,
+          "observations": 1484,
+          "active_price_rows": 1397,
+          "halted_observations": 87,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000150",
+          "source_pages": 1,
+          "observations": 1320,
+          "active_price_rows": 1290,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000413",
+          "source_pages": 1,
+          "observations": 1642,
+          "active_price_rows": 1547,
+          "halted_observations": 95,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000416",
+          "source_pages": 1,
+          "observations": 1558,
+          "active_price_rows": 1530,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000418",
+          "source_pages": 1,
+          "observations": 356,
+          "active_price_rows": 294,
+          "halted_observations": 62,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000502",
+          "source_pages": 1,
+          "observations": 1087,
+          "active_price_rows": 1040,
+          "halted_observations": 47,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000511",
+          "source_pages": 1,
+          "observations": 132,
+          "active_price_rows": 30,
+          "halted_observations": 102,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000540",
+          "source_pages": 1,
+          "observations": 1333,
+          "active_price_rows": 1060,
+          "halted_observations": 273,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000606",
+          "source_pages": 1,
+          "observations": 1337,
+          "active_price_rows": 1247,
+          "halted_observations": 90,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000611",
+          "source_pages": 1,
+          "observations": 1088,
+          "active_price_rows": 1001,
+          "halted_observations": 87,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000613",
+          "source_pages": 1,
+          "observations": 1089,
+          "active_price_rows": 1047,
+          "halted_observations": 42,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000616",
+          "source_pages": 1,
+          "observations": 1371,
+          "active_price_rows": 1200,
+          "halted_observations": 171,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000622",
+          "source_pages": 1,
+          "observations": 1827,
+          "active_price_rows": 1788,
+          "halted_observations": 39,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000627",
+          "source_pages": 1,
+          "observations": 1881,
+          "active_price_rows": 1792,
+          "halted_observations": 89,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000638",
+          "source_pages": 2,
+          "observations": 2039,
+          "active_price_rows": 1986,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000662",
+          "source_pages": 1,
+          "observations": 795,
+          "active_price_rows": 757,
+          "halted_observations": 38,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000666",
+          "source_pages": 1,
+          "observations": 1411,
+          "active_price_rows": 1211,
+          "halted_observations": 200,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000667",
+          "source_pages": 1,
+          "observations": 1343,
+          "active_price_rows": 1308,
+          "halted_observations": 35,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000671",
+          "source_pages": 1,
+          "observations": 1366,
+          "active_price_rows": 1319,
+          "halted_observations": 47,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000673",
+          "source_pages": 1,
+          "observations": 1092,
+          "active_price_rows": 1004,
+          "halted_observations": 88,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000687",
+          "source_pages": 1,
+          "observations": 1081,
+          "active_price_rows": 1057,
+          "halted_observations": 24,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000693",
+          "source_pages": 1,
+          "observations": 368,
+          "active_price_rows": 56,
+          "halted_observations": 312,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000732",
+          "source_pages": 1,
+          "observations": 1358,
+          "active_price_rows": 1301,
+          "halted_observations": 57,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000760",
+          "source_pages": 1,
+          "observations": 865,
+          "active_price_rows": 611,
+          "halted_observations": 254,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000780",
+          "source_pages": 1,
+          "observations": 988,
+          "active_price_rows": 948,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000806",
+          "source_pages": 1,
+          "observations": 1337,
+          "active_price_rows": 1282,
+          "halted_observations": 55,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000835",
+          "source_pages": 1,
+          "observations": 1063,
+          "active_price_rows": 1030,
+          "halted_observations": 33,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000836",
+          "source_pages": 1,
+          "observations": 1605,
+          "active_price_rows": 1564,
+          "halted_observations": 41,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000851",
+          "source_pages": 1,
+          "observations": 1905,
+          "active_price_rows": 1878,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000861",
+          "source_pages": 1,
+          "observations": 1630,
+          "active_price_rows": 1590,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000918",
+          "source_pages": 1,
+          "observations": 1353,
+          "active_price_rows": 1308,
+          "halted_observations": 45,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000939",
+          "source_pages": 1,
+          "observations": 720,
+          "active_price_rows": 231,
+          "halted_observations": 489,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000961",
+          "source_pages": 1,
+          "observations": 1583,
+          "active_price_rows": 1535,
+          "halted_observations": 48,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000971",
+          "source_pages": 1,
+          "observations": 1592,
+          "active_price_rows": 1544,
+          "halted_observations": 48,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000976",
+          "source_pages": 1,
+          "observations": 1616,
+          "active_price_rows": 1534,
+          "halted_observations": 82,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000979",
+          "source_pages": 1,
+          "observations": 243,
+          "active_price_rows": 186,
+          "halted_observations": 57,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000982",
+          "source_pages": 1,
+          "observations": 1605,
+          "active_price_rows": 1562,
+          "halted_observations": 43,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000996",
+          "source_pages": 1,
+          "observations": 1574,
+          "active_price_rows": 1524,
+          "halted_observations": 50,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002002",
+          "source_pages": 1,
+          "observations": 1506,
+          "active_price_rows": 1409,
+          "halted_observations": 97,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002013",
+          "source_pages": 1,
+          "observations": 1264,
+          "active_price_rows": 1225,
+          "halted_observations": 39,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002018",
+          "source_pages": 1,
+          "observations": 445,
+          "active_price_rows": 401,
+          "halted_observations": 44,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002070",
+          "source_pages": 1,
+          "observations": 368,
+          "active_price_rows": 87,
+          "halted_observations": 281,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002071",
+          "source_pages": 1,
+          "observations": 811,
+          "active_price_rows": 772,
+          "halted_observations": 39,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002087",
+          "source_pages": 1,
+          "observations": 1574,
+          "active_price_rows": 1537,
+          "halted_observations": 37,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002089",
+          "source_pages": 1,
+          "observations": 1527,
+          "active_price_rows": 1417,
+          "halted_observations": 110,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002113",
+          "source_pages": 1,
+          "observations": 1363,
+          "active_price_rows": 1171,
+          "halted_observations": 192,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002118",
+          "source_pages": 1,
+          "observations": 1358,
+          "active_price_rows": 1284,
+          "halted_observations": 74,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002143",
+          "source_pages": 1,
+          "observations": 465,
+          "active_price_rows": 341,
+          "halted_observations": 124,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002147",
+          "source_pages": 1,
+          "observations": 1085,
+          "active_price_rows": 874,
+          "halted_observations": 211,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002220",
+          "source_pages": 1,
+          "observations": 634,
+          "active_price_rows": 604,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002231",
+          "source_pages": 1,
+          "observations": 1995,
+          "active_price_rows": 1960,
+          "halted_observations": 35,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002260",
+          "source_pages": 1,
+          "observations": 1081,
+          "active_price_rows": 248,
+          "halted_observations": 833,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002280",
+          "source_pages": 1,
+          "observations": 1609,
+          "active_price_rows": 1569,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002288",
+          "source_pages": 1,
+          "observations": 1610,
+          "active_price_rows": 1552,
+          "halted_observations": 58,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002308",
+          "source_pages": 1,
+          "observations": 1637,
+          "active_price_rows": 1563,
+          "halted_observations": 74,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002325",
+          "source_pages": 1,
+          "observations": 1608,
+          "active_price_rows": 1573,
+          "halted_observations": 35,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002336",
+          "source_pages": 1,
+          "observations": 1819,
+          "active_price_rows": 1774,
+          "halted_observations": 45,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002341",
+          "source_pages": 1,
+          "observations": 1614,
+          "active_price_rows": 1565,
+          "halted_observations": 49,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002359",
+          "source_pages": 1,
+          "observations": 865,
+          "active_price_rows": 555,
+          "halted_observations": 310,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002411",
+          "source_pages": 1,
+          "observations": 1341,
+          "active_price_rows": 1161,
+          "halted_observations": 180,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002417",
+          "source_pages": 1,
+          "observations": 1339,
+          "active_price_rows": 1297,
+          "halted_observations": 42,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002433",
+          "source_pages": 1,
+          "observations": 1579,
+          "active_price_rows": 1518,
+          "halted_observations": 61,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002435",
+          "source_pages": 1,
+          "observations": 1608,
+          "active_price_rows": 1574,
+          "halted_observations": 34,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002447",
+          "source_pages": 1,
+          "observations": 1087,
+          "active_price_rows": 1002,
+          "halted_observations": 85,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002450",
+          "source_pages": 1,
+          "observations": 827,
+          "active_price_rows": 234,
+          "halted_observations": 593,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002464",
+          "source_pages": 1,
+          "observations": 1088,
+          "active_price_rows": 946,
+          "halted_observations": 142,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002473",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 1062,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002477",
+          "source_pages": 1,
+          "observations": 433,
+          "active_price_rows": 350,
+          "halted_observations": 83,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002499",
+          "source_pages": 1,
+          "observations": 1285,
+          "active_price_rows": 1237,
+          "halted_observations": 48,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002502",
+          "source_pages": 1,
+          "observations": 1623,
+          "active_price_rows": 1468,
+          "halted_observations": 155,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002503",
+          "source_pages": 1,
+          "observations": 1363,
+          "active_price_rows": 1304,
+          "halted_observations": 59,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        }
+      ],
+      "existing_price_controls": []
+    },
+    {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\baostock_history\\20261011T040106Z_aeebe392\\manifest.json",
+      "manifest_sha256": "11270b456a5d3b1285dbb43cdf0cd5db39f52ecbcdd4922d65e22e7a01963901",
+      "request_count": 64,
+      "acquired_price_files": 62,
+      "errors": [
+        {
+          "code": "sz.300178",
+          "start": "2018-01-01",
+          "end": "2022-06-22",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-02-15",
+              "source_termination_date": "2022-06-22",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-06-22"
+              ],
+              "display_name_at_collection": "腾邦退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 181,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Provider query failed: 10002007 网络接收错误。"
+        },
+        {
+          "code": "sz.300202",
+          "start": "2018-01-01",
+          "end": "2022-07-04",
+          "selection": "missing_retired_candidate",
+          "multiple_listing_records_require_review": false,
+          "candidate_records": [
+            {
+              "exchange": "SZSE",
+              "source_listing_date": "2011-04-15",
+              "source_termination_date": "2022-07-04",
+              "acquisition_window_candidate": [
+                "2018-01-01",
+                "2022-07-04"
+              ],
+              "display_name_at_collection": "聚龙退",
+              "source_dataset": "szse_delisted",
+              "source_file": "D:\\vscode\\Stock\\data\\external\\security_references\\20261009T102931Z_2cd04e7f\\szse_delisted.xlsx",
+              "source_sha256": "d476b57a1245332375eaa1e86666a2fe0928aa8175bbcf0aff8aa8321c201b40",
+              "source_row": 183,
+              "multiple_listing_records_require_review": false,
+              "termination_boundary_verified": false
+            }
+          ],
+          "status": "unresolved",
+          "error": "Provider query failed: 10002007 网络接收错误。"
+        }
+      ],
+      "all_raw_response_hashes_verified": true,
+      "price_files": [
+        {
+          "symbol": "603056",
+          "source_pages": 1,
+          "observations": 1987,
+          "active_price_rows": 1931,
+          "halted_observations": 56,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603133",
+          "source_pages": 1,
+          "observations": 1577,
+          "active_price_rows": 1540,
+          "halted_observations": 37,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603157",
+          "source_pages": 1,
+          "observations": 1064,
+          "active_price_rows": 1044,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "603388",
+          "source_pages": 1,
+          "observations": 1923,
+          "active_price_rows": 1903,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000584",
+          "source_pages": 1,
+          "observations": 1824,
+          "active_price_rows": 1700,
+          "halted_observations": 124,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000585",
+          "source_pages": 1,
+          "observations": 1064,
+          "active_price_rows": 1032,
+          "halted_observations": 32,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "000587",
+          "source_pages": 1,
+          "observations": 1275,
+          "active_price_rows": 1217,
+          "halted_observations": 58,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002504",
+          "source_pages": 1,
+          "observations": 1369,
+          "active_price_rows": 1318,
+          "halted_observations": 51,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002505",
+          "source_pages": 1,
+          "observations": 1619,
+          "active_price_rows": 1576,
+          "halted_observations": 43,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002509",
+          "source_pages": 1,
+          "observations": 618,
+          "active_price_rows": 565,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002604",
+          "source_pages": 1,
+          "observations": 615,
+          "active_price_rows": 286,
+          "halted_observations": 329,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002610",
+          "source_pages": 1,
+          "observations": 1605,
+          "active_price_rows": 1473,
+          "halted_observations": 132,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002618",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 1064,
+          "halted_observations": 20,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002619",
+          "source_pages": 1,
+          "observations": 1049,
+          "active_price_rows": 974,
+          "halted_observations": 75,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002621",
+          "source_pages": 1,
+          "observations": 1600,
+          "active_price_rows": 1506,
+          "halted_observations": 94,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002665",
+          "source_pages": 1,
+          "observations": 1615,
+          "active_price_rows": 1465,
+          "halted_observations": 150,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002680",
+          "source_pages": 1,
+          "observations": 463,
+          "active_price_rows": 233,
+          "halted_observations": 230,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002684",
+          "source_pages": 1,
+          "observations": 1087,
+          "active_price_rows": 1034,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002699",
+          "source_pages": 1,
+          "observations": 1558,
+          "active_price_rows": 1435,
+          "halted_observations": 123,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002711",
+          "source_pages": 1,
+          "observations": 859,
+          "active_price_rows": 561,
+          "halted_observations": 298,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002740",
+          "source_pages": 1,
+          "observations": 1496,
+          "active_price_rows": 1468,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002750",
+          "source_pages": 1,
+          "observations": 1814,
+          "active_price_rows": 1787,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002751",
+          "source_pages": 1,
+          "observations": 1342,
+          "active_price_rows": 1277,
+          "halted_observations": 65,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002770",
+          "source_pages": 1,
+          "observations": 1085,
+          "active_price_rows": 974,
+          "halted_observations": 111,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002776",
+          "source_pages": 1,
+          "observations": 1475,
+          "active_price_rows": 1411,
+          "halted_observations": 64,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "002781",
+          "source_pages": 1,
+          "observations": 1336,
+          "active_price_rows": 1296,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300023",
+          "source_pages": 1,
+          "observations": 1089,
+          "active_price_rows": 1059,
+          "halted_observations": 30,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300028",
+          "source_pages": 1,
+          "observations": 628,
+          "active_price_rows": 175,
+          "halted_observations": 453,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300038",
+          "source_pages": 1,
+          "observations": 1090,
+          "active_price_rows": 977,
+          "halted_observations": 113,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300064",
+          "source_pages": 1,
+          "observations": 1087,
+          "active_price_rows": 1024,
+          "halted_observations": 63,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300089",
+          "source_pages": 1,
+          "observations": 1342,
+          "active_price_rows": 1251,
+          "halted_observations": 91,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300090",
+          "source_pages": 1,
+          "observations": 644,
+          "active_price_rows": 497,
+          "halted_observations": 147,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300104",
+          "source_pages": 1,
+          "observations": 619,
+          "active_price_rows": 325,
+          "halted_observations": 294,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300108",
+          "source_pages": 1,
+          "observations": 1794,
+          "active_price_rows": 1629,
+          "halted_observations": 165,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300116",
+          "source_pages": 1,
+          "observations": 1593,
+          "active_price_rows": 1478,
+          "halted_observations": 115,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300117",
+          "source_pages": 1,
+          "observations": 1777,
+          "active_price_rows": 1755,
+          "halted_observations": 22,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300156",
+          "source_pages": 1,
+          "observations": 644,
+          "active_price_rows": 570,
+          "halted_observations": 74,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300208",
+          "source_pages": 1,
+          "observations": 1830,
+          "active_price_rows": 1771,
+          "halted_observations": 59,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300216",
+          "source_pages": 1,
+          "observations": 660,
+          "active_price_rows": 335,
+          "halted_observations": 325,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300262",
+          "source_pages": 1,
+          "observations": 1610,
+          "active_price_rows": 1555,
+          "halted_observations": 55,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300273",
+          "source_pages": 1,
+          "observations": 1337,
+          "active_price_rows": 1291,
+          "halted_observations": 46,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300280",
+          "source_pages": 1,
+          "observations": 1885,
+          "active_price_rows": 1661,
+          "halted_observations": 224,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300282",
+          "source_pages": 1,
+          "observations": 1588,
+          "active_price_rows": 1548,
+          "halted_observations": 40,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300297",
+          "source_pages": 1,
+          "observations": 1354,
+          "active_price_rows": 1304,
+          "halted_observations": 50,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300309",
+          "source_pages": 1,
+          "observations": 1312,
+          "active_price_rows": 1285,
+          "halted_observations": 27,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300312",
+          "source_pages": 1,
+          "observations": 1092,
+          "active_price_rows": 1005,
+          "halted_observations": 87,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300325",
+          "source_pages": 1,
+          "observations": 1088,
+          "active_price_rows": 989,
+          "halted_observations": 99,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300330",
+          "source_pages": 1,
+          "observations": 1308,
+          "active_price_rows": 1228,
+          "halted_observations": 80,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300336",
+          "source_pages": 1,
+          "observations": 1336,
+          "active_price_rows": 1305,
+          "halted_observations": 31,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300344",
+          "source_pages": 2,
+          "observations": 2012,
+          "active_price_rows": 1968,
+          "halted_observations": 44,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300356",
+          "source_pages": 1,
+          "observations": 1342,
+          "active_price_rows": 1249,
+          "halted_observations": 93,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300362",
+          "source_pages": 1,
+          "observations": 891,
+          "active_price_rows": 468,
+          "halted_observations": 423,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300367",
+          "source_pages": 1,
+          "observations": 1090,
+          "active_price_rows": 1062,
+          "halted_observations": 28,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300379",
+          "source_pages": 1,
+          "observations": 1955,
+          "active_price_rows": 1924,
+          "halted_observations": 31,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300391",
+          "source_pages": 2,
+          "observations": 2005,
+          "active_price_rows": 1956,
+          "halted_observations": 49,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300392",
+          "source_pages": 1,
+          "observations": 1339,
+          "active_price_rows": 1235,
+          "halted_observations": 104,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300431",
+          "source_pages": 1,
+          "observations": 693,
+          "active_price_rows": 627,
+          "halted_observations": 66,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300495",
+          "source_pages": 1,
+          "observations": 1632,
+          "active_price_rows": 1526,
+          "halted_observations": 106,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300526",
+          "source_pages": 1,
+          "observations": 1341,
+          "active_price_rows": 1295,
+          "halted_observations": 46,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300630",
+          "source_pages": 1,
+          "observations": 1789,
+          "active_price_rows": 1720,
+          "halted_observations": 69,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300742",
+          "source_pages": 1,
+          "observations": 1509,
+          "active_price_rows": 1468,
+          "halted_observations": 41,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300799",
+          "source_pages": 1,
+          "observations": 1154,
+          "active_price_rows": 1101,
+          "halted_observations": 53,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        }
+      ],
+      "existing_price_controls": []
+    },
+    {
+      "manifest": "D:\\vscode\\Stock\\data\\external\\baostock_history\\20261011T040528Z_21f16c61\\manifest.json",
+      "manifest_sha256": "bb4b7c8b7211d46a7cce8137c36581939161d15f2cf57fc8e185dbb770d056b0",
+      "request_count": 2,
+      "acquired_price_files": 2,
+      "errors": [],
+      "all_raw_response_hashes_verified": true,
+      "price_files": [
+        {
+          "symbol": "300178",
+          "source_pages": 1,
+          "observations": 1084,
+          "active_price_rows": 1026,
+          "halted_observations": 58,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        },
+        {
+          "symbol": "300202",
+          "source_pages": 1,
+          "observations": 1092,
+          "active_price_rows": 1063,
+          "halted_observations": 29,
+          "wire_decode_and_normalization_exact": true,
+          "amount_per_reported_share_outside_daily_range_dates": []
+        }
+      ],
+      "existing_price_controls": []
+    }
+  ]
+}
