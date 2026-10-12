@@ -32,6 +32,9 @@ FIGURES = {
     "PARENTNETPROFIT": ("net_profit", re.compile(r"归属于(?:上市公司股东|母公司(?:股东|所有者)|本公司股东)的净利润")),
 }
 UNIT_SCALES = {"元": 1.0, "千元": 1e3, "万元": 1e4, "百万元": 1e6, "亿元": 1e8}
+# The headline table lives under this section heading; the quarterly breakdown
+# and segment tables are separate sections further on.
+SECTION = "主要会计数据和财务指标"
 SUMMARY_MARKER = "加权平均净资产收益率"
 
 
@@ -100,21 +103,32 @@ def main():
         pdf = Path(entry["path"])
         if sha(pdf) != entry["sha256"]:
             raise ValueError("Original document changed after acquisition")
-        rows_found = {}
+        rows_found, selection = {}, None
         with fitz.open(pdf) as document:
+            section_pages, marker_pages = [], []
             for index in range(min(len(document), args.max_pages)):
                 page = document[index]
                 compact = re.sub(r"\s+", "", page.get_text("text", sort=True))
-                if SUMMARY_MARKER not in compact:
+                if SECTION in compact:
+                    section_pages.append(page)
+                elif SUMMARY_MARKER in compact:
+                    marker_pages.append(page)
+            # The section page decides the table; the marker scan is only a
+            # fallback, and which path produced a row is recorded with it.
+            for path, candidates in (("section", section_pages), ("marker_fallback", marker_pages)):
+                if rows_found or not candidates:
                     continue
-                spans = page_spans(page)
-                for column, (name, pattern) in FIGURES.items():
-                    if name in rows_found:
-                        continue
-                    tokens = [t for t in label_row(spans, pattern) if "扣除" not in t]
-                    values = row_values(tokens)
-                    if values:
-                        rows_found[name] = values
+                for page in candidates:
+                    spans = page_spans(page)
+                    for column, (name, pattern) in FIGURES.items():
+                        if name in rows_found:
+                            continue
+                        tokens = [t for t in label_row(spans, pattern) if "扣除" not in t]
+                        values = row_values(tokens)
+                        if values:
+                            rows_found[name] = values
+                if rows_found:
+                    selection = path
         snapshot = stored.get((symbol, period), {})
         for column, (name, _) in FIGURES.items():
             outcome, unit = classify(snapshot.get(column), rows_found.get(name))
@@ -123,7 +137,7 @@ def main():
                 units[f"{name}:{unit}"] = units.get(f"{name}:{unit}", 0) + 1
             results.append({"symbol": symbol, "report_period": period, "figure": name,
                             "stored": snapshot.get(column), "printed_values": rows_found.get(name),
-                            "implied_unit": unit, "outcome": outcome})
+                            "implied_unit": unit, "outcome": outcome, "page_selection": selection})
 
     output = PROJECT / "data/external/financial_amount_checks" / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid4().hex[:8])
     output.mkdir(parents=True)
