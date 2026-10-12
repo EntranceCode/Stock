@@ -27,12 +27,18 @@ class VintageCheckTests(unittest.TestCase):
         spans = [span(10, 100, "基本每股收益"), span(70, 100, "（元/股）"),
                  span(100, 100, "1.44"), span(130, 100, "1.45"),
                  span(10, 120, "稀释每股收益"), span(70, 120, "1.44")]
-        self.assertEqual(checker.label_row(spans, "基本每股收益"), ["（元/股）", "1.44", "1.45"])
+        self.assertEqual(checker.label_row(spans, checker.EPS_LABEL), ["（元/股）", "1.44", "1.45"])
 
     def test_deducted_variant_is_not_mistaken_for_the_plain_label(self):
         spans = [span(10, 100, "扣除非经常性损益后的基本每股收益"), span(200, 100, "1.00"),
                  span(10, 140, "基本每股收益"), span(80, 140, "9.99")]
-        self.assertEqual(checker.label_row(spans, "基本每股收益"), ["9.99"])
+        self.assertEqual(checker.label_row(spans, checker.EPS_LABEL), ["9.99"])
+
+    def test_combined_basic_and_diluted_row_is_recognised(self):
+        # Some issuers print both figures in one row: 基本/稀释每股收益（元/每股）.
+        spans = [span(81, 443, "基本"), span(99, 443, "/"), span(102, 443, "稀释每股收益（元/每股）"),
+                 span(355, 443, "0.33 "), span(452, 443, "0.31 ")]
+        self.assertEqual(checker.label_row(spans, checker.EPS_LABEL), ["（元/每股）", "0.33 ", "0.31 "])
 
     def test_row_values_ignores_labels_units_and_percentage_cells(self):
         self.assertEqual(checker.row_values(["（元/股）", "1.44", "1.45", "-0.69%"]), [1.44, 1.45])

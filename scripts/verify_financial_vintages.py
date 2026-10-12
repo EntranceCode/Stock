@@ -21,8 +21,9 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / ".deps/parquet"))
 
 NUMBER = re.compile(r"^-?[0-9][0-9,]*(?:\.[0-9]+)?$")
-EPS_LABEL = "基本每股收益"
-SUMMARY_MARKERS = ("基本每股收益", "加权平均净资产收益率")
+# Some issuers print basic and diluted earnings in one row as 基本/稀释每股收益.
+EPS_LABEL = re.compile(r"基本(?:[/／]?稀释)?每股收益")
+SUMMARY_MARKERS = ("加权平均净资产收益率",)
 
 
 def sha(path):
@@ -41,18 +42,51 @@ def page_spans(page):
     return spans
 
 
+def _lines(spans, tolerance=4.0):
+    """Cluster spans into visual lines, each sorted left to right."""
+    lines = []
+    for span in sorted(spans, key=lambda item: (item[1], item[0])):
+        for line in lines:
+            if abs(line[0][1] - span[1]) <= tolerance:
+                line.append(span)
+                break
+        else:
+            lines.append([span])
+    return [sorted(line, key=lambda item: item[0]) for line in lines]
+
+
+def rejoined_label_row(spans, pattern, window=4):
+    """Fallback for a label split across spans, such as 基本每股收 + 益."""
+    for line in _lines(spans):
+        for start in range(len(line)):
+            joined = ""
+            for end in range(start, min(start + window, len(line))):
+                joined += re.sub(r"\s+", "", line[end][3])
+                match = pattern.search(joined)
+                if match:
+                    if "扣除" in joined:
+                        break
+                    remainder = joined[match.end():]
+                    tail = ([remainder] if remainder else []) + [piece[3] for piece in line[end + 1:]]
+                    return tail
+    return []
+
+
 def label_row(spans, label):
     """Spans to the right of a label on the same visual line, left to right.
 
     The deducted-profit variant also contains the plain label, so it is excluded;
-    among the rest the shortest text is the plain label itself.
+    among the rest the shortest text is the plain label itself. A label the PDF
+    splits across spans is only retried through the joined fallback, so every
+    case the span-level rule already resolves keeps its previous answer.
     """
-    anchors = [span for span in spans if label in span[3] and "扣除" not in span[3]]
-    if not anchors:
-        return []
-    anchor = min(anchors, key=lambda span: (len(span[3]), span[0]))
-    row = sorted((span for span in spans if abs(span[1] - anchor[1]) <= 3), key=lambda span: span[0])
-    return [span[3] for span in row if span[0] > anchor[0] + 1]
+    anchors = [span for span in spans
+               if label.search(re.sub(r"\s+", "", span[3])) and "扣除" not in span[3]]
+    if anchors:
+        anchor = min(anchors, key=lambda span: (len(span[3]), span[0]))
+        row = sorted((span for span in spans if abs(span[1] - anchor[1]) <= 3), key=lambda span: span[0])
+        return [span[3] for span in row if span[0] > anchor[0] + 1]
+    return rejoined_label_row(spans, label)
 
 
 def row_values(tokens):
@@ -126,7 +160,8 @@ def main():
         with fitz.open(pdf) as document:
             for index in range(min(len(document), args.max_pages)):
                 content = document[index].get_text("text", sort=True)
-                if sum(marker in re.sub(r"\s+", "", content) for marker in SUMMARY_MARKERS) < 2:
+                compact = re.sub(r"\s+", "", content)
+                if not (EPS_LABEL.search(compact) and all(marker in compact for marker in SUMMARY_MARKERS)):
                     continue
                 values = row_values(label_row(page_spans(document[index]), EPS_LABEL))
                 if values:
