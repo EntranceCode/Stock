@@ -235,3 +235,7 @@ EPS及现金流等季度字段需区分累计口径与单季口径，TTM计算�
 
 已建立并验证，见 §7.1 末。**注意**：`config/datasets.json` 登记的 `sse_calendar` 清单是冻结产物，其 `readiness_gaps` 仍列 `SZSE_calendar_independent_validation`，因此 `status` 的显示尚未反映本项已解决。
 
+### 8.6 涨跌停价格与成交额、停牌状态
+
+新增 `scripts/build_daily_bar_enriched.py`，运行 `data/external/daily_bar_enriched/20261012T132259Z_93dfa15b`：240 只、292,000 行，携带成交额与提供方交易状态，并按板块与日期规则推导涨跌停（科创板 20%、创业板 2020-08-24 前后 10%/20%、主板 10%、主板 ST 5%，四舍五入到分）。验证方式是用实际 high/low 反验：初版 96 行突破，逐项检查发现**全部为停牌复牌首日**（间隔均 ≥14 天），识别复牌后**零突破**。详见[报告](../reports/daily-bar-limits-20261012T132259Z.md)。仍未解决：仅覆盖 240/4,272 只、`available_at` 仍缺、停牌状态未独立验证。
+
