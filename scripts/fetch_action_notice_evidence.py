@@ -8,8 +8,10 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import hashlib
+import html
 import json
 from pathlib import Path
+import re
 import sys
 from uuid import uuid4
 
@@ -33,6 +35,21 @@ def now():
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def notice_text(response):
+    """Reduce a disclosure page to readable text, honouring an explicit charset.
+
+    Designated disclosure newspapers serve UTF-8 pages but often send no charset,
+    so requests falls back to ISO-8859-1 and the text would decode to mojibake.
+    A charset the server states explicitly is still respected.
+    """
+    declared = (response.encoding or "").lower()
+    encoding = declared if declared and declared not in ("iso-8859-1", "latin-1") else "utf-8"
+    text = response.content.decode(encoding, errors="replace")
+    text = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", text, flags=re.S | re.I)
+    text = re.sub(r"<[^>]+>", " ", text)
+    return re.sub(r"\s+", " ", html.unescape(text)).strip()
 
 
 def main():
@@ -64,6 +81,13 @@ def main():
                 text_path = output / "text" / (target["id"] + ".json")
                 text_path.write_text(json.dumps(pages, ensure_ascii=False, indent=2), encoding="utf-8")
                 entry.update({"page_count": len(pages), "text_path": str(text_path.relative_to(output)), "text_sha256": sha(text_path)})
+            elif target.get("notice_text"):
+                text = notice_text(response)
+                if not text:
+                    raise ValueError("Disclosure page produced no readable text; raw response retained")
+                text_path = output / "text" / (target["id"] + ".txt")
+                text_path.write_text(text, encoding="utf-8")
+                entry.update({"text_path": str(text_path.relative_to(output)), "text_sha256": sha(text_path), "text_chars": len(text)})
             elif "symbol" in target:
                 raise ValueError("Expected company notice PDF; full non-PDF response retained")
             entry["download_complete"] = True
