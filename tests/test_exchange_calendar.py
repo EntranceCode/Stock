@@ -67,6 +67,22 @@ class CalendarTests(unittest.TestCase):
             with self.subTest(changed=changed), self.assertRaises(CalendarCoverageError):
                 ExchangeCalendar(catalog)
 
+    def test_szse_catalog_is_scoped_to_its_own_exchange(self):
+        catalog = json.loads((PROJECT / "config/exchange-calendar-sources-szse.json").read_text(encoding="utf-8"))
+        calendar = ExchangeCalendar(catalog)
+        self.assertEqual(catalog["exchange"], "SZSE")
+        self.assertTrue(calendar.is_scheduled_open(date(2021, 2, 8), "SZSE"))
+        self.assertFalse(calendar.is_scheduled_open(date(2021, 2, 11), "SZSE"))
+        with self.assertRaises(CalendarCoverageError):
+            calendar.is_scheduled_open(date(2021, 2, 8), "SSE")
+
+    def test_independently_sourced_szse_closures_match_the_sse_catalog(self):
+        def closures(name):
+            catalog = json.loads((PROJECT / "config" / name).read_text(encoding="utf-8"))
+            return {item["year"]: sorted((a, b) for a, b, _ in item["closed_intervals"]) for item in catalog["years"]}
+        self.assertEqual(closures("exchange-calendar-sources-szse.json"),
+                         closures("exchange-calendar-sources.json"))
+
 
 if __name__ == "__main__":
     unittest.main()

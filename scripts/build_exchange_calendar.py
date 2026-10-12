@@ -1,4 +1,4 @@
-"""Build a date-only SSE calendar from official notices and explicit amendments.
+"""Build a date-only exchange calendar from official notices and explicit amendments.
 
 This is not a security status table and does not establish execution eligibility.
 """
@@ -71,6 +71,7 @@ def main():
     parser.add_argument("--catalog", type=Path, default=PROJECT / "config/exchange-calendar-sources.json")
     parser.add_argument("--source-snapshot", type=Path, required=True, help="Complete archived official notices")
     parser.add_argument("--as-of", type=date.fromisoformat, default=datetime.now(timezone(timedelta(hours=8))).date())
+    parser.add_argument("--output-root", type=Path, help="Defaults to the exchange-specific directory under data/external")
     args = parser.parse_args()
     catalog_bytes = args.catalog.read_bytes()
     catalog = json.loads(catalog_bytes)
@@ -87,16 +88,20 @@ def main():
     cutoff = min(calendar.end, args.as_of)
     if cutoff < calendar.start:
         raise CalendarCoverageError("As-of predates calendar scope")
+    exchange = calendar.catalog["exchange"]
+    prefix = {"SSE": "sh", "SZSE": "sz"}[exchange] if exchange in ("SSE", "SZSE") else None
+    if prefix is None:
+        raise CalendarCoverageError(f"No observation prefix is defined for {exchange}")
     dates = pd.date_range(calendar.start, cutoff).date
-    frame = pd.DataFrame({"calendar_date": dates, "exchange": "SSE",
-                          "is_scheduled_open": [calendar.is_scheduled_open(day) for day in dates]})
+    frame = pd.DataFrame({"calendar_date": dates, "exchange": exchange,
+                          "is_scheduled_open": [calendar.is_scheduled_open(day, exchange) for day in dates]})
     registry = json.loads((PROJECT / "config/datasets.json").read_text(encoding="utf-8"))
     etf_manifest_path = PROJECT / registry["datasets"]["etf_daily"]["manifest"]
     etfs = json.loads(etf_manifest_path.read_text(encoding="utf-8"))
     observations, comparisons = set(), []
     scheduled = set(frame.loc[frame.is_scheduled_open, "calendar_date"])
     for item in etfs["files"]:
-        if not item["symbol"].startswith("sh"):
+        if not item["symbol"].startswith(prefix):
             continue
         bars = pq.read_table(item["path"], columns=["trade_date"]).to_pandas().trade_date
         observed = {day for day in bars if calendar.start <= day <= cutoff}
@@ -107,12 +112,15 @@ def main():
                             "bars_on_scheduled_closed_dates": sorted(map(str, observed - scheduled)),
                             "scheduled_sessions_without_bar": sorted(map(str, within_window - observed))})
         observations.update(observed)
-    frame["observed_in_sse_etf_samples"] = frame.calendar_date.isin(observations)
-    output = PROJECT / "data/external/calendar" / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid4().hex[:8])
-    output.mkdir(parents=True)
-    provenance = {"exchange": "SSE", "as_of": str(cutoff), "source_catalog": str(args.catalog.resolve()),
+    frame[f"observed_in_{prefix}_etf_samples"] = frame.calendar_date.isin(observations)
+    root = args.output_root or (PROJECT / "data/external" / ("calendar" if exchange == "SSE" else f"calendar_{exchange.lower()}"))
+    output = root / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid4().hex[:8])
+    output.mkdir(parents=True, exist_ok=True)
+    gaps = (["SZSE_calendar_independent_validation", "security_level_status"] if exchange == "SSE"
+            else ["cross_exchange_calendar_comparison", "security_level_status"])
+    provenance = {"exchange": exchange, "as_of": str(cutoff), "source_catalog": str(args.catalog.resolve()),
                   "catalog_sha256": hashlib.sha256(catalog_bytes).hexdigest(), "source_snapshot": str(args.source_snapshot.resolve()),
-                  "backtest_ready": False, "readiness_gaps": ["SZSE_calendar_independent_validation", "security_level_status"],
+                  "backtest_ready": False, "readiness_gaps": gaps,
                   "meaning": "Scheduled exchange sessions only; individual securities may be halted or ineligible"}
     table = pa.Table.from_pandas(frame, preserve_index=False)
     table = table.replace_schema_metadata({**(table.schema.metadata or {}), b"stock.provenance": json.dumps(provenance).encode()})
@@ -123,7 +131,11 @@ def main():
                 "etf_comparison_manifest": str(etf_manifest_path), "comparisons": comparisons,
                 "observed_comparison_end": str(max(observations)) if observations else None,
                 "calendar_source_scope_complete": True}
-    manifest["all_sse_etf_comparisons_exact"] = bool(comparisons) and not any(item["bars_on_scheduled_closed_dates"] or item["scheduled_sessions_without_bar"] for item in comparisons)
+    exact = bool(comparisons) and not any(item["bars_on_scheduled_closed_dates"] or item["scheduled_sessions_without_bar"] for item in comparisons)
+    manifest["all_observation_comparisons_exact"] = exact
+    if exchange == "SSE":
+        # scripts/data_status.py reads this historical name for the SSE dataset.
+        manifest["all_sse_etf_comparisons_exact"] = exact
     (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=True, indent=2))
     if any(item["bars_on_scheduled_closed_dates"] for item in comparisons):
