@@ -10,7 +10,13 @@ from unittest.mock import patch
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-from fetch_financial_originals import Capture, classify_title, period_from_title, publication
+
+try:
+    from fetch_financial_originals import Capture, classify_title, period_from_title, publication
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = True, ""
 
 
 def announcement(number="123", day="2019-03-29", symbol="600519"):
@@ -34,6 +40,7 @@ class Response:
             raise ValueError("HTTP rejected")
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class FinancialOriginalTests(unittest.TestCase):
     def temporary(self):
         directory = tempfile.TemporaryDirectory()

@@ -4,4 +4,7 @@ __pycache__/
 *.pyc
 data/normalized/
 data/external/
+build/
+dist/
+*.egg-info/
 

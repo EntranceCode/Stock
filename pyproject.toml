@@ -9,6 +9,11 @@ description = "Independent daily stock and ETF quantitative research system"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+# Used by the acquisition and audit scripts under scripts/, not by the system
+# core or the synthetic demo, which need only the standard library.
+data = ["pandas", "numpy", "pyarrow", "requests", "beautifulsoup4"]
+
 [project.scripts]
 hybrid-quant = "hybrid_quant.cli:main"
 
