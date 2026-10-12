@@ -7,9 +7,18 @@ import unittest
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-from build_exchange_calendar import ExchangeCalendar, CalendarCoverageError
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+try:
+    from build_exchange_calendar import ExchangeCalendar, CalendarCoverageError
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class CalendarTests(unittest.TestCase):
     def setUp(self):
         self.catalog = json.loads((PROJECT / "config/exchange-calendar-sources.json").read_text(encoding="utf-8"))

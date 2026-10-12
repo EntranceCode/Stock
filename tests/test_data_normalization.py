@@ -8,16 +8,21 @@ import unittest
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
-import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
-from verify_local_source import decode_daily_dates
-from normalize_local_daily import normalize_frame, require_backtest_ready
-from normalize_action_samples import cash_per_unit, split_multiplier, gross_return, stock_event_values, apply_issuer_evidence
-from fetch_stock_actions import validate_page
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+try:
+    from verify_local_source import decode_daily_dates
+    from normalize_local_daily import normalize_frame, require_backtest_ready
+    from normalize_action_samples import cash_per_unit, split_multiplier, gross_return, stock_event_values, apply_issuer_evidence
+    from fetch_stock_actions import validate_page
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class NormalizationTests(unittest.TestCase):
     def sample(self):
         return pd.DataFrame({"time": [1783350, 1783436], "open": [10., 11.],

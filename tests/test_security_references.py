@@ -5,9 +5,18 @@ import unittest
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-from normalize_security_references import security_code, source_date, name_marker, listing_record, name_event
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+try:
+    from normalize_security_references import security_code, source_date, name_marker, listing_record, name_event
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class SecurityReferenceTests(unittest.TestCase):
     def test_codes_keep_leading_zeros_and_reject_implicit_repair(self):
         self.assertEqual(security_code("000001"), "000001")

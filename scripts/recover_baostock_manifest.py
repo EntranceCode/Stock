@@ -1,10 +1,11 @@
 """Rebuild a run manifest from retained outputs after an interrupted acquisition.
 
-fetch_baostock_history writes manifest.json only when a batch finishes or when
-login fails, so a process killed mid-batch leaves verified price and observation
-files plus wire captures with no run inventory. This rebuilds that inventory from
-what is actually on disk and recomputes every hash, so the retained outputs can be
-audited and indexed like any other batch.
+fetch_baostock_history now rewrites manifest.json after every request, so a
+terminated batch keeps its inventory. Batches captured before that change left
+verified price and observation files plus wire captures with no run inventory at
+all. This rebuilds such an inventory from what is actually on disk and recomputes
+every hash, so the retained outputs can be audited and indexed like any other
+batch.
 
 Only retained evidence is used. Fields the terminated process never wrote are
 either omitted or listed under inferred_fields; per-request failure messages that
@@ -160,7 +161,7 @@ def recover(run, source_manifests):
         "complete": not errors and len(outcomes) == len(requests),
         "recovered": {
             "recovered_at": datetime.now(timezone.utc).isoformat(),
-            "reason": "fetch_baostock_history writes manifest.json only when a batch finishes; this process was terminated first",
+            "reason": "the batch was terminated before this collector rewrote the manifest after every request, so the run kept its outputs but no inventory",
             "rebuilt_from": ["requests.json", "raw/*.json", "observations/*.parquet", "prices/*.parquet"],
             "inferred_fields": {
                 "started_at": "earliest retained wire response timestamp; the true batch start is earlier",

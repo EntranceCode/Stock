@@ -1,5 +1,7 @@
 import importlib.util
+import json
 from pathlib import Path
+import tempfile
 import unittest
 
 SPEC = importlib.util.spec_from_file_location("baostock_history_collector", Path(__file__).resolve().parents[1] / "scripts/fetch_baostock_history.py")
@@ -51,6 +53,34 @@ class HistoryObservationTest(unittest.TestCase):
         self.assertEqual(sock.sent, [b"ab"])
         with self.assertRaises(ConnectionError):
             sock.recv(10)
+
+    def reply(self, code="sz.000001", start="2024-01-01", end="2024-01-10", payload=None):
+        body = json.dumps({"record": payload if payload is not None else []})
+        tail = "".join("\x01" + part for part in (code, collector.FIELDS, start, end, "d", "3"))
+        return "00.9.10\x0196\x0100000407610\x01success\x01query_history_k_data_plus\x01anonymous\x011\x012000\x01" + body + tail
+
+    def test_reply_is_accepted_only_for_the_requested_security_schema_and_window(self):
+        request = {"code": "sz.000001", "start": "2024-01-01", "end": "2024-01-10"}
+        self.assertTrue(collector.reply_matches(self.reply(), request))
+        for mismatch in ({"code": "sz.000002"}, {"start": "2024-01-02"}, {"end": "2024-01-09"}):
+            with self.subTest(mismatch=mismatch):
+                self.assertFalse(collector.reply_matches(self.reply(**mismatch), request))
+        # A timeout surfaces either as no reply at all or as an undecodable frame.
+        self.assertFalse(collector.reply_matches(None, request))
+        self.assertFalse(collector.reply_matches("wrong password", request))
+        self.assertFalse(collector.reply_matches("00.9.10\x0196\x0100000407610", request))
+
+    def test_manifest_is_rewritten_each_request_while_one_shot_evidence_is_not(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            collector.write_manifest(path, {"outcomes": [1]})
+            collector.write_manifest(path, {"outcomes": [1, 2]})
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"outcomes": [1, 2]})
+            # An atomic rewrite leaves no partial file behind.
+            self.assertEqual(sorted(item.name for item in Path(directory).iterdir()), ["manifest.json"])
+            with self.assertRaises(FileExistsError):
+                collector.save_once(path, {"outcomes": []})
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"outcomes": [1, 2]})
 
 
 if __name__ == "__main__":

@@ -13,15 +13,19 @@ from unittest.mock import Mock, patch
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
-import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
-import fetch_http_reference as http
-import fetch_tdx_reference as tdx
-import fetch_etf_daily as etf
-import fetch_financial_samples as financial
-import verify_local_source as verify
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+try:
+    import fetch_http_reference as http
+    import fetch_tdx_reference as tdx
+    import fetch_etf_daily as etf
+    import fetch_financial_samples as financial
+    import verify_local_source as verify
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 
 def response(payload=None, text=None, status=200):
@@ -33,6 +37,7 @@ def response(payload=None, text=None, status=200):
     return mocked
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class AcquisitionProvenanceTests(unittest.TestCase):
     def temporary_project(self):
         directory = tempfile.TemporaryDirectory(dir=PROJECT / "tests")

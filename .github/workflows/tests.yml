@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    # The workspace and the data-acquisition scripts target Windows, so the
+    # suite is verified on the platform it actually runs on. The checks use
+    # only pathlib and project-relative paths, so a Linux job can be added
+    # once it has been confirmed there.
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the optional Parquet stack
+        run: python -m pip install --upgrade pip pyarrow pandas
+      - name: Run the project checks
+        # The real data directories are not distributed; the suite is
+        # self-contained and must pass without them.
+        run: python -B scripts/run_tests.py

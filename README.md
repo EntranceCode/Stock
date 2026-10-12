@@ -18,6 +18,33 @@ python -B scripts/run_tests.py
 
 启动`serve`后打开 [本地研究工作台](http://127.0.0.1:8765)。服务仅监听本机地址；在运行服务的终端按`Ctrl+C`停止。当前已安装的解释器也可使用`D:\miniconda3\python.exe`。核心和合成演示使用Python标准库；真实行情预览另需`pyarrow`，本项目已在`.deps/parquet`保存本地依赖。
 
+## 从仓库克隆后
+
+```powershell
+git clone git@github.com:EntranceCode/Stock.git
+```
+
+仓库只包含代码、配置、文档与核验报告。真实数据目录`data/`（约3.3 GB）和本地依赖`.deps/`（约87 MB）按`.gitignore`排除，不在版本库内，需要单独取得或重新采集。
+
+| 用途 | 需要的依赖 |
+|---|---|
+| `hybrid_quant`核心、`demo`、`status`、`check-data` | 仅Python 3.11+标准库 |
+| `serve`工作台启动与页面浏览 | 仅标准库（日线预览接口另需`pyarrow`） |
+| `scripts/`中读写Parquet的脚本 | `pyarrow`，部分还需`pandas` |
+| `scripts/fetch_baostock_history.py`采集 | `baostock` 0.9.4 与 `pyarrow` |
+| 完整测试套件 | `pyarrow` 与 `pandas` |
+
+相关脚本会先把项目内的`.deps/parquet`与`.deps/baostock`加入模块搜索路径，因此恢复可选依赖有两种等价方式：
+
+```powershell
+pip install pyarrow pandas baostock
+# 或把依赖放回项目内的 .deps/parquet 与 .deps/baostock
+```
+
+缺少`pyarrow`时`scripts/run_tests.py`仍会运行并返回0：需要Parquet的49项检查以明确的跳过原因记录，其余检查照常执行（在当前完整环境中为147项全部通过、无跳过）。
+
+真实数据集不随仓库分发，因此克隆后`status`会把注册表中每个数据集报告为`manifest_missing`，`check-data`返回退出码2，日线预览返回依赖或证据不可用的明确错误。这不是故障，而是准入门的正常行为：在缺口解决前，真实历史数据始终保持`backtest_ready=false`，不会被当作可回测输入。
+
 `demo`使用合成证券、行情、财务与日期验证完整程序链路，结果保存在唯一的`reports/demo/<运行ID>`目录，不能用来证明投资收益。`check-data`在真实历史证据尚不完整时返回退出码2；没有强制跳过准入的开关。
 
 行情预览先核验归档文件哈希，再读取单只证券日线；复权、成交额、字段可用时间与交易状态未知时保持为空。预览接口不生成策略信号，合格历史输入的独立契约见 [快照接口说明](docs/snapshot-bundle-contract.md)。本轮145项自动检查通过；工作台浏览器验证在v0.2.0完成，见 [工作台验证记录](reports/dashboard-validation/validation.md)。

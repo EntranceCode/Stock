@@ -3,6 +3,11 @@
 Unadjusted observations and provider flags remain staging evidence. No missing
 session is fabricated, no listing boundary is inferred, and no history is
 admitted to the strategy engine by this collector.
+
+The batch manifest is rewritten after every request, so a terminated process
+still leaves an inventory of what it actually saved. Each decoded reply is also
+checked against the requested security, schema and window before its rows are
+used, because a socket timeout can hand back the previous reply.
 """
 from __future__ import annotations
 
@@ -39,6 +44,36 @@ def sha(path):
 def save_once(path, value):
     with path.open("x", encoding="utf-8") as stream:
         json.dump(value, stream, ensure_ascii=False, indent=2, allow_nan=False)
+
+
+def write_manifest(path, manifest):
+    """Rewrite this run's own manifest so an interrupted batch keeps its inventory.
+
+    The run directory is unique per batch, so this only replaces the current
+    run's file; evidence recorded by earlier batches is never touched.
+    """
+    temporary = path.with_name(path.name + ".partial")
+    with temporary.open("w", encoding="utf-8") as stream:
+        json.dump(manifest, stream, ensure_ascii=False, indent=2, allow_nan=False)
+    temporary.replace(path)
+
+
+def reply_matches(response, request):
+    """Check a decoded reply against the security, schema and window requested.
+
+    A socket timeout can leave a late reply in the buffer, so the SDK can hand
+    back the previous security's payload. Accepting it would attach another
+    security's rows to this request.
+    """
+    if not isinstance(response, str) or "{" not in response:
+        return False
+    body = response[response.index("{"):]
+    try:
+        _, end = json.JSONDecoder().raw_decode(body)
+    except ValueError:
+        return False
+    tail = body[end:].split("\1")
+    return tail[1:7] == [request["code"], FIELDS, request["start"], request["end"], "d", "3"]
 
 
 def number(value, field, nullable=True):
@@ -185,7 +220,7 @@ def main(argv=None):
     wire = WireSocket(context.default_socket)
     context.default_socket = wire
     original_send = sockets.send_msg
-    active = {"request": None, "page": 0, "failed": False}
+    active = {"request": None, "page": 0, "failed": False, "failure": None}
 
     def capture_send(message):
         wire.sent, wire.received = [], []
@@ -200,22 +235,24 @@ def main(argv=None):
                              "decoded_protocol_response": response,
                              "format": "complete wire bytes plus SDK-decoded protocol response before row parsing"})
             manifest["raw_responses"].append({"path": str(path), "sha256": sha(path), "code": active["request"]["code"], "page": active["page"]})
-            if response is None:
+            if not reply_matches(response, active["request"]):
                 active["failed"] = True
+                active["failure"] = "Provider reply does not match the requested security, schema and window"
         return response
 
     sockets.send_msg = capture_send
     consecutive_failures = 0
     try:
         for index, item in enumerate(selected, 1):
-            active.update(request=item, page=0, failed=False)
+            active.update(request=item, page=0, failed=False, failure=None)
             try:
                 result = bs.query_history_k_data_plus(item["code"], FIELDS, start_date=item["start"], end_date=item["end"], frequency="d", adjustflag="3")
                 rows = []
                 while result.error_code == "0" and result.next():
                     rows.append(result.get_row_data())
                 if result.error_code != "0" or active["failed"]:
-                    raise ValueError(f"Provider query failed: {result.error_code} {result.error_msg}")
+                    reason = active["failure"] or f"{result.error_code} {result.error_msg}"
+                    raise ValueError(f"Provider query failed: {reason}")
                 if not rows:
                     raise ValueError("Empty history is unresolved, not proof of no trading")
                 normalized = normalize_rows(result.fields, rows, item["code"], item["start"], item["end"])
@@ -253,6 +290,7 @@ def main(argv=None):
             finally:
                 active["request"] = None
                 (output / "progress.json").write_text(json.dumps({"completed": len(manifest["outcomes"]), "requested": len(selected), "saved_price_files": len(manifest["files"]), "errors": len(manifest["errors"]), "updated_at": now()}), encoding="utf-8")
+                write_manifest(output / "manifest.json", manifest)
             time.sleep(args.pause)
     finally:
         active["request"] = None
@@ -260,7 +298,7 @@ def main(argv=None):
         bs.logout()
         manifest.update(finished_at=now(), total_rows=sum(item["rows"] for item in manifest["files"]),
                         complete=len(manifest["outcomes"]) == len(selected) and not manifest["errors"])
-        save_once(output / "manifest.json", manifest)
+        write_manifest(output / "manifest.json", manifest)
         print(json.dumps({"manifest": str(output / "manifest.json"), "files": len(manifest["files"]), "rows": manifest["total_rows"], "errors": len(manifest["errors"]), "complete": manifest["complete"]}), flush=True)
     return 0 if manifest["complete"] else 2
 

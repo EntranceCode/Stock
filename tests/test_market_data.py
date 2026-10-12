@@ -8,14 +8,16 @@ import unittest
 from unittest.mock import Mock
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
-import pyarrow as pa
-import pyarrow.parquet as pq
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 from hybrid_quant.data_registry import DataNotReady, DatasetRegistry
 from hybrid_quant.market_data import StagedMarketData
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class MarketDataTests(unittest.TestCase):
     def setUp(self):
         temporary_root = PROJECT / ".test-tmp"

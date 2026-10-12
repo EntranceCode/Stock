@@ -5,11 +5,18 @@ import unittest
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / "scripts"))
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
-import pandas as pd
-from audit_financial_snapshot import audit_frame, numeric_stats, ttm_coverage
+sys.path.insert(0, str(PROJECT / "tests"))
+from parquet_support import PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON, pa, pd, pq
+
+try:
+    from audit_financial_snapshot import audit_frame, numeric_stats, ttm_coverage
+except ImportError as exc:
+    AVAILABLE, SKIP_REASON = False, "optional dependency unavailable: " + str(exc)
+else:
+    AVAILABLE, SKIP_REASON = PARQUET_STACK_AVAILABLE, PARQUET_STACK_SKIP_REASON
 
 
+@unittest.skipUnless(AVAILABLE, SKIP_REASON)
 class FinancialAuditTests(unittest.TestCase):
     def sample(self):
         periods = ["2024-03-31", "2024-12-31", "2025-03-31", "2025-06-30"]
