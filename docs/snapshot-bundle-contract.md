@@ -2,6 +2,8 @@
 
 `hybrid_quant.market_data.StagedMarketData`由本项目独立实现。界面查看本地候选行情与引擎接受已核验历史输入使用不同接口；当前真实数据注册表仍未通过准入。
 
+候选 bundle 由 `hybrid_quant.snapshot_series.build_series`（入口 `scripts/build_snapshot_series.py`）生成：它只从注册证据与显式指定的衍生产品构建，契约字段缺一即排除该证券并记录原因，不可避免的推导以声明假设的形式在每个 bundle 登记 readiness gap。因此构建器产出在底层证据就绪前同样被本接口拒绝；它不产生、也不跳过准入。
+
 ## 候选行情查看
 
 `catalog(dataset, q='', limit=50)`支持`stock_daily`与`etf_daily`，仅查询已登记清单。证券代码为六位数字，可带`sh`或`sz`前缀；查询最长32字符，单次最多500项。

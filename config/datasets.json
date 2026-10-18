@@ -23,8 +23,8 @@
       "purpose": "SSE scheduled sessions from official annual notices and amendments; independently compared with five ETF samples, not security tradability"
     },
     "security_metadata": {
-      "manifest": "data/external/security_metadata/20261009T104055Z_f66ddd14/manifest.json",
-      "purpose": "official listing and termination candidates, SZSE name events, and separate current metadata; lifecycle and historical trading eligibility remain unverified"
+      "manifest": "data/external/security_metadata/20261014T115907Z_5c19f323/manifest.json",
+      "purpose": "official listing and termination candidates, SZSE name events, SSE current stock list, and separate current metadata; lifecycle and historical trading eligibility remain unverified"
     }
   }
 }

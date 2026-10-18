@@ -1,0 +1,83 @@
+{
+  "run_id": "20261015T133528Z_c7a14f09",
+  "generated_at": "2026-10-15T13:35:28.418471+00:00",
+  "system_version": "0.2.2",
+  "purpose": "synthetic_engineering_demo",
+  "validation_only": true,
+  "investment_performance": false,
+  "uses_alpha_master_runtime": false,
+  "historical_data_admitted": false,
+  "config_source": "D:\\vscode\\Stock\\config\\demo.json",
+  "config_sha256": "029e6d4798859cd22f0de75a88d320b5cfb50a94e7f1c6c7405b2a99c83e30e4",
+  "code_hashes": {
+    "__init__.py": "1075bb6454feec50c71b1f3a7fbbd44ea2a5a0832d6ed2a68e9c29094b78f4fd",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "accounting.py": "28fbd13ee06752da039d9f8dfd79e16b767d6f13b3a573ea6fc1cd495fa3c288",
+    "backtest.py": "e2bf3013d75576fa9f65b0c231e0763b7cb41d9751829ecb69d9ecd68bead4ed",
+    "cli.py": "d285954a6cbf70ae6c2ab7fc1427ac962f9f5edb4f33ee08058535937cba158d",
+    "dashboard_store.py": "56a5388094622d4cbd04573e587b403efa882e5de15c8b87ad645bc5545b4c22",
+    "data_registry.py": "7e4a6642497194813279118e7ae37ec4b282e40c5dad527140b189ee9d673561",
+    "demo.py": "d6427fef2dd1c420f898de139555f471f63c3020e8415c0701d8fc652b4a01ae",
+    "factors.py": "e73cf19d0ef25cea556c1bf3a9fa33976f914191deac5bbf9163f1eef716da8d",
+    "market_data.py": "9c5b1ad1287e60d9cf99b84d4103154f60e627b377e15f2a7d8232d9561d441e",
+    "models.py": "4bf32b22534e7c6aaef1d9d538b423d6651cdaf4f947828739fa372747bc0638",
+    "portfolio.py": "4d9582ee4e5de680298fdb0debda64ad804b91b06af0d217f306ab6f996ab68a",
+    "server.py": "ac8ac2b3a42a44b8f5fecbd795659a1b6554db380df68137f3770c0027dbd3ca",
+    "snapshot_series.py": "f173ab83aea0abc101b3c7a278a7e8a566b7784509b82108de71ebdb30c330b1",
+    "strategies.py": "e57ecf1f3db350b477a82fb849ca462530bf52a0647dfd87447d344fcd309d06"
+  },
+  "evaluation_sessions": 80,
+  "orders": 197,
+  "fills": 197,
+  "assumptions": [
+    "Synthetic weekday sessions are a fixture calendar, not a Chinese exchange calendar",
+    "Synthetic prices have no corporate actions; adjusted_close equals close only in this fixture",
+    "Fixture metadata, industry exposures, factor availability, and execution flags are stipulated",
+    "Costs and settlement settings are engineering assumptions, not verified historical market rules",
+    "Account values are test outputs, not evidence of investment performance"
+  ],
+  "limitations": [
+    "This is an explicit daily fixture replay, not evidence of investment performance.",
+    "Published fixture dates determine rebalance boundaries; no next-session price or factor determines original order quantity.",
+    "Daily open plus configured slippage approximates execution; opening auctions, queues and intraday liquidity are not reconstructed.",
+    "Only verified supplied execution metadata and tradability flags are used; these cannot establish real historical tradeability.",
+    "Cash dividend fixtures accrue before ex-date orders and become available on the first supplied session on/after pay-date.",
+    "Splits, rights offerings, mergers, precise historical fees and dividend taxes are not implemented.",
+    "Per-strategy virtual-account contribution attribution is not implemented.",
+    "Stale holdings remain in NAV and desired limits may be unachievable; actual violations are recorded."
+  ],
+  "files": [
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\config.json",
+      "sha256": "a1e0fb2af5b26316344cf89c8e0b2141759dd23a57bb754cbb2b647ec8a34390"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\decisions.jsonl",
+      "sha256": "6710f2e340c27944eecee88468df1bac78b9fe9456664910b28903cc48737ce1"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\dividend_events.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\equity.csv",
+      "sha256": "60a3a6c1751e86f86ecfd2edf71073b29ca6d42f8a901f06deaae3162eee96e9"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\execution_events.jsonl",
+      "sha256": "5bdb62c347711c2f97a7b0b0ea884c7ad039863892c691c2554c59a6eef32449"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\fills.jsonl",
+      "sha256": "1977551dc37d8ef9a2f3fd5da6f2e3341eb7b62a8b9d05a1c8e64c1566a7edbc"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\orders.jsonl",
+      "sha256": "2bfddbc77525f0c492431ba3839f11c57f83cc34e7e9f07fe6e16eb94b5aacc8"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261015T133528Z_c7a14f09\\report.md",
+      "sha256": "0f7acb8ad9206518984977fca80e60b46b19432154b25997bcf8beac862ec668"
+    }
+  ]
+}
