@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
+sys.path.append(str(PROJECT / ".deps" / "parquet"))
 import pyarrow.parquet as pq
 from fetch_http_reference import china_today, iso_date, new_snapshot_directory, save_json_once
 

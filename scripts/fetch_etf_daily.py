@@ -9,7 +9,7 @@ import requests
 from fetch_http_reference import capture_http_response, china_today, iso_date, new_snapshot_directory, save_json_once
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
+sys.path.append(str(PROJECT / ".deps" / "parquet"))
 import pandas as pd
 import numpy as np
 import pyarrow as pa

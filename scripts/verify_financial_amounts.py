@@ -26,7 +26,7 @@ import sys
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 sys.path.insert(0, str(PROJECT / "scripts"))
 
 from verify_financial_vintages import label_row, page_spans, row_values  # noqa: E402
@@ -78,7 +78,10 @@ def main():
     parser.add_argument("--whole-document", action="store_true",
                         help="Also scan non-summary pages; verified for revenue only, and it adds mismatches elsewhere")
     args = parser.parse_args()
-    import fitz
+    try:
+        import pymupdf
+    except ImportError:  # older PyMuPDF releases only expose the legacy name
+        import fitz as pymupdf
     import pyarrow.parquet as pq
 
     manifest_path = args.manifest.resolve()
@@ -111,7 +114,7 @@ def main():
         if sha(pdf) != entry["sha256"]:
             raise ValueError("Original document changed after acquisition")
         rows_found, labels_used, selection = {}, {}, {}
-        with fitz.open(pdf) as document:
+        with pymupdf.open(pdf) as document:
             pages = [document[i] for i in range(min(len(document), args.max_pages))]
             section_pages, marker_pages = [], []
             for page in pages:

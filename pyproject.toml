@@ -4,15 +4,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stock-hybrid-quant"
-version = "0.2.1"
+version = "0.2.2"
 description = "Independent daily stock and ETF quantitative research system"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
 # Used by the acquisition and audit scripts under scripts/, not by the system
-# core or the synthetic demo, which need only the standard library.
-data = ["pandas", "numpy", "pyarrow", "requests", "beautifulsoup4", "pymupdf"]
+# core or the synthetic demo, which need only the standard library. Floors keep
+# a fresh install compatible with the code that already runs here; an exact pin
+# is used only where a wire protocol is part of the evidence chain.
+data = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "pyarrow>=14.0",
+    "requests>=2.28",
+    "beautifulsoup4>=4.11",
+    "pymupdf>=1.24",
+    # Reading the exchange Excel exports saved by fetch_security_references.py.
+    "openpyxl>=3.1",
+    "xlrd>=2.0",
+    # The reply audit in fetch_baostock_history.py checks this SDK's protocol.
+    "baostock==0.9.4",
+]
 
 [project.scripts]
 hybrid-quant = "hybrid_quant.cli:main"

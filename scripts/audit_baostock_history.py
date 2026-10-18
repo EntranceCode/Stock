@@ -18,7 +18,7 @@ from uuid import uuid4
 import zlib
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 from fetch_baostock_history import FIELDS, normalize_rows
 
 

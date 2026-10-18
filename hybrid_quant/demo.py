@@ -5,9 +5,16 @@ from datetime import date, datetime, time, timedelta, timezone
 import math
 import random
 
-from .models import AssetType, DailyBar, DataSnapshot, Security, StockFactorObservation
+from .models import (ENGINE_TRAILING_WINDOW_SESSIONS, AssetType, DailyBar,
+                     DataSnapshot, Security, StockFactorObservation)
 
 CHINA_TIME = timezone(timedelta(hours=8))
+# The engine reads at most 121 known sessions per security (the stock
+# strategy's lookback) and never older bars, so a snapshot only has to carry a
+# trailing window of observable history. Supplying the whole growing prefix
+# instead makes a replay cost quadratic time and memory in the session count;
+# the window keeps every engine-visible value identical to the full prefix.
+HISTORY_WINDOW_SESSIONS = ENGINE_TRAILING_WINDOW_SESSIONS
 
 
 def synthetic_snapshots(config: dict) -> tuple[DataSnapshot, ...]:
@@ -18,6 +25,9 @@ def synthetic_snapshots(config: dict) -> tuple[DataSnapshot, ...]:
         raise ValueError("Fixture sizes must be integers")
     if evaluation_start < 250 or total < evaluation_start + 2 or total > 3000 or not 25 <= stock_count <= 200:
         raise ValueError("Demo requires at least 250 warmup sessions, two evaluation sessions, and 25–200 stocks")
+    window = config.get("history_window_sessions", HISTORY_WINDOW_SESSIONS)
+    if not isinstance(window, int) or isinstance(window, bool) or not 121 <= window <= total:
+        raise ValueError("history_window_sessions must be an integer of at least 121 and at most history_sessions")
     rng = random.Random(config["seed"])
     dates = []
     day = date(2021, 1, 4)
@@ -71,6 +81,6 @@ def synthetic_snapshots(config: dict) -> tuple[DataSnapshot, ...]:
             previous[symbol] = closing
     return tuple(DataSnapshot(
         datetime.combine(day, time(16, 30), CHINA_TIME), securities,
-        {symbol: tuple(history[:session + 1]) for symbol, history in histories.items()},
+        {symbol: tuple(history[max(0, session + 1 - window):session + 1]) for symbol, history in histories.items()},
         factors, {symbol: session + 1 for symbol in securities},
     ) for session, day in enumerate(dates) if session >= evaluation_start)

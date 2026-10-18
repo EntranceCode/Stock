@@ -28,6 +28,21 @@ class DashboardServerTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         self.market.catalog.assert_called_once_with("stock_daily", q="600", limit=20)
 
+    def test_overview_is_cached_and_invalidated_by_a_new_demo_run(self):
+        first = self.app.dispatch("GET", "/api/overview", HEADERS)
+        second = self.app.dispatch("GET", "/api/overview", HEADERS)
+        self.assertEqual(first.body, second.body)
+        self.assertEqual(self.store.overview.call_count, 1)
+        self.app.dispatch("POST", "/api/demo", {**HEADERS, "Origin": "http://127.0.0.1:8765"})
+        self.app.dispatch("GET", "/api/overview", HEADERS)
+        self.assertEqual(self.store.overview.call_count, 2)
+
+    def test_overview_cache_can_be_disabled_for_fresh_reads(self):
+        app = DashboardApplication(PROJECT, store=self.store, demo_runner=self.runner, overview_ttl=0)
+        app.dispatch("GET", "/api/overview", HEADERS)
+        app.dispatch("GET", "/api/overview", HEADERS)
+        self.assertEqual(self.store.overview.call_count, 2)
+
     def test_data_catalog_reads_new_registry_without_restarting_server(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -82,3 +97,12 @@ class DashboardServerTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         self.assertIn(b"<!doctype html>", response.body.lower())
         self.assertEqual(self.app.dispatch("GET", "/config/demo.json", HEADERS).status, 404)
+
+    def test_handler_bounds_slow_clients_and_hides_versions(self):
+        from hybrid_quant.server import DashboardServer, handler_type
+        handler = handler_type(self.app)
+        self.assertEqual(handler.timeout, 30)
+        self.assertEqual(handler.server_version, "HybridQuantDashboard")
+        self.assertEqual(handler.sys_version, "")
+        self.assertEqual(DashboardServer.request_queue_size, 32)
+        self.assertTrue(DashboardServer.daemon_threads)

@@ -1,6 +1,7 @@
 """Shared contracts for decisions, risk, and the simulated account."""
 from __future__ import annotations
 
+from bisect import bisect_right
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -11,6 +12,13 @@ from typing import Mapping
 def finite(value: float, name: str, *, positive: bool = False) -> None:
     if not math.isfinite(value) or (positive and value <= 0):
         raise ValueError(f"{name} must be finite" + (" and positive" if positive else ""))
+
+
+# The engine reads at most this many trailing sessions per security: the stock
+# strategy's 121-session lookback plus headroom. Snapshot builders may supply a
+# trailing window instead of a whole growing history without changing any
+# engine-visible value; the whole prefix costs quadratic time and memory.
+ENGINE_TRAILING_WINDOW_SESSIONS = 260
 
 
 def aware(value: datetime, name: str) -> None:
@@ -139,10 +147,37 @@ class DataSnapshot:
         for key, observations in self.stock_factors.items():
             if any(item.symbol != key for item in observations):
                 raise ValueError("Factor key does not match its symbol")
+        # Snapshots are point-in-time evidence. The mappings are copied so that a
+        # caller holding the originals cannot change what this snapshot claims to
+        # have observed; the memoized observable history below is only sound while
+        # that holds. A plain dict copy keeps value equality between snapshots.
+        object.__setattr__(self, "histories",
+                           {key: tuple(history) for key, history in self.histories.items()})
+        object.__setattr__(self, "stock_factors",
+                           {key: tuple(items) for key, items in self.stock_factors.items()})
+        object.__setattr__(self, "securities", dict(self.securities))
+        object.__setattr__(self, "listing_age_sessions", dict(self.listing_age_sessions))
+        # The engine asks for the same symbol several times per session, so the
+        # observable history is computed once and reused.
+        object.__setattr__(self, "_known_history", {})
 
     def known_history(self, symbol: str) -> tuple[DailyBar, ...]:
-        return tuple(bar for bar in self.histories.get(symbol, ())
-                     if bar.available_at <= self.decision_at and bar.trade_date <= self.decision_at.date())
+        """Bars observable at the decision time, computed once per symbol.
+
+        The trade-date bound is a prefix of the validated ascending dates and
+        is located by binary search; a bar published late for an earlier date
+        still has to be excluded individually inside that prefix. Results are
+        cached because a replay asks for the same symbol repeatedly.
+        """
+        cached = self._known_history.get(symbol)
+        if cached is not None:
+            return cached
+        history = self.histories.get(symbol, ())
+        observable = bisect_right([bar.trade_date for bar in history], self.decision_at.date())
+        decision_at = self.decision_at
+        known = tuple(bar for bar in history[:observable] if bar.available_at <= decision_at)
+        self._known_history[symbol] = known
+        return known
 
 
 @dataclass(frozen=True)

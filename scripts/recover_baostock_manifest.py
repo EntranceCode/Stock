@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from fetch_baostock_history import GAPS  # noqa: E402

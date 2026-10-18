@@ -19,7 +19,7 @@ import sys
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 
 PRICE_COLUMNS = ("open", "high", "low", "close")
 LIMIT = 0.11  # A-share daily price limit, plus a margin for rounding

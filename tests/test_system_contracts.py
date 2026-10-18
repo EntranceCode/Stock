@@ -18,6 +18,20 @@ class SystemContractTests(unittest.TestCase):
         snapshot = DataSnapshot(cutoff, {}, {"X": (known, late)})
         self.assertEqual(snapshot.known_history("X"), (known,))
 
+    def test_known_history_is_repeatable_and_excludes_late_publications(self):
+        cutoff = datetime(2024, 1, 5, 16, 30, tzinfo=TZ)
+        bars = tuple(DailyBar("X", date(2024, 1, 2) + timedelta(days=index), 10, 11, 9, 10, 100,
+                              cutoff + timedelta(days=index - 2)) for index in range(6))
+        snapshot = DataSnapshot(cutoff, {}, {"X": bars})
+        expected = tuple(bar for bar in bars
+                         if bar.available_at <= cutoff and bar.trade_date <= cutoff.date())
+        self.assertTrue(expected)
+        self.assertLess(len(expected), len(bars))
+        self.assertEqual(snapshot.known_history("X"), expected)
+        self.assertEqual(snapshot.known_history("X"), snapshot.known_history("X"))
+        self.assertEqual(snapshot.known_history("absent"), ())
+        self.assertEqual(snapshot.known_history("absent"), ())
+
     def test_invalid_dates_prices_and_short_weights_are_rejected(self):
         with self.assertRaises(ValueError):
             StockFactorObservation("X", 1, 1, datetime(2024, 1, 2))
@@ -55,6 +69,35 @@ class SystemContractTests(unittest.TestCase):
             path.write_text(json.dumps({"datasets": {key: {"manifest": "pretend.json"} for key in REQUIRED_DATASETS}}), encoding="utf-8")
             with self.assertRaises(DataNotReady):
                 DatasetRegistry(path, root).validate_for_backtest()
+
+    def test_registry_validation_verifies_once_within_its_ttl(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "staged.json").write_text(json.dumps({"backtest_ready": False, "readiness_gaps": ["historical_status"]}), encoding="utf-8")
+            path = root / "datasets.json"
+            path.write_text(json.dumps({"datasets": {"stock_daily": {"manifest": "staged.json"}}}), encoding="utf-8")
+
+            def counted(registry):
+                verifications = []
+                original = registry._verify_admission
+                def verification():
+                    verifications.append(1)
+                    original()
+                registry._verify_admission = verification
+                return verifications
+
+            cached = DatasetRegistry(path, root)
+            calls = counted(cached)
+            for _ in range(3):
+                with self.assertRaises(DataNotReady):
+                    cached.validate_for_backtest()
+            self.assertEqual(len(calls), 1)
+            fresh = DatasetRegistry(path, root, validation_ttl=0)
+            calls = counted(fresh)
+            for _ in range(3):
+                with self.assertRaises(DataNotReady):
+                    fresh.validate_for_backtest()
+            self.assertEqual(len(calls), 3)
 
     def test_quantity_and_settlement_cannot_be_fractional_or_boolean(self):
         for value in (100.5, True):

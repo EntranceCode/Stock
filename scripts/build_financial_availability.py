@@ -18,7 +18,7 @@ import sys
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 
 PERIODS = ((r"(\d{4})年(?:第)?一季度报告", "-03-31"), (r"(\d{4})年半年度报告", "-06-30"),
            (r"(\d{4})年(?:第)?三季度报告", "-09-30"), (r"(\d{4})年年度报告", "-12-31"))

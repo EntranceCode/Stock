@@ -18,7 +18,7 @@ import sys
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 
 NUMBER = re.compile(r"^-?[0-9][0-9,]*(?:\.[0-9]+)?$")
 # Some issuers print basic and diluted earnings in one row as 基本/稀释每股收益.
@@ -123,7 +123,10 @@ def main():
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--max-pages", type=int, default=60)
     args = parser.parse_args()
-    import fitz
+    try:
+        import pymupdf
+    except ImportError:  # older PyMuPDF releases only expose the legacy name
+        import fitz as pymupdf
     import pyarrow.parquet as pq
 
     manifest_path = args.manifest.resolve()
@@ -157,7 +160,7 @@ def main():
         if sha(pdf) != entry["sha256"]:
             raise ValueError("Original document changed after acquisition")
         published, page_number = None, None
-        with fitz.open(pdf) as document:
+        with pymupdf.open(pdf) as document:
             for index in range(min(len(document), args.max_pages)):
                 content = document[index].get_text("text", sort=True)
                 compact = re.sub(r"\s+", "", content)

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import threading
+import time
 from urllib.parse import parse_qs, urlsplit
 
 
@@ -22,7 +23,8 @@ def json_response(status: int, value) -> Response:
 
 
 class DashboardApplication:
-    def __init__(self, project_root: Path, port: int = 8765, *, store=None, market=None, demo_runner=None):
+    def __init__(self, project_root: Path, port: int = 8765, *, store=None, market=None, demo_runner=None,
+                 overview_ttl: float = 15.0):
         self.project_root = project_root.resolve()
         self.web_root = Path(__file__).resolve().parent / "web"
         self.allowed_hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
@@ -35,6 +37,12 @@ class DashboardApplication:
             demo_runner = lambda: create_demo_report(self.project_root / "config/demo.json", self.project_root / "reports/demo")
         self.store, self.market, self.demo_runner = store, market, demo_runner
         self._demo_lock = threading.Lock()
+        if isinstance(overview_ttl, bool) or not isinstance(overview_ttl, (int, float)) or overview_ttl < 0:
+            raise ValueError("overview_ttl must be a nonnegative number of seconds")
+        self._overview_ttl = float(overview_ttl)
+        self._overview_lock = threading.Lock()
+        self._overview_response: Response | None = None
+        self._overview_generated = 0.0
 
     def _market_data(self):
         if self.market is not None:
@@ -46,6 +54,22 @@ class DashboardApplication:
     @staticmethod
     def _error(status: int, message: str) -> Response:
         return json_response(status, {"message": message})
+
+    def _overview(self) -> Response:
+        """Serve the overview from a short-lived cache.
+
+        Building an overview re-validates every registered manifest and every
+        demo run, which is far too expensive to repeat on each page load.
+        Callers wait for a single build instead of stacking identical work, and
+        a newly created demo run invalidates the cached answer immediately.
+        """
+        with self._overview_lock:
+            if (self._overview_response is not None
+                    and time.monotonic() - self._overview_generated <= self._overview_ttl):
+                return self._overview_response
+            self._overview_response = json_response(200, self.store.overview())
+            self._overview_generated = time.monotonic()
+            return self._overview_response
 
     def dispatch(self, method: str, target: str, headers: dict[str, str], body: bytes = b"") -> Response:
         headers = {key.lower(): value for key, value in headers.items()}
@@ -72,13 +96,17 @@ class DashboardApplication:
                 if not self._demo_lock.acquire(blocking=False):
                     return self._error(409, "工程演示正在运行，请等待完成")
                 try:
-                    return json_response(201, self.demo_runner())
+                    response = json_response(201, self.demo_runner())
                 finally:
                     self._demo_lock.release()
+                # A new archived run changes the overview; drop the cached copy.
+                with self._overview_lock:
+                    self._overview_response = None
+                return response
             if method != "GET":
                 return self._error(405, "不支持该请求方法")
             if path == "/api/overview":
-                return json_response(200, self.store.overview())
+                return self._overview()
             if path == "/api/config":
                 config = json.loads((self.project_root / "config/demo.json").read_text(encoding="utf-8"))
                 return json_response(200, config)
@@ -113,9 +141,22 @@ class DashboardApplication:
             return self._error(500, "工作台处理失败，请查看本地服务日志")
 
 
+class DashboardServer(ThreadingHTTPServer):
+    """Loopback server with a bounded accept backlog and daemon workers."""
+
+    daemon_threads = True
+    request_queue_size = 32
+
+
 def handler_type(application: DashboardApplication):
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
+        # A slow or idle client must not pin a worker forever: reads time out
+        # and the base handler closes the connection.
+        timeout = 30
+        # Do not advertise the interpreter or library version to clients.
+        server_version = "HybridQuantDashboard"
+        sys_version = ""
 
         def _dispatch(self):
             try:
@@ -151,8 +192,7 @@ def serve(project_root: Path, port: int = 8765) -> None:
     if isinstance(port, bool) or not isinstance(port, int) or not 1 <= port <= 65535:
         raise ValueError("端口必须在1至65535之间")
     application = DashboardApplication(project_root, port)
-    with ThreadingHTTPServer(("127.0.0.1", port), handler_type(application)) as server:
-        server.daemon_threads = True
+    with DashboardServer(("127.0.0.1", port), handler_type(application)) as server:
         print(f"独立混合量化研究工作台：http://127.0.0.1:{port}", flush=True)
         print("按 Ctrl+C 停止本地服务。真实数据准入仍按证据检查。", flush=True)
         try:

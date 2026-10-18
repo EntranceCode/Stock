@@ -25,8 +25,8 @@ import time
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
-sys.path.insert(0, str(PROJECT / ".deps/baostock"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/baostock"))
 FIELDS = "date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,isST"
 GAPS = ["full_historical_universe_and_lifecycle_boundaries", "original_corporate_actions_and_total_returns",
         "historical_price_limits_and_execution_eligibility", "provider_status_independent_verification",
@@ -155,31 +155,51 @@ def requests_for(mode, start, end):
     stock_path = PROJECT / registry["datasets"]["stock_daily"]["manifest"]
     requirements_path = PROJECT / "reports/missing-retired-prices.json"
     requirements = json.loads(requirements_path.read_text(encoding="utf-8"))
+    sources = [stock_path, requirements_path]
     items = {}
-    for item in requirements["requirements"]:
-        records = item["candidate_records"]
-        exchange = {record["exchange"] for record in records}
-        if len(exchange) != 1:
-            raise ValueError("Ambiguous exchange requires separate listing review")
-        code = ("sh." if next(iter(exchange)) == "SSE" else "sz.") + item["symbol"]
-        windows = [record["acquisition_window_candidate"] for record in records]
-        a, b = max(start, min(w[0] for w in windows)), min(end, max(w[1] for w in windows))
-        if a <= b:
-            items[code] = {"code": code, "start": a, "end": b, "selection": "missing_retired_candidate",
-                           "multiple_listing_records_require_review": len(records) != 1,
-                           "candidate_records": records}
+    if mode != "etf":
+        for item in requirements["requirements"]:
+            records = item["candidate_records"]
+            exchange = {record["exchange"] for record in records}
+            if len(exchange) != 1:
+                raise ValueError("Ambiguous exchange requires separate listing review")
+            code = ("sh." if next(iter(exchange)) == "SSE" else "sz.") + item["symbol"]
+            windows = [record["acquisition_window_candidate"] for record in records]
+            a, b = max(start, min(w[0] for w in windows)), min(end, max(w[1] for w in windows))
+            if a <= b:
+                items[code] = {"code": code, "start": a, "end": b, "selection": "missing_retired_candidate",
+                               "multiple_listing_records_require_review": len(records) != 1,
+                               "candidate_records": records}
     if mode == "all":
         stock = json.loads(stock_path.read_text(encoding="utf-8"))
         for entry in stock["files"]:
             symbol = entry["symbol"]
             code = ("sh." if symbol.startswith(("60", "68")) else "sz.") + symbol
             items.setdefault(code, {"code": code, "start": start, "end": end, "selection": "registered_local_stock"})
-    return [items[key] for key in sorted(items)], [stock_path, requirements_path]
+    if mode == "etf":
+        # The provider security-basic snapshot is the ETF universe evidence; the
+        # window keeps ETFs listed no later than the window end and not
+        # terminated before its start, so a terminated fund still contributes
+        # the sessions it traded.
+        import pyarrow.parquet as pq
+        universe_dir = sorted((PROJECT / "data/external/etf_universe").iterdir())[-1]
+        universe = json.loads((universe_dir / "manifest.json").read_text(encoding="utf-8"))
+        sources.append(universe_dir / "manifest.json")
+        table = pq.read_table(universe_dir / "etf_universe.parquet").to_pylist()
+        for row in table:
+            listed, terminated = row["ipo_date"], row["out_date"]
+            if listed > end or (terminated is not None and terminated < start):
+                continue
+            code = row["code"]
+            a, b = max(start, listed), min(end, terminated or end)
+            items[code] = {"code": code, "start": a, "end": b, "selection": "provider_etf_universe",
+                           "provider_name": row["code_name"]}
+    return [items[key] for key in sorted(items)], sources
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("retired", "all"), default="retired")
+    parser.add_argument("--mode", choices=("retired", "all", "etf"), default="retired")
     parser.add_argument("--start", default="2018-01-01")
     parser.add_argument("--end", default="2026-07-07")
     parser.add_argument("--limit", type=int)
@@ -211,12 +231,16 @@ def main(argv=None):
     import baostock.util.socketutil as sockets
     import pyarrow as pa
     import pyarrow.parquet as pq
-    socket.setdefaulttimeout(15)
+    # The login handshake must not inherit the query timeout: the provider's
+    # login server can take far longer than a query under load, and a socket
+    # timeout there surfaces as a spurious network-receive failure. The timeout
+    # is applied after login, where it guards against stale replies.
     login = bs.login()
     if login.error_code != "0":
         manifest["errors"].append({"stage": "login", "code": login.error_code, "message": login.error_msg})
         save_once(output / "manifest.json", manifest)
         raise RuntimeError("Public BaoStock login failed; original failure evidence retained")
+    socket.setdefaulttimeout(15)
     wire = WireSocket(context.default_socket)
     context.default_socket = wire
     original_send = sockets.send_msg

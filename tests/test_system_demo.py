@@ -57,6 +57,21 @@ class SystemDemoTests(unittest.TestCase):
         prefix = run_backtest(self.snapshots[:30], **self.options)
         self.assertEqual(prefix["equity"], self.result["equity"][:30])
 
+    def test_trailing_window_keeps_every_engine_visible_value_identical(self):
+        snapshots = synthetic_snapshots(dict(self.config, history_window_sessions=130))
+        longest = max(len(history) for snapshot in snapshots for history in snapshot.histories.values())
+        self.assertLessEqual(longest, 130)
+        windowed = run_backtest(snapshots, **self.options)
+        self.assertEqual(windowed["equity"], self.result["equity"])
+        self.assertEqual(windowed["orders"], self.result["orders"])
+        self.assertEqual(windowed["fills"], self.result["fills"])
+        self.assertEqual(windowed["decisions"], self.result["decisions"])
+
+    def test_window_below_the_engine_lookback_or_above_history_is_refused(self):
+        for bad in (120, 0, -1, True, "260", 10_000):
+            with self.subTest(window=bad), self.assertRaises(ValueError):
+                synthetic_snapshots(dict(self.config, history_window_sessions=bad))
+
 
 if __name__ == "__main__":
     unittest.main()

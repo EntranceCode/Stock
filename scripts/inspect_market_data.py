@@ -12,7 +12,7 @@ import sys
 PROJECT = Path(__file__).resolve().parents[1]
 LOCAL_DEPS = PROJECT / ".deps" / "parquet"
 if LOCAL_DEPS.exists():
-    sys.path.insert(0, str(LOCAL_DEPS))
+    sys.path.append(str(LOCAL_DEPS))
 
 import numpy as np
 import pandas as pd

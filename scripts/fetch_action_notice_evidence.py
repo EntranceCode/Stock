@@ -16,7 +16,11 @@ import sys
 from uuid import uuid4
 
 import requests
-import fitz
+
+try:
+    import pymupdf
+except ImportError:  # older PyMuPDF releases only expose the legacy name
+    import fitz as pymupdf
 
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_TARGETS = [
@@ -76,7 +80,7 @@ def main():
             entry.update({"final_url": response.url, "http_status": response.status_code, "headers": dict(response.headers), "path": str(path.relative_to(output)), "sha256": sha(path), "bytes": len(response.content), "is_pdf": pdf})
             response.raise_for_status()
             if pdf:
-                with fitz.open(stream=response.content, filetype="pdf") as document:
+                with pymupdf.open(stream=response.content, filetype="pdf") as document:
                     pages = [{"page": i + 1, "text": page.get_text()} for i, page in enumerate(document)]
                 text_path = output / "text" / (target["id"] + ".json")
                 text_path.write_text(json.dumps(pages, ensure_ascii=False, indent=2), encoding="utf-8")

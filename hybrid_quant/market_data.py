@@ -61,6 +61,17 @@ _PREVIEW_COLUMNS = ("trade_date", "open", "high", "low", "close", "volume_raw",
                     "volume_shares_estimate", "turnover", "adjusted_close", "available_at", "tradable")
 
 
+def _use_vendored_parquet(dependency: Path) -> None:
+    """Expose the project-local Parquet build as a last-resort fallback only.
+
+    The path is appended, never inserted first: an installed pyarrow, or any
+    standard-library module sharing a name, must win, so a vendored build tied
+    to another interpreter cannot shadow a working import.
+    """
+    if dependency.is_dir() and str(dependency) not in sys.path:
+        sys.path.append(str(dependency))
+
+
 def _unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -140,9 +151,7 @@ class StagedMarketData:
         try:
             return importlib.import_module("pyarrow.parquet")
         except ImportError:
-            dependency = self._inside(self.project_root / ".deps" / "parquet")
-            if dependency.is_dir() and str(dependency) not in sys.path:
-                sys.path.insert(0, str(dependency))
+            _use_vendored_parquet(self._inside(self.project_root / ".deps" / "parquet"))
             try:
                 return importlib.import_module("pyarrow.parquet")
             except ImportError as exc:
@@ -263,10 +272,9 @@ class StagedMarketData:
 
     def load_snapshot(self, bundle_path: Path) -> DataSnapshot:
         # No bundle path/content is read until all registered evidence passes.
-        # Make a project-local optional install visible to the registry gate.
-        dependency = self._inside(self.project_root / ".deps" / "parquet")
-        if dependency.is_dir() and str(dependency) not in sys.path:
-            sys.path.insert(0, str(dependency))
+        # Make a project-local optional install visible to the registry gate,
+        # but only as a fallback that cannot shadow an installed pyarrow.
+        _use_vendored_parquet(self._inside(self.project_root / ".deps" / "parquet"))
         self.registry.validate_for_backtest()
         path = Path(bundle_path)
         manifest_path = self._inside(path if path.is_absolute() else self.project_root / path)

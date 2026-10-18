@@ -12,7 +12,7 @@ from pathlib import Path
 import sys
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
+sys.path.append(str(PROJECT / ".deps" / "parquet"))
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq

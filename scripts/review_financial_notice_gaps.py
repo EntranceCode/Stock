@@ -13,7 +13,7 @@ import sys
 from fetch_http_reference import new_snapshot_directory, save_json_once
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps" / "parquet"))
+sys.path.append(str(PROJECT / ".deps" / "parquet"))
 import pandas as pd
 import pyarrow.parquet as pq
 

@@ -11,7 +11,10 @@ import json
 from pathlib import Path
 import re
 
-import fitz
+try:
+    import pymupdf
+except ImportError:  # older PyMuPDF releases only expose the legacy name
+    import fitz as pymupdf
 
 from fetch_http_reference import new_snapshot_directory, save_json_once
 
@@ -61,7 +64,7 @@ def main(argv=None):
             pdf_path = evidence_path(entry["path"])
             if sha(pdf_path) != entry["sha256"]:
                 raise ValueError("Original PDF hash differs")
-            document = fitz.open(pdf_path)
+            document = pymupdf.open(pdf_path)
             if document.is_encrypted:
                 raise ValueError("Encrypted financial document requires a separate workflow")
             key = entry["symbol"] + "_" + entry["announcement_id"]
@@ -81,7 +84,7 @@ def main(argv=None):
                 # contents that happen to list report section titles.
                 if len(renders) < args.render_limit and ("基本每股收益" in labels or "加权平均净资产收益率" in labels):
                     image = output / "renders" / f"{key}_p{i+1:03}.png"
-                    page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False).save(image)
+                    page.get_pixmap(matrix=pymupdf.Matrix(1.5, 1.5), alpha=False).save(image)
                     renders.append({"path": str(image), "sha256": sha(image), "pdf_page_1based": i + 1})
             path = output / "pages" / (key + ".json")
             save_json_once(path, {"symbol": entry["symbol"], "announcement_id": entry["announcement_id"],

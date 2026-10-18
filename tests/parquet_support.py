@@ -27,7 +27,7 @@ def _import_stack():
         if not vendored.is_dir():
             raise
         if str(vendored) not in sys.path:
-            sys.path.insert(0, str(vendored))
+            sys.path.append(str(vendored))
         import pandas
         import pyarrow
         import pyarrow.parquet

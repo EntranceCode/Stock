@@ -21,7 +21,7 @@ import sys
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 
 CHINEXT_WIDE_LIMIT = date(2020, 8, 24)  # ChiNext moved from 10% to 20%
 TOLERANCE = 0.011  # one cent plus float noise on a two-decimal limit price

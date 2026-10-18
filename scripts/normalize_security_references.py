@@ -11,7 +11,7 @@ import unicodedata
 from uuid import uuid4
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / ".deps/parquet"))
+sys.path.append(str(PROJECT / ".deps/parquet"))
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -22,6 +22,14 @@ def security_code(value) -> str:
     if not re.fullmatch(r"[0-9]{6}", text):
         raise ValueError(f"Invalid security code; do not silently pad or repair: {text}")
     return text
+
+
+def decode_query_payload(text: str) -> dict:
+    """Parse an SSE query payload, tolerating the JSONP-style wrapper."""
+    body = text.strip()
+    if body.startswith("(") and body.endswith(")"):
+        body = body[1:-1]
+    return json.loads(body)
 
 
 def source_date(value, as_of: date) -> date:
@@ -88,16 +96,35 @@ def main():
             raise ValueError("Source export hash changed")
         dataset = entry["dataset"]
         try:
-            frames = pd.read_excel(path, sheet_name=None, dtype=str, engine="xlrd" if path.suffix == ".xls" else "openpyxl")
-            if len(frames) != 1:
-                raise ValueError("Unexpected multiple sheets; inspect mapping explicitly")
-            sheet_name, frame = next(iter(frames.items()))
-            sheets.append({"dataset": dataset, "sheet": sheet_name, "rows": len(frame), "columns": list(frame.columns)})
+            if path.suffix == ".json":
+                # The SSE current list is a JSON query, not an Excel export.
+                payload = decode_query_payload(path.read_text(encoding="utf-8"))
+                rows = (payload.get("pageHelp") or {}).get("data")
+                if not isinstance(rows, list) or not rows:
+                    raise ValueError("SSE current query payload carries no rows")
+                frame = pd.DataFrame(rows, dtype=str)
+                sheets.append({"dataset": dataset, "sheet": "pageHelp.data", "rows": len(frame),
+                               "columns": list(frame.columns)})
+            else:
+                frames = pd.read_excel(path, sheet_name=None, dtype=str, engine="xlrd" if path.suffix == ".xls" else "openpyxl")
+                if len(frames) != 1:
+                    raise ValueError("Unexpected multiple sheets; inspect mapping explicitly")
+                sheet_name, frame = next(iter(frames.items()))
+                sheets.append({"dataset": dataset, "sheet": sheet_name, "rows": len(frame), "columns": list(frame.columns)})
             for source_row, (_, row) in enumerate(frame.iterrows(), 2):
                 identity = {"source_file": str(path), "source_sha256": entry["sha256"], "source_row": source_row,
                             "source_retrieved_at": entry["retrieved_at"], "snapshot_as_of": str(as_of), "source_dataset": dataset}
                 try:
-                    if dataset == "szse_current":
+                    if dataset == "sse_current":
+                        code = str(row.get("A_STOCK_CODE") or "").strip()
+                        if not re.fullmatch(r"[0-9]{6}", code):
+                            errors.append({**identity, "reason": "No A-share code; raw row retained",
+                                           "raw_record": row.fillna("").to_dict()})
+                            continue
+                        listings.append({**listing_record(row, "A_STOCK_CODE", "COMPANY_ABBR", "LIST_DATE",
+                                                          None if str(row.get("DELIST_DATE") or "-").strip() in ("", "-") else "DELIST_DATE",
+                                                          "SSE", as_of), **identity})
+                    elif dataset == "szse_current":
                         if pd.isna(row["A股代码"]) or not str(row["A股代码"]).strip():
                             errors.append({**identity, "reason": "No A-share code; raw row retained", "raw_record": row.fillna("").to_dict()})
                             continue
