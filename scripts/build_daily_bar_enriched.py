@@ -63,7 +63,14 @@ def main():
     import pyarrow.parquet as pq
 
     staging = PROJECT / "data/external/baostock_history"
-    sources = sorted(staging.glob("*/prices/*.parquet"))
+    # A symbol can appear in more than one acquisition run (an earlier subset and
+    # a later whole-universe run). The newest run is the authoritative copy, so
+    # keep one source per symbol instead of emitting duplicate rows for it.
+    discovered = sorted(staging.glob("*/prices/*.parquet"))
+    newest: dict[str, Path] = {}
+    for path in discovered:
+        newest[path.name.split("_")[0]] = path
+    sources = [newest[symbol] for symbol in sorted(newest)]
     if args.limit:
         sources = sources[:args.limit]
     output = PROJECT / "data/external/daily_bar_enriched" / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid4().hex[:8])
@@ -117,6 +124,7 @@ def main():
                 "limit_rules": {"star_688": 0.20, "chinext_300_301": {"before_2020_08_24": 0.10, "from": 0.20},
                                 "main_board": 0.10, "main_board_st": 0.05},
                 "validation": "derived limits are checked against observed high and low, skipping each series first five rows and every bar that follows a break longer than seven days",
+                "source_files_seen": len(discovered), "duplicate_source_files": len(discovered) - len(newest),
                 "symbols": len(files), "rows": rows_total,
                 "rows_breaching_derived_limits": len(violations), "violations": violations[:200], "files": files}
     (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
