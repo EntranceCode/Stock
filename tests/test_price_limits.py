@@ -33,6 +33,25 @@ class PriceLimitTests(unittest.TestCase):
         # An ST flag does not widen the ChiNext band back to the main-board one.
         self.assertEqual(limits.limit_ratio("300001", date(2022, 1, 4), True), 0.20)
 
+    def test_instrument_kind_is_inferred_from_the_code(self):
+        self.assertEqual(limits.instrument_kind("510010"), "etf")
+        self.assertEqual(limits.instrument_kind("159915"), "etf")
+        self.assertEqual(limits.instrument_kind("600000"), "stock")
+        self.assertEqual(limits.instrument_kind("300001"), "stock")
+
+    def test_a_fund_never_takes_the_risk_warning_band(self):
+        # A fund cannot be risk-warned, so the provider flag must not narrow it.
+        self.assertEqual(limits.limit_ratio("510010", date(2021, 1, 4), True), 0.10)
+        self.assertEqual(limits.limit_ratio("510010", date(2021, 1, 4), False), 0.10)
+
+    def test_fund_limits_round_to_thousandths_not_cents(self):
+        self.assertEqual(limits.limit_prices(1.0030, 0.10, limits.ETF_TICK), (1.103, 0.903))
+        self.assertEqual(limits.limit_prices(1.0030, 0.10, limits.STOCK_TICK), (1.10, 0.90))
+
+    def test_risk_warning_band_widens_at_the_inferred_date(self):
+        self.assertEqual(limits.limit_ratio("600000", date(2026, 7, 3), True), 0.05)
+        self.assertEqual(limits.limit_ratio("600000", date(2026, 7, 6), True), 0.10)
+
     def test_limit_prices_round_half_up_to_one_cent(self):
         self.assertEqual(limits.round_cent(10.825), 10.83)
         self.assertEqual(limits.round_cent(10.815), 10.82)

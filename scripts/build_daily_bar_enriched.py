@@ -24,25 +24,59 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.append(str(PROJECT / ".deps/parquet"))
 
 CHINEXT_WIDE_LIMIT = date(2020, 8, 24)  # ChiNext moved from 10% to 20%
-TOLERANCE = 0.011  # one cent plus float noise on a two-decimal limit price
+# Main-board risk-warned stocks moved from a 5% to a 10% band. The date below is
+# INFERRED from the observed prices: several ST stocks trade beyond 5% only from
+# this session onward, while they cap at exactly 5% before it. It still needs
+# confirmation against the exchange notice and is listed as a readiness gap.
+ST_WIDE_LIMIT = date(2026, 7, 6)
+# Instrument kind is inferred from the code, because the staging files carry no
+# asset type. The inference is recorded with every row and listed as a gap.
+SSE_ETF_PREFIXES = ("50", "51", "52", "56", "58")
+SZSE_ETF_PREFIXES = ("15", "16", "18")
+BSE_PREFIXES = ("8", "4", "9")
+# Stocks quote in cents; exchange-traded funds quote in thousandths, so a limit
+# rounded to the wrong tick shows up as a phantom breach.
+STOCK_TICK = 0.01
+ETF_TICK = 0.001
 
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def limit_ratio(symbol: str, day: date, is_st: bool) -> float:
+def instrument_kind(symbol: str) -> str:
+    """Infer stock, etf or unknown from the code alone.
+
+    The staging files carry no asset type. Funds are never risk-warned, so this
+    distinction decides whether the tighter ST band may be applied at all.
+    """
+    if symbol.startswith(SSE_ETF_PREFIXES) or symbol.startswith(SZSE_ETF_PREFIXES):
+        return "etf"
+    if symbol.startswith(("60", "68", "00", "30")):
+        return "stock"
+    if symbol.startswith(BSE_PREFIXES):
+        return "unknown"
+    return "unknown"
+
+
+def limit_ratio(symbol: str, day: date, is_st: bool, kind: str | None = None) -> float:
     """Price-limit ratio in force for this security on this date.
 
-    STAR (688) and ChiNext (300/301) securities move 20%; ST keeps the tighter
-    5% band only on the main boards. Special first-day and relisting windows are
-    not modelled here and are reported as violations instead.
+    STAR (688) and ChiNext (300/301) securities move 20%. The tighter 5% ST band
+    applies to main-board stocks only: a fund cannot be risk-warned, so the
+    provider's flag is ignored for funds. Special first-day and relisting windows
+    are not modelled here and are reported as violations instead.
     """
+    kind = kind or instrument_kind(symbol)
+    if kind == "etf":
+        return 0.10
     if symbol.startswith("688"):
         return 0.20
     if symbol.startswith(("300", "301")):
         return 0.20 if day >= CHINEXT_WIDE_LIMIT else 0.10
-    return 0.05 if is_st else 0.10
+    if is_st:
+        return 0.10 if day >= ST_WIDE_LIMIT else 0.05
+    return 0.10
 
 
 def round_cent(value: float) -> float:
@@ -50,9 +84,14 @@ def round_cent(value: float) -> float:
     return math.floor(value * 100 + 0.5) / 100
 
 
-def limit_prices(previous_close: float, ratio: float):
+def round_tick(value: float, tick: float) -> float:
+    """Round half up to the instrument's minimum price increment."""
+    return math.floor(value / tick + 0.5) * tick
+
+
+def limit_prices(previous_close: float, ratio: float, tick: float = STOCK_TICK):
     """The upper and lower limit prices for a previous close and ratio."""
-    return round_cent(previous_close * (1 + ratio)), round_cent(previous_close * (1 - ratio))
+    return round_tick(previous_close * (1 + ratio), tick), round_tick(previous_close * (1 - ratio), tick)
 
 
 def main():
@@ -79,6 +118,9 @@ def main():
     for source in sources:
         symbol = source.name.split("_")[0]
         records = pq.read_table(source).to_pylist()
+        kind = instrument_kind(symbol)
+        tick = ETF_TICK if kind == "etf" else STOCK_TICK
+        tolerance = tick * 1.1
         enriched = []
         previous_day = None
         for index, row in enumerate(records):
@@ -88,19 +130,20 @@ def main():
             # close is stale, so the ordinary limits are not reported for it.
             resumption = previous_day is None or (day - previous_day).days > 7
             previous_day = day
-            is_st = row.get("provider_is_st") == 1
-            ratio = limit_ratio(symbol, day, is_st)
+            is_st = kind == "stock" and row.get("provider_is_st") == 1
+            ratio = limit_ratio(symbol, day, is_st, kind)
             previous = row.get("preclose")
             up = down = None
             if previous and not resumption:
-                up, down = limit_prices(float(previous), ratio)
+                up, down = limit_prices(float(previous), ratio, tick)
             high, low = row.get("high"), row.get("low")
             if previous and high is not None and low is not None and not resumption and index >= 5:
-                if high > up + TOLERANCE or low < down - TOLERANCE:
+                if high > up + tolerance or low < down - tolerance:
                     violations.append({"symbol": symbol, "trade_date": str(day), "high": high, "low": low,
                                        "limit_up": up, "limit_down": down, "ratio": ratio,
                                        "is_st_reported": is_st})
-            enriched.append({"trade_date": day, "symbol": symbol,
+            enriched.append({"trade_date": day, "symbol": symbol, "instrument_kind": kind,
+                             "price_tick": tick,
                              "open": row.get("open"), "high": high, "low": low, "close": row.get("close"),
                              "preclose": previous, "turnover_cny_reported": row.get("turnover_cny_reported"),
                              "provider_trade_status": row.get("provider_trade_status"),
@@ -120,9 +163,12 @@ def main():
     manifest = {"run_id": output.name, "output": str(output), "generated_at": datetime.now(timezone.utc).isoformat(),
                 "backtest_ready": False,
                 "readiness_gaps": ["full_universe_not_covered", "available_at_unknown", "tradable_flag_unknown",
-                                   "ipo_and_relisting_limit_exemptions_not_modelled", "provider_flags_unverified"],
+                                   "ipo_and_relisting_limit_exemptions_not_modelled", "provider_flags_unverified",
+                                   "instrument_kind_inferred_from_code", "etf_family_rules_not_modelled",
+                                   "st_band_change_date_inferred_from_prices"],
                 "limit_rules": {"star_688": 0.20, "chinext_300_301": {"before_2020_08_24": 0.10, "from": 0.20},
-                                "main_board": 0.10, "main_board_st": 0.05},
+                                "main_board": 0.10, "main_board_st": 0.05, "etf": 0.10,
+                                "etf_st_band_applied": False, "ticks": {"stock": STOCK_TICK, "etf": ETF_TICK}},
                 "validation": "derived limits are checked against observed high and low, skipping each series first five rows and every bar that follows a break longer than seven days",
                 "source_files_seen": len(discovered), "duplicate_source_files": len(discovered) - len(newest),
                 "symbols": len(files), "rows": rows_total,
