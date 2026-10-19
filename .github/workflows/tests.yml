@@ -21,12 +21,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install the optional data stack
-        # Declared under [project.optional-dependencies].data, so this also
-        # proves the declared set is sufficient for the whole suite.
+      - name: Install the optional data and test stacks
+        # Declared under [project.optional-dependencies], so this also proves
+        # the declared sets are sufficient for the whole suite.
         run: |
           python -m pip install --upgrade pip
-          python -m pip install ".[data]"
+          python -m pip install ".[data,test]"
       - name: Run the project checks
         # The real data directories are not distributed; the suite is
         # self-contained and must pass without them.

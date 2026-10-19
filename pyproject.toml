@@ -27,6 +27,10 @@ data = [
     # The reply audit in fetch_baostock_history.py checks this SDK's protocol.
     "baostock==0.9.4",
 ]
+# Hypothesis searches the invariant space in tests/test_engine_properties.py.
+# Those checks skip cleanly when it is absent, so the core suite still runs in a
+# bare environment; CI installs it to prove the declared set is sufficient.
+test = ["hypothesis>=6"]
 
 [project.scripts]
 hybrid-quant = "hybrid_quant.cli:main"
