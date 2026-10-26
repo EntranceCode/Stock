@@ -1,0 +1,9 @@
+{
+  "_comment": "Readiness policy for §5.1 criteria. Values here are policy choices, not data-derived constants; each carries its rationale so a reviewer can challenge the number itself.",
+  "stock_turnover": {
+    "coverage_threshold": 0.20,
+    "minimum_covered": 200,
+    "rationale": "Turnover feeds the §3.1 liquidity screen, the §7 execution-capacity cap and the §10.3 unexecutable-order ratio. A backtest may be limited to the covered subset, but a subset too thin to fill 25 holdings with industry diversification cannot support those metrics. 0.20 with an absolute floor of 200 covered securities is a policy floor, chosen to be reachable with current sources while forcing the uncovered remainder to be declared; it is not derived from the data.",
+    "remainder_rule": "Securities without turnover are excluded from selection and must appear in the backtest conclusion as an explicit scope limitation."
+  }
+}

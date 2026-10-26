@@ -172,7 +172,7 @@
 | 数据集 | 判据 | 当前状态 |
 |---|---|---|
 | calendar | 与个股/ETF 实际 bar 反验冲突数为 0；两个交易所各自的年度公告齐备 | 满足 |
-| stock_daily | 每证券 bar 缺日要么为 0 要么有 session_gap 记录；turnover 非空；涨跌停复验突破数 0；复权残留跳变逐条登记 | 未满足（覆盖 946/4272、available_at 待 D1） |
+| stock_daily | 每证券 bar 缺日要么为 0 要么有 session_gap 记录；**turnover 覆盖目标 universe 的比例 ≥ 策略阈值且覆盖只数 ≥ 绝对下限**；涨跌停复验突破数 0；复权残留跳变逐条登记 | 成交额已满足（1,218/4,272 = 28.51%、0 空值）；缺日与涨跌停覆盖面未满足 |
 | etf_daily | 同 stock_daily，且 universe 由当时上市信息重建 | 未满足（注册仅 6 只） |
 | financials | announced_at 抽样核验通过率 ≥ 99%（记录样本与口径 D2） | 未满足（版本口径待 D2） |
 | action_samples | 隔离条数 ≤ 全局 0.1% 且逐条有原因与原始证据 | 未满足（5/26621，需逐条归档） |
@@ -182,6 +182,12 @@
 
 `readiness = 全部判据的合取`，每次评估把每条判据的结果与证据路径写入清单。
 **不得**用手写的 backtest_ready 字段作为唯一来源——手写字段会漂移，已经漂移过。
+
+**阈值写在配置里，不写在代码里。** `config/readiness-policy.json` 保存 `stock_turnover` 的 `coverage_threshold` 与 `minimum_covered`，并附 rationale 与 remainder_rule。这样评审者可以质疑阈值本身，而不只是质疑阈值的实现；缺策略文件时判据失败关闭，不取默认值。
+
+**绝对下限不可省。** 只按比例判定是可被规避的——把 universe 声明得足够小，覆盖率自然趋近 100%。因此覆盖比例与覆盖只数必须同时满足。
+
+**未覆盖部分必须进入结论。** 判据在 detail 中报出被排除的只数；被排除的证券不得进入选股，且必须作为范围限定写入回测结论（remainder_rule）。
 
 ### 5.3 闸门行为
 

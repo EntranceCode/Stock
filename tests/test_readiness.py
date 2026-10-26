@@ -241,6 +241,18 @@ class ReadinessCriteriaTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.addCleanup(remove_tree, self.root)
         self.tree = EvidenceTree(self.root)
+        # A fixture universe is small by construction, so it declares its own
+        # policy rather than inheriting the project threshold: coverage must be
+        # complete here, and the absolute floor is the single covered symbol.
+        policy = self.root / "config/readiness-policy.json"
+        policy.parent.mkdir(parents=True, exist_ok=True)
+        policy.write_text(json.dumps({"stock_turnover": {
+            "coverage_threshold": 1.0, "minimum_covered": 1,
+            "rationale": "fixture policy"}}), encoding="utf-8")
+        import hybrid_quant.readiness as readiness_module
+        original_policy = readiness_module.POLICY_PATH
+        self.addCleanup(setattr, readiness_module, "POLICY_PATH", original_policy)
+        readiness_module.POLICY_PATH = policy
 
     def drop_listing_candidate(self, symbol: str) -> None:
         """Rewrite the listing candidates without one symbol, keeping the
@@ -282,7 +294,7 @@ class ReadinessCriteriaTests(unittest.TestCase):
         with self.assertRaises(DataNotReady) as caught:
             registry.validate_for_backtest()
         self.assertIn("readiness criteria not met", str(caught.exception))
-        self.assertIn("stock_daily.turnover_column_complete", str(caught.exception))
+        self.assertIn("stock_daily.turnover_coverage", str(caught.exception))
         report = registry.readiness()
         self.assertFalse(report.ready)
         # And flipping the flags to false changes nothing either.
@@ -357,15 +369,16 @@ class ReadinessCriteriaTests(unittest.TestCase):
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
         self.assertTrue(self.tree.criterion("stock_daily", "missing_days_zero_or_recorded").passed)
 
-    def test_turnover_column_must_exist_and_be_non_null(self):
-        # A missing column fails; so does a column that is present but null.
-        # Zero is a legal observation (a halted session trades nothing) and
-        # must not be confused with unknown (design §3.1 rule 3).
+    def test_turnover_coverage_counts_covered_symbols_not_files(self):
+        # The criterion asks how much of the declared universe carries a real
+        # turnover value, not whether every file happens to hold the column.
+        # Zero stays a legal observation (a halted session trades nothing) and
+        # is never confused with unknown (design §3.1 rule 3).
         rows = {symbol: EvidenceTree._daily_rows(symbol, turnover=None) for symbol in STOCKS}
         self.tree._write_daily("stock_daily", rows, "stock_daily")
-        result = self.tree.criterion("stock_daily", "turnover_column_complete")
+        result = self.tree.criterion("stock_daily", "turnover_coverage")
         self.assertFalse(result.passed)
-        self.assertIn("no turnover column", result.detail)
+        self.assertIn("carry turnover", result.detail)
         manifest_path = self.root / "stock_daily/manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         # Re-add the column to one symbol only, with null values inside it.
@@ -380,9 +393,9 @@ class ReadinessCriteriaTests(unittest.TestCase):
             if entry["symbol"] == "000001":
                 entry["sha256"] = sha256(nulled)
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
-        result = self.tree.criterion("stock_daily", "turnover_column_complete")
+        result = self.tree.criterion("stock_daily", "turnover_coverage")
         self.assertFalse(result.passed)
-        self.assertIn("null turnover", result.detail)
+        self.assertIn("excluded", result.detail)
 
     def test_unregistered_recheck_and_residual_evidence_fail_their_criteria(self):
         # Unregistered recheck evidence: the criterion fails with that fact.

@@ -64,6 +64,9 @@ SAMPLE_VERIFICATION_FLOOR = 0.99
 SAMPLE_VERIFICATION_MIN_ROWS = 192
 
 LATEST_REPORT_RELATIVE = Path("reports") / "readiness" / "latest.json"
+# The §5.1 policy numbers live in configuration, not in code, so a reviewer can
+# challenge the threshold itself rather than only the implementation of it.
+POLICY_PATH = Path(__file__).resolve().parents[1] / "config" / "readiness-policy.json"
 
 
 @dataclass(frozen=True)
@@ -432,43 +435,114 @@ def _daily_missing_days(registry, dataset: str) -> CriterionResult:
     return CriterionResult(dataset, "missing_days_zero_or_recorded", passed, detail, str(path))
 
 
-def _daily_turnover(registry, dataset: str) -> CriterionResult:
-    """<dataset>: turnover is a non-null column in every registered file."""
+def turnover_policy() -> dict:
+    """The declared turnover policy; a missing or invalid policy fails closed."""
+    path = POLICY_PATH
+    try:
+        value = json.loads(Path(path).read_text(encoding="utf-8"))
+        block = value["stock_turnover"]
+        threshold = float(block["coverage_threshold"])
+        minimum = int(block["minimum_covered"])
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise ValueError(f"readiness policy is missing or invalid: {path}: {exc}") from exc
+    if not 0 < threshold <= 1 or minimum < 1:
+        raise ValueError("readiness policy boundaries are out of range")
+    return {"threshold": threshold, "minimum": minimum, "path": str(path)}
+
+
+def _symbols_with_turnover(registry) -> tuple[set, int]:
+    """Symbols for which some registered evidence carries a non-null turnover."""
+    covered: set = set()
+    nulls = 0
+    pq = _parquet()
+    for dataset in (ENRICHED_DATASET, STOCK_DATASET):
+        path, manifest = _manifest(registry, dataset)
+        if path is None or manifest is None:
+            continue
+        for entry in _file_entries(manifest):
+            parquet_path = _entry_path(path, entry)
+            try:
+                schema = pq.read_schema(parquet_path).names
+            except (OSError, ValueError):
+                continue
+            column = next((name for name in TURNOVER_COLUMNS if name in schema), None)
+            if column is None:
+                continue
+            symbol = entry.get("symbol", parquet_path.name.split("_")[0])
+            for value in _rows(parquet_path, (column,)):
+                if value.get(column) is None:
+                    nulls += 1
+                else:
+                    covered.add(_bare_symbol(symbol))
+    return covered, nulls
+
+
+def _turnover_coverage(registry, dataset: str) -> CriterionResult:
+    """<dataset>: enough of the declared universe carries a real turnover value.
+
+    A single file without the column must not fail the dataset, and a tiny
+    universe must not pass by covering itself: coverage alone is gameable, so an
+    absolute floor of covered securities applies alongside the share.
+    """
+    name = "turnover_coverage"
+    try:
+        policy = turnover_policy()
+    except ValueError as exc:
+        return CriterionResult(dataset, name, False, str(exc), "config/readiness-policy.json")
     path, manifest = _manifest(registry, dataset)
-    if path is None:
-        return CriterionResult(dataset, "turnover_column_complete", False,
-                               "dataset manifest is missing", "config/datasets.json")
+    if path is None or manifest is None:
+        return CriterionResult(dataset, name, False, "dataset manifest is missing", "config/datasets.json")
+    universe = {_bare_symbol(entry.get("symbol", "")) for entry in _file_entries(manifest)}
+    universe.discard("")
+    if not universe:
+        return CriterionResult(dataset, name, False, "dataset has no file inventory to serve as the universe", str(path))
+    covered, nulls = _symbols_with_turnover(registry)
+    covered &= universe
+    share = len(covered) / len(universe)
+    passed = share >= policy["threshold"] and len(covered) >= policy["minimum"]
+    excluded = sorted(universe - covered)
+    return CriterionResult(
+        dataset, name, passed,
+        f"{len(covered)} of {len(universe)} universe symbols carry turnover "
+        f"({share:.4f} against threshold {policy['threshold']}), floor {policy['minimum']}; "
+        f"{len(excluded)} excluded and must be declared in the conclusion; {nulls} null value(s) seen",
+        str(path))
+
+
+def _turnover_columns(registry, dataset: str) -> CriterionResult:
+    """<dataset>: every registered file carries a turnover column with no nulls.
+
+    Kept for datasets whose universe is small enough that per-file completeness
+    is the meaningful test; the share-based criterion is used where the universe
+    is large enough that partial coverage is the realistic outcome.
+    """
+    name = "turnover_column_complete"
+    path, manifest = _manifest(registry, dataset)
+    if path is None or manifest is None:
+        return CriterionResult(dataset, name, False, "dataset manifest is missing", "config/datasets.json")
     entries = _file_entries(manifest)
     if not entries:
-        return CriterionResult(dataset, "turnover_column_complete", False,
-                               "dataset has no file inventory", str(path))
+        return CriterionResult(dataset, name, False, "dataset has no file inventory", str(path))
     pq = _parquet()
-    missing_count, null_count, checked = 0, 0, 0
-    samples: list[str] = []
+    missing, nulls, checked = 0, 0, 0
     for entry in entries:
         parquet_path = _entry_path(path, entry)
         try:
             schema = pq.read_schema(parquet_path).names
         except (OSError, ValueError) as exc:
-            return CriterionResult(dataset, "turnover_column_complete", False,
-                                   f"cannot read registered file schema: {exc}", str(parquet_path))
-        column = next((name for name in TURNOVER_COLUMNS if name in schema), None)
+            return CriterionResult(dataset, name, False, f"cannot read registered file schema: {exc}", str(parquet_path))
+        column = next((value for value in TURNOVER_COLUMNS if value in schema), None)
         if column is None:
-            missing_count += 1
-            if len(samples) < 3:
-                samples.append(f"{entry.get('symbol', parquet_path.name)}:{schema}")
+            missing += 1
             continue
         checked += 1
-        null_count += sum(1 for value in _rows(parquet_path, (column,)) if value.get(column) is None)
-    if missing_count:
-        return CriterionResult(dataset, "turnover_column_complete", False,
-                               f"{missing_count} of {len(entries)} registered files carry no "
-                               f"turnover column, and {checked} checked file(s) contain "
-                               f"{null_count} null turnover value(s) (first schema: {samples[0]})",
-                               str(path))
-    passed = null_count == 0
-    return CriterionResult(dataset, "turnover_column_complete", passed,
-                           f"{checked} files checked; {null_count} null turnover value(s)", str(path))
+        nulls += sum(1 for row in _rows(parquet_path, (column,)) if row.get(column) is None)
+    if missing:
+        return CriterionResult(dataset, name, False,
+                               f"{missing} of {len(entries)} registered files carry no turnover column; "
+                               f"{checked} checked file(s) contain {nulls} null value(s)", str(path))
+    return CriterionResult(dataset, name, nulls == 0,
+                           f"{checked} files checked; {nulls} null turnover value(s)", str(path))
 
 
 def _bare_symbol(symbol) -> str:
@@ -854,8 +928,8 @@ CRITERIA: tuple[tuple[str, str, Callable], ...] = (
     (CALENDAR_DATASET, "both_exchange_annual_notices_complete", _calendar_scope),
     (STOCK_DATASET, "missing_days_zero_or_recorded",
      lambda registry: _daily_missing_days(registry, STOCK_DATASET)),
-    (STOCK_DATASET, "turnover_column_complete",
-     lambda registry: _daily_turnover(registry, STOCK_DATASET)),
+    (STOCK_DATASET, "turnover_coverage",
+     lambda registry: _turnover_coverage(registry, STOCK_DATASET)),
     (STOCK_DATASET, "price_limit_recheck_zero_breaches",
      lambda registry: _limit_recheck(registry, STOCK_DATASET)),
     (STOCK_DATASET, "adjustment_residual_jumps_logged",
@@ -863,7 +937,7 @@ CRITERIA: tuple[tuple[str, str, Callable], ...] = (
     (ETF_DATASET, "missing_days_zero_or_recorded",
      lambda registry: _daily_missing_days(registry, ETF_DATASET)),
     (ETF_DATASET, "turnover_column_complete",
-     lambda registry: _daily_turnover(registry, ETF_DATASET)),
+     lambda registry: _turnover_columns(registry, ETF_DATASET)),
     (ETF_DATASET, "price_limit_recheck_zero_breaches",
      lambda registry: _limit_recheck(registry, ETF_DATASET)),
     (ETF_DATASET, "adjustment_residual_jumps_logged",
