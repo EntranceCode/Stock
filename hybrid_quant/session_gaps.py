@@ -38,6 +38,16 @@ def summarise(registry, dataset: str, daily_manifest: Mapping, recorded: list,
         inventory = {str(entry["symbol"]): entry for entry in gate._file_entries(daily_manifest)}
     except (OSError, ValueError, KeyError, TypeError):
         return None
+    import hashlib
+    import json
+
+    expected_hash = hashlib.sha256(
+        json.dumps(recorded, sort_keys=True, separators=(",", ":"), default=str
+                   ).encode("utf-8")).hexdigest()
+    if gap_manifest.get("session_gap_records_sha256") != expected_hash:
+        # The artifact was built against different gap records, so its answer is
+        # stale even if the inventory still matches.
+        return None
     if set(by_symbol) != set(inventory):
         return None
     incomplete = [item for item in recorded

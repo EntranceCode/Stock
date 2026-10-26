@@ -88,7 +88,11 @@ def main() -> int:
         target = output / name
         pq.write_table(table, target, compression="zstd")
         files.append({"path": str(target), "rows": len(rows), "sha256": sha(target)})
+    records_hash = hashlib.sha256(
+        json.dumps(manifest.get("session_gap_records") or [], sort_keys=True,
+                   separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
     record = {"run_id": output.name, "output": str(output),
+              "session_gap_records_sha256": records_hash,
               "generated_at": datetime.now(timezone.utc).isoformat(),
               "backtest_ready": False,
               "purpose": "Enumerated bar-missing sessions so the gate verifies evidence instead of re-reading every series each run.",
