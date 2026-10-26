@@ -1,12 +1,133 @@
 # 独立混合量化系统开发状态
 
-2026-10-09开始实现，当前版本v0.2.2。项目根目录为`D:\vscode\Stock`，Python包为`hybrid_quant`。所有策略、风控、订单与账本代码由本项目维护，AlphaMaster仅是原有行情的来源参考，运行时没有AlphaMaster依赖。
+2026-10-09开始实现，当前版本v0.3.0。项目根目录为`D:\vscode\Stock`，Python包为`hybrid_quant`。所有策略、风控、订单与账本代码由本项目维护，AlphaMaster仅是原有行情的来源参考，运行时没有AlphaMaster依赖。
+
+## v0.3.0：按实施设计重构数据契约与准入门（2026-10-19）
+
+对应[实施设计](implementation-design.md) §3（契约）、§5.1/§5.2（判据与计算就绪度）、§5.3（闸门行为）、§11（存量资产处置）：
+
+| 交付 | 内容 |
+|---|---|
+| 可执行判据 | `hybrid_quant/readiness.py`：六个数据集共 17 条判据（日历 2、stock_daily 4、etf_daily 5、financials 2、action_samples 2、security_metadata 2，清单见 `CRITERIA`），每条返回 通过/失败 + 依据 + 证据路径 |
+| 计算准入 | `data_registry.validate_for_backtest` = 证据完整性（逐文件 SHA-256、行数、未解决采集错误）**合取**全部判据；手写 `backtest_ready`（manifest 与 Parquet 页脚）不再作为准入来源，仅作信息展示 |
+| 评估清单 | 每次评估把逐条判据结果与证据路径写入 `reports/readiness/latest.json`（§5.2 的"清单"），`status`/`check-data` 直接打印 |
+| 契约修订 | `Security` 增加 `exchange`（SSE/SZSE 枚举）与 `delist_date`；`DailyBar.adjusted_close` 转必填；`volume` 为 D3 挂起期的显式可选（null=未提供，禁止填零）；新增 `Fundamental`、`CorporateAction`、`Constituent` 契约（D2/D6/C 降级字段均为显式） |
+| 下游适配 | 快照序列构建器填充交易所与退市日、每个 bundle 登记 `daily_bar_volume_pending_decision_D3` 缺口、bundle 清单不再写 `backtest_ready`；工作台状态面改显计算判据；`run_full_validation.py` 透传新字段 |
+| 废弃项 | 数据准备进度 §8.7 的 27 条名词式缺口清单被可判定判据取代（文档保留字段业务含义并标注废止）；`reports/data-readiness.json` 的手写就绪报告不再是准入来源 |
+
+真实注册数据首评（2026-10-19，`check-data` 退出码 2）：action_samples 就绪（隔离 5/26,621 ≤ 0.1% 且逐条有原因与原始响应）；calendar 反验通过（4,278 个注册文件中 0 个交易日在计划休市日）但深交所日历未注册；stock_daily 缺日 1,292 个（155 只证券）、成交额列在全部 4,272 个文件中缺失；etf_daily 6 只注册 ETF 均无挂牌信息；financials 有 2 行缺公告日、可用时间层未注册；security_metadata 有 57 个代码无挂牌候选、364 个退市边界未核验。**这些正是判据相对于名词清单给出的精确量化。**
+
+测试：243 项全部通过（新增 `tests/test_readiness.py` 16 项：全证据树可准入、手写 flag 不能准入、逐条判据的失败模式、判据不可评估时失败而非抛出、TTL 记忆化等）。
+
+### v0.3.0 续：登记缺口补齐与证据层构建（2026-10-20）
+
+上轮评估后按判据拒绝理由逐项推进，只做能从项目内已注册证据完成的事，源数据本身缺失的一律保持失败并记录：｜
+
+| 事项 | 结果 |
+|---|---|
+| 判据收紧 | `missing_days` 的 session_gap 记录按设计 §5.1 补齐"证券+日期+原因"三要素要求（缺要素的记录不算记录）；抽样核验判据补 192 行样本下限 |
+| financials 输出哈希 | 4,272 个归一化文件的输出 SHA-256 与行数重新计算并登记（`scripts/finalize_dataset_registration.py`），同时复验每个条目登记的原始响应哈希 |
+| action_samples 清单 | events.parquet（26,621 行）登记输出哈希，并按每事件记录的 source_sha256 抽验 200 条原始响应 |
+| financial_availability 证据 | `scripts/build_financial_availability_evidence.py` 对 4,272 只证券系统抽样 240 行最新报告期，与已归档 provider 原始响应逐行比对公告日：**240/240 一致**，证据运行登记入 `config/datasets.json` |
+| 601187 公告日缺口 | 已定位到源：该股票 2018-09-30、2019-03-31 两期在 provider 原始响应中 NOTICE_DATE 即为空，归一化如实保留未补造。`announced_at_complete` 判据正确地继续失败，需交易所原始公告才能推进 |
+
+当前准入门状态（`check-data` 退出码 2）：六个数据集的证据完整性检查全部通过，拒绝理由**纯粹是判据失败**，且每条有量化依据——SZSE 日历未注册（需深交所官方公告人工采集）；stock/etf 成交额列与真实成交股数在菜鸟原始源中不存在（`tick_volume` 为笔数，需阿里云盘人工下载）；复权残留层未建（D4）；涨跌停复验缺板块/ST 状态历史；ETF 无挂牌信息；1,292 个缺日会话缺经核验的停复牌原因；57 个代码无挂牌候选、364 个退市边界未核验。**action_samples 与 financials 抽样核验两条判据已就绪。**
+
+测试：249 项全部通过（新增 `tests/test_registration_scripts.py` 6 项，覆盖登记脚本的写入、幂等与拒绝路径）。
+
+### v0.3.0 续二：证据注册与判据判定（2026-10-20）
+
+续一在真实数据上得到的结论是"源数据缺失"，本轮纠正了其中一部分：**多项证据运行早已归档在 `data/external/` 下但从未注册，判据因此在"证据未注册"上失败，而非数据不满足**。逐项处置：
+
+| 事项 | 结果 |
+|---|---|
+| 深交所日历 | `calendar_szse` 运行（2026-10-12，11 份官方公告源，采集完整）已归档未注册。注册后 `both_exchange_annual_notices_complete` 通过，`sse_calendar` 数据集整体就绪；反验判据改用两所闭市日并集（SZSE 多 3 个已记录闭市日，两所无矛盾） |
+| ETF universe | 注册 `etf_universe`（baostock 1,706 只 ETF 含挂牌日），6 只注册 ETF 全部解析到挂牌日，`universe_rebuilt_from_listing` 通过 |
+| 挂牌覆盖 57 代码 | 定位为官方名单采集不全（SSE current 快照 1,632 只，本地池 57 只活跃股未覆盖）。构建 `listing_supplement` 证据：对官方候选未覆盖的 57 个代码逐一登记 provider 挂牌日及原始行号，另记录 6 个官方/provider 日期分歧（官方为准）。判据改为从两个已注册证据源计算覆盖，`listing_coverage_complete` 通过（4,215 官方 + 57 provider） |
+| 涨跌停复验 | 注册 `daily_bar_enriched` 零突破运行与 `stock_status_reference`（240 只样本的 provider 停牌/ST 观测）。**判据发现一个假通过**：复验覆盖必须按符号集合比较而非计数——原实现下 ETF 数据集会被 240 只股票的复验"覆盖"通过。修正后如实失败：stock 4,272 只中 4,264 只、ETF 6 只全部不在复验产品内 |
+| 复权残留 | 注册 `adjusted_prices` 运行（3,987 只、25,574 事件），并新增 `build_adjustment_residual_evidence.py` 逐条枚举除权日越界：25,440 个除权日检查后 **23 项残留逐条登记**（含事件字段与 ST 已知性）。定位到根因示例：002908 事件 `cash_per_old_unit_gross=0.1` 为"每 10 股"口径，复权运行按"每股"解释，使复权价在除权日多跳约 0.5pp。判据如实失败（23 ≠ 0），每一项可查 |
+| 退市边界 | 新增 `build_delisting_boundary_evidence.py`：364 个终止证券逐个记录决策状态——360 个无本地行情序列、4 个终止日晚于本地数据窗口、0 个可由观测判定。判据失败但给出精确缺口（需退市公告） |
+| 登记纪律 | 新增 `register_evidence_dataset.py`：注册前逐文件重算 SHA-256 与行数，任何不一致拒绝写入；已有的 `build_*` 脚本同此纪律 |
+
+一个判据缺陷在本轮被发现并修复（复验覆盖按符号集合而非计数），这正是"判据可执行"相对名词清单的价值：错误答案无法通过比较计数蒙混。剩余 9 条失败判据全部有量化依据：复权残留 23 项（D4 口径）、缺日 1,292 个（缺经核验停复牌原因）、复验覆盖 4,272/6 只证券、成交额列源数据缺失、公告日 2 行、退市边界 364 个。
+
+测试：257 项全部通过（`tests/test_readiness.py` 17 项 + `tests/test_evidence_scripts.py` 7 项，覆盖四个证据脚本与登记脚本的写入/拒绝/幂等路径）。
+
+### v0.3.0 续三：复权口径修正与精确性审计（2026-10-20）
+
+**复权残留判据从"假阳性 23 项"变为"0 项真实残留"**，过程是对判据本身和复权构建器的双重修正：
+
+1. **口径核验**：002908 事件原文（已归档 provider 响应）为"10转4.00派1.00元"，归一化事件的 `cash_per_old_unit_gross` 已是每股口径（归一化时除以 10），复权运行的使用方式原本正确——此前的"每 10 股误按每股"判断被原始证据推翻。
+2. **发现真实构建缺陷**：同一除权日的多组件计划（派息与送转分行记录）被复权构建器**依次**应用到同一前收盘价（复利式），与交易所"整份计划一个除权参考价"的公式不符。修正 `build_adjusted_prices.py` 为同日期事件先合并（现金相加、乘数相乘）再应用。6 项由此产生的残留（如 002043 相差 0.0018 元）随修正消失。
+3. **残留枚举重写为因子精确性审计**（`build_adjustment_residual_evidence.py`）：对 13,658,194 根 bar 逐日比对"复权因子环比"与"事件隐含比值"——**0 项真实残留**。原先按名义限价+1 tick 的判定把"除权日恰好涨跌停的原始价观测"误计为复权残留。
+4. **原始价越界观测单独枚举**：按交易所取整约定（除权参考价先取整到分再算涨跌停价）逐除权日检查原始 high/low/close，**14 项观测**（超涨停价 1–14 分钱），归属涨跌停复验域，每项含参考价、限价、事件字段。
+5. **全 universe 采集已启动**（后台，`fetch_baostock_history.py --mode all`，4,504 个符号，provider 全字段含 `preclose/volume/amount/tradestatus/isST`）：这正是 `stock_status_reference` 240 只样本证明存在的字段集。采集完成后：(a) 新归一化运行携带成交额列 → turnover 判据可解；(b) `build_daily_bar_enriched.py` 全量运行 → 复验覆盖 4,272+6 只证券；(c) provider 停牌状态 → 1,292 个缺日可逐条归因（session_gap 记录的原因来源）；(d) 退市证券的观测最后交易日。登记脚本增加 `--replace` 以便新运行替换注册并保留旧运行归档。
+
+测试：258 项全部通过（`test_evidence_scripts.py` 覆盖新审计方法的三种走向：精确干净、因子错配为残留、原始价越界为独立观测）。
+
+**采集完成后的下一步**（按命令序，每步保留旧归档、只替换注册指向）：
+1. `python -B scripts/register_evidence_dataset.py --dataset baostock_universe --run baostock_history/<采集运行> --replace`（新数据集命名为 `baostock_universe`，或先 `--check` 核验）
+2. `python -B scripts/normalize_local_daily.py`（以新采集为源的归一化运行，保留 amount/volume_shares/preclose/tradestatus/isST 列）→ `register_evidence_dataset.py --dataset stock_daily --run <新归一化运行> --replace`
+3. `python -B scripts/build_daily_bar_enriched.py`（不带 --limit，全 universe 复验）→ `register_evidence_dataset.py --dataset daily_bar_enriched --run <新复验运行> --replace`
+4. 用 provider 停牌观测为 1,292 个缺日会话生成带原因的 `session_gap_records` 写入新 stock_daily 清单
+5. 重跑 `python -B scripts/build_adjustment_residual_evidence.py --register` 与 `build_delisting_boundary_evidence.py --register` 以纳入新观测
+6. `python -B scripts/run_tests.py` + `python -B -m hybrid_quant check-data`
+
+### v0.3.0 续四：公告日判据的上市前语义与采集加固（2026-10-21）
+
+**`announced_at_complete` 判据通过，根因是语义而非数据**：缺公告日的 2 行属 601187（厦门银行），报告期 2018-09-30 与 2019-03-31。三重证据表明该公司 **2020-10-27 才上市**（官方 sse_current 名单、provider query_stock_basic 的 ipoDate、CNINFO 官方公告目录最早为 2020 年 IPO 文件，首份定期报告为 2021-04-27）——上市前报告期不存在证券公告，无从补起。判据据此修正：报告期早于证券**已核验挂牌日期**的行（引擎本就因无 available_at 而排除）单独枚举并注明原因；挂牌当日及之后缺公告日的行照旧判失败；挂牌日期未知的行仍判失败（问题不可判定）。真实评估：0 个可用行缺失、2 个上市前期间带证据枚举。**financials 数据集整体就绪。**
+
+**采集链路加固**：(1) 修复采集脚本的 socket 超时缺陷——`context.default_socket` 是 login 期间创建的原始 socket，login 之后的 `setdefaulttimeout` 对它无效，一次服务器 stall 曾使批次挂起 21 小时（清单零进展）；现在对活连接直接 `settimeout(15)`，挂起的查询记错后继续（实测原先挂死的 `sh.600200` 数秒完成）。(2) 发现 baostock 公网对同 IP 多会话会串流回复（并行段出现"回复与请求不匹配"，脚本的 wire 校验正确拒绝而非附错数据），确认只能单串行采集。(3) `.acquisition/supervise_acquisition.py` 分块调度器：每次从"首个未覆盖符号"起跑 150 个符号的块，块结束自动定位下一缺口，未解析符号在后续块中自动重试。当前进度 977+/4,504，约 30s/符号（含约 14% 需重试）。
+
+测试：258 项全部通过（`test_readiness.py` 覆盖公告日判据三种走向：可用行缺失判失败、上市前期间枚举通过、抽样核验的份额与样本量下限）。
+
+### v0.3.0 续五：采集限流的运营现实与加固（2026-10-22）
+
+**provider 配额是当前唯一瓶颈**，本轮系统测绘了各公共行情源：
+
+| 源 | 状态 | 字段 |
+|---|---|---|
+| baostock | 可达但慢：整窗口查询 13–15 秒，约 25% 的查询因迟到回复被 wire 校验拒绝 | 全字段（preclose/volume/amount/tradestatus/isST） |
+| eastmoney push2his K 线 | 约 5 个请求后连接被重置（IP 级突发限流） | 含 amount |
+| 腾讯 ifzq | 返回 40 字节空响应 | 无 amount |
+| 新浪 K 线 | 正常 | **无 amount** |
+| 163 chddata | 502，接口已死 | — |
+
+**两个关键修复**：(1) 采集脚本 socket 超时从 15 秒提高到 60 秒——正常查询就要 13–15 秒，过紧的超时会把一次慢回复变成缓冲区里的迟到回复，下一查询读到时被 wire 校验判为“回复与请求不匹配”，连续失败随即终止整块采集（这是吞吐只有 ~1.7 符号/小时的真正原因，不是服务器变慢）。(2) 连续失败终止阈值参数化（`--max-consecutive-failures`，默认 5），调度器传 60，让单块能磨过 provider 的 stall 爆发而非反复重启撞同一爆发。
+
+**调度器运行实况**：`.acquisition/supervise_acquisition.py` 从首个未覆盖符号起跑 150 符号/块，未解析符号由后续块自动重试（当前失败率约 25%，总请求量约 6,000 次，按 15 秒/次约 25 小时无人值守完成）。**注意**：detached 后台进程会随工具会话终止而被清除（10-21 19:23 的调度器即因此静默死亡，日志 16 小时无更新），跨会话需重新启动。
+
+**第二通道已备好**：`scripts/fetch_eastmoney_daily.py`（东方财富 K 线，含成交额/成交量，完整 wire 审计：回复安全码核对、窗口核对、会话去重、high/low 一致性、逐请求清单重写）已编写并通过 6 项校验测试（`tests/test_eastmoney_fetch.py`），待该源限流重置后即可作为备用通道——但注意同 IP 多会话会串流回复，只能与 baostock 择一或串行。
+
+测试：264 项全部通过。
+
+### v0.3.0 续六：缺日判据的窗口错配修复与停牌归因（2026-10-22）
+
+**发现并修复缺日判据的窗口错配（少计 34 倍）**：原实现把“日历年表覆盖窗口内的应有会话数”（2018+，因日历只覆盖 2018 起）与“终身 bar 总数”（多数序列 1991 起，8,000+ 根）相减，对任何 2018 年前开始的序列都得负值→计 0，只报告 1,292 个缺日/155 只证券。修正为按**实际序列窗口**用**实际交易日**计算（与 bar 反验判据同样读注册文件）：真实缺日是 **43,968 个会话 / 1,681 只证券**，两个独立实现（判据与归因脚本）得出同一数字。
+
+**停牌归因机制建成并实测**：`scripts/build_session_gap_records.py` 从注册证据逐条归因——provider 停牌观测（staging 行 tradestatus≠1）/ 无 provider 观测 / staging 有活跃行而注册序列缺失（本地源丢失实时会话，单独记录不抹平）。在已采集的 1,050 个符号上实测：**11,072/43,968 个缺日（25%）已归因，且全部是 provider 确认的停牌**——本地序列的缺口主要是真实停牌而非数据丢失，1,249 只证券待采集完成后归因。采集完成后运行 `--write` 写入 stock_daily 清单即可满足该判据。
+
+测试：267 项全部通过（新增 `tests/test_session_gap_records.py` 3 项：三种归因走向与不可判定保持）。
+
+### v0.3.0 续七：etf_daily 整体就绪与退市边界判定（2026-10-23）
+
+**etf_daily 数据集整体就绪（4/4 判据通过）**：
+
+1. **成交额列**：6 只注册 ETF 的 staging 齐全（含 sz159915 的补采），构建 `etf_daily_enriched`——以注册序列为价格记录、按会话日联接 staging 的成交额/成交量/前收盘/交易状态。**两个源的 OHLC 交叉核验零差异**（2,063 个共同会话逐一比对），12,737 行 100% 带成交额，注册表指向新运行。
+2. **缺日归因**：sz159915 的唯一缺日（2021-02-08）在其 staging observations 中为停牌行——`session_gap_records` 写入 1 条记录，判据通过。股票侧已写入 495 条记录组（12,049 个缺日，全部为 provider 确认停牌）。
+3. **涨跌停复验**：发现复验构建器的 ETF 家族规则缺口——创业板 ETF（159xxx）适用 20% 限价而非 10%，修正后 5 个“突破”（全部是 159915）消失，全量复验 **1,672 符号 / 294 万行 / 0 突破**。同时修复判据的符号格式不匹配（注册表用 `sh510050`，复验产品用裸码 `510050`，覆盖比较前归一化）。
+
+**退市边界判定扩展**：232 个已采退市证券的最后活跃 bar 均早于注册终止日 1–52 天——这正是设计指出的“终止日≠最后交易日”。边界证据据此记录：最后活跃 bar 即**最后交易日**（市场自身记录），注册终止日是随后的行政日期。**241/364 可判定**，剩余 123 个无序列的待采集完成后归入。
+
+**进程存活机制**：detached 进程随会话终止被清除的问题用 Windows 计划任务解决——`StockAcquisitionWatchdog` 每 20 分钟检查并在无进程时重启调度器（任务归调度器所有，不依附工具会话）。采集进度 1,849/4,504。
+
+测试：268 项全部通过（`test_evidence_scripts.py` 9 项，覆盖退市边界的三种走向）。
 
 ## 第一版实现范围
 
 | 模块 | 当前实现 |
 |---|---|
-| 数据契约 | 已知截止时间、证券规则、日线、已调整信号价、财务因子版本、策略目标、风控结果、订单与成交 |
+| 数据契约 | 已知截止时间、证券规则（交易所/挂牌/退市）、日线（含必填复权价与 D3 挂起的成交股数）、已调整信号价、财务因子版本、策略目标、风控结果、订单与成交；Fundamental/CorporateAction/Constituent 核心对象契约 |
 | 个股策略 | 质量/价值输入与120日跳过20日动量、60日低波动；截面处理、25只目标与40名持仓缓冲 |
 | ETF轮动 | 20/60日动量排名、60日趋势、同指数去重、逆波动配置、最多3只与不足额现金 |
 | 防御策略 | 合格债券ETF占防御预算60%，其余现金 |
@@ -14,7 +135,7 @@
 | 订单与账户 | 决策日已知价格计算数量，下一实际交易日开盘尝试；批次解锁、费用、资金校验、成交/拒绝日志 |
 | 股利示例 | 除息日确认应收股利、支付日转可用现金；仅显式、已知日期的现金股利模型 |
 | 工程演示 | 合成股票、ETF、财务因子与日历驱动完整链路；保存配置、决策、订单、成交、账户与哈希 |
-| 数据准入 | 独立读取本项目注册表，未完成的真实历史数据拒绝进入正式回测 |
+| 数据准入 | 独立读取本项目注册表，证据完整性与 §5.1 判据合取计算准入；未完成的真实历史数据拒绝进入正式回测，无强制跳过开关 |
 | 行情适配 | 只读证券目录及单证券Parquet日线；验证输出哈希与日期/OHLC，未知字段不补造；历史快照接口先执行准入 |
 | 快照序列 | 由注册证据构建逐时点快照 bundle；契约字段缺一即排除并记因；不可避免的推导显式登记为 readiness gap；无准入旁路 |
 | 财务因子 | 由财务快照、日线与可用时间层构建时点质量/价值观测；TTM 滚转、同币种、负利润不给 value；版本未核验恒为 false |
@@ -36,7 +157,7 @@ python -B -m hybrid_quant serve --port 8765
 python -B scripts/run_tests.py
 ```
 
-`status`显示本项目数据状态。`check-data`在历史证据不完整时返回退出码2。`demo`只接受`purpose=synthetic_engineering_demo`的配置，默认读取`config/demo.json`，输出至唯一的`reports/demo/<运行ID>`；它不读取本地真实行情，不输出投资有效性结论。测试临时文件保存在项目`.test-tmp`内，自动清理各测试临时子目录。
+`status`显示本项目数据状态（含逐条就绪判据与证据路径）。`check-data`在判据未全部满足时返回退出码2，拒绝理由逐条列出失败判据。`demo`只接受`purpose=synthetic_engineering_demo`的配置，默认读取`config/demo.json`，输出至唯一的`reports/demo/<运行ID>`；它不读取本地真实行情，不输出投资有效性结论。测试临时文件保存在项目`.test-tmp`内，自动清理各测试临时子目录。
 
 演示输出中的成交与账户曲线是工程测试值。模拟费用、交易规则、行业穿透和日期均为明确设定，不是对历史交易所规则或实际账户条件的验证。
 

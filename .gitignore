@@ -1,5 +1,8 @@
 .deps/
 .test-tmp/
+.acquisition/*.log
+.acquisition/*.err
+.acquisition/*.out
 __pycache__/
 *.pyc
 data/normalized/

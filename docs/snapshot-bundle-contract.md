@@ -22,17 +22,17 @@
 
 ## 引擎历史快照边界
 
-`load_snapshot(bundle_manifest)`首先执行`DatasetRegistry.validate_for_backtest()`。当前调用会被拒绝，不能通过给快照自行标记`backtest_ready=true`来跳过注册表准入。
+`load_snapshot(bundle_manifest)`首先执行`DatasetRegistry.validate_for_backtest()`，它由证据完整性（逐文件 SHA-256 与行数）与 §5.1 可判定判据的合取构成。任何手写 `backtest_ready` 标记都不能代替注册表准入。
 
-通过准入后，快照清单和JSON载荷都必须位于项目内。清单要求`schema_version='1.0'`、`source_kind='verified_history'`、`backtest_ready=true`、空`readiness_gaps`，并提供相对`payload`路径与`payload_sha256`。接口验证结构和保存证据，不负责产生缺失历史数据，也不提供强制准入。
+通过准入后，快照清单和JSON载荷都必须位于项目内。清单要求`schema_version='1.0'`、`source_kind='verified_history'`、空`readiness_gaps`（即不存在仍待解决的声明式推导），并提供相对`payload`路径与`payload_sha256`。接口验证结构和保存证据，不负责产生缺失历史数据，也不提供强制准入。
 
 载荷字段：
 
 | 字段 | 要求 |
 |---|---|
 | `decision_at` | 带时区的ISO决策时间 |
-| `securities` | 显式提供`Security`全部字段，包括历史元信息、穿透核验与新建仓资格；未经核验不能获新建仓资格 |
-| `bars` | 显式提供`DailyBar`全部字段；复权收盘价、成交额、可用时间和三种交易标记不得缺省；同证券日期唯一递增 |
+| `securities` | 显式提供`Security`全部字段，包括交易所（SSE/SZSE）、挂牌与退市日期、历史元信息、穿透核验与新建仓资格；未经核验不能获新建仓资格；无终止上市记录时为显式 `delist_date: null` |
+| `bars` | 显式提供`DailyBar`全部字段；复权收盘价、成交额、可用时间和三种交易标记不得缺省；`volume` 为 D3 挂起期的显式可选，未知必须为 null（不得填零）；同证券日期唯一递增 |
 | `factors` | 显式提供质量、价值、可用时间与原始版本核验标记；缺失分数可以为空，未经核验版本保持false |
 | `listing_age_sessions` | 覆盖全部证券的非负整数交易日龄，不按自然日或周一至周五近似 |
 

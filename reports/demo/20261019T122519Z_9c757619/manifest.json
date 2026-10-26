@@ -1,0 +1,84 @@
+{
+  "run_id": "20261019T122519Z_9c757619",
+  "generated_at": "2026-10-19T12:25:19.488743+00:00",
+  "system_version": "0.2.2",
+  "purpose": "synthetic_engineering_demo",
+  "validation_only": true,
+  "investment_performance": false,
+  "uses_alpha_master_runtime": false,
+  "historical_data_admitted": false,
+  "config_source": "D:\\vscode\\Stock\\config\\demo.json",
+  "config_sha256": "029e6d4798859cd22f0de75a88d320b5cfb50a94e7f1c6c7405b2a99c83e30e4",
+  "code_hashes": {
+    "__init__.py": "1075bb6454feec50c71b1f3a7fbbd44ea2a5a0832d6ed2a68e9c29094b78f4fd",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "accounting.py": "28fbd13ee06752da039d9f8dfd79e16b767d6f13b3a573ea6fc1cd495fa3c288",
+    "backtest.py": "e2bf3013d75576fa9f65b0c231e0763b7cb41d9751829ecb69d9ecd68bead4ed",
+    "cli.py": "fa007adcf6571ddc569d6878ef91a1b131914de1043977ccb27d5fedcde0a84e",
+    "dashboard_store.py": "8a07333bbf61ce69e2af4113ff223c229e01cc122b812aa0ff4b0c54995776f1",
+    "data_registry.py": "9048e9e7d1c6b82311f66c4896d5947eb6320edf3ea59c8b10ab6fb2099eadb1",
+    "demo.py": "82f06dfc2b07c57c411bba4df05f3bafcee097ac00068dc4bdd75322eccfd547",
+    "factors.py": "e73cf19d0ef25cea556c1bf3a9fa33976f914191deac5bbf9163f1eef716da8d",
+    "market_data.py": "5fde512fd3d9dd98066c0ebcc37ffc843aca24826bb4590ae137e968915a6626",
+    "models.py": "e27b5836b0fb9a18d4b863da9b4eda42ea973147ffc12c31d3a6ee4f20becb51",
+    "portfolio.py": "4d9582ee4e5de680298fdb0debda64ad804b91b06af0d217f306ab6f996ab68a",
+    "readiness.py": "3441a0d9645925d5094979462b041e593fc5bcf3b273061d585e5b9e8f99c975",
+    "server.py": "ac8ac2b3a42a44b8f5fecbd795659a1b6554db380df68137f3770c0027dbd3ca",
+    "snapshot_series.py": "c3519df9a37b1681c6f0dfb1746abd3ec7c507d8cdc61dfe44e8e5f997104235",
+    "strategies.py": "e57ecf1f3db350b477a82fb849ca462530bf52a0647dfd87447d344fcd309d06"
+  },
+  "evaluation_sessions": 80,
+  "orders": 197,
+  "fills": 197,
+  "assumptions": [
+    "Synthetic weekday sessions are a fixture calendar, not a Chinese exchange calendar",
+    "Synthetic prices have no corporate actions; adjusted_close equals close only in this fixture",
+    "Fixture metadata, industry exposures, factor availability, and execution flags are stipulated",
+    "Costs and settlement settings are engineering assumptions, not verified historical market rules",
+    "Account values are test outputs, not evidence of investment performance"
+  ],
+  "limitations": [
+    "This is an explicit daily fixture replay, not evidence of investment performance.",
+    "Published fixture dates determine rebalance boundaries; no next-session price or factor determines original order quantity.",
+    "Daily open plus configured slippage approximates execution; opening auctions, queues and intraday liquidity are not reconstructed.",
+    "Only verified supplied execution metadata and tradability flags are used; these cannot establish real historical tradeability.",
+    "Cash dividend fixtures accrue before ex-date orders and become available on the first supplied session on/after pay-date.",
+    "Splits, rights offerings, mergers, precise historical fees and dividend taxes are not implemented.",
+    "Per-strategy virtual-account contribution attribution is not implemented.",
+    "Stale holdings remain in NAV and desired limits may be unachievable; actual violations are recorded."
+  ],
+  "files": [
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\config.json",
+      "sha256": "a1e0fb2af5b26316344cf89c8e0b2141759dd23a57bb754cbb2b647ec8a34390"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\decisions.jsonl",
+      "sha256": "6710f2e340c27944eecee88468df1bac78b9fe9456664910b28903cc48737ce1"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\dividend_events.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\equity.csv",
+      "sha256": "60a3a6c1751e86f86ecfd2edf71073b29ca6d42f8a901f06deaae3162eee96e9"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\execution_events.jsonl",
+      "sha256": "5bdb62c347711c2f97a7b0b0ea884c7ad039863892c691c2554c59a6eef32449"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\fills.jsonl",
+      "sha256": "1977551dc37d8ef9a2f3fd5da6f2e3341eb7b62a8b9d05a1c8e64c1566a7edbc"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\orders.jsonl",
+      "sha256": "2bfddbc77525f0c492431ba3839f11c57f83cc34e7e9f07fe6e16eb94b5aacc8"
+    },
+    {
+      "path": "D:\\vscode\\Stock\\reports\\demo\\20261019T122519Z_9c757619\\report.md",
+      "sha256": "bdd554d0dce1375f13f7fc2a85759814fdb9e55547dfe8fb1a56e7e53c0d4f91"
+    }
+  ]
+}

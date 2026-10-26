@@ -210,7 +210,11 @@ function renderOverview(overview, config) {
   $("#admission-tag").className = `tag ${admitted ? "teal" : "amber"}`;
   $("#admission-title").textContent = admitted ? "研究数据已通过准入" : "先完善数据，再验证策略";
   $("#admission-description").textContent = admitted ? "请按已核验的来源范围与交易条件开展研究。" : "当前真实数据仍有覆盖和历史状态缺口，完整历史回测准入保持关闭。";
-  const gaps = [...new Set([...collection(overview.history_gaps), ...datasets.flatMap((item) => collection(item.gaps || item.readiness_gaps))].map(humanGap))];
+  // 准入由 §5.1/§5.2 的计算判据合取决定，计算判据优先于名词式缺口清单展示。
+  const failedCriteria = datasets.flatMap((item) => collection(item.criteria)
+    .filter((criterion) => criterion && criterion.passed === false)
+    .map((criterion) => `${datasetNames[item.name] || item.name}｜${criterion.criterion}：${criterion.detail}`));
+  const gaps = [...new Set([...failedCriteria, ...collection(overview.history_gaps), ...datasets.flatMap((item) => collection(item.gaps || item.readiness_gaps))].map(humanGap))];
   if (missing > 0 && !gaps.some((item) => item.includes("退市"))) gaps.unshift("退市证券与历史股票池覆盖待补全");
   clean($("#admission-gaps"));
   (gaps.length ? gaps.slice(0, 3) : [overview.admission?.reason ? humanGap(overview.admission.reason) : "核验结果以归档来源为准"]).forEach((gap) => $("#admission-gaps").append(node("div", "gap-item", gap)));

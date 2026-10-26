@@ -107,11 +107,13 @@ class DashboardStore:
         result = {"name": name, "manifest": str(path), "file_count": len(files) if "files" in manifest else int((path.parent / "events.parquet").is_file()),
                   "rows": rows, "cutoff": manifest.get("as_of"), "gaps": gaps,
                   "manifest_declares_ready": manifest.get("backtest_ready") is True,
-                  "ready": False, "error_count": len(errors) + len(source_errors), "error": None}
+                  "ready": False, "error_count": len(errors) + len(source_errors), "error": None,
+                  "criteria": []}
         return result, manifest, path
 
     def overview(self) -> dict:
         warnings, datasets, manifests, paths = [], [], {}, {}
+        criteria_by_dataset: dict = {}
         admission = {"status": "unavailable", "reason": "Registry evidence is unavailable"}
         registry = None
         try:
@@ -140,25 +142,41 @@ class DashboardStore:
             # Strict dashboard parsing also has to succeed before declaring admission.
             if any(item["error"] for item in datasets):
                 admission = {"status": "unavailable", "reason": "One or more registered manifests are invalid or missing"}
-            if admission["status"] == "admitted":
-                for item in datasets:
-                    item["ready"] = item["manifest_declares_ready"] and not item["gaps"] and not item["error_count"]
+            # Per-dataset readiness is the computed §5.1 conjunction (design §5.2):
+            # each dataset row carries its criteria and their evidence, so the
+            # hand-written flag is only ever shown as a claim, never as the answer.
+            try:
+                criteria_by_dataset = {item.dataset: item for item in registry.readiness().datasets}
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                criteria_by_dataset = {}
+                warnings.append(f"Readiness evaluation failed: {exc}")
+            for item in datasets:
+                dataset_readiness = criteria_by_dataset.get(item["name"])
+                if dataset_readiness is None:
+                    continue
+                item["criteria"] = [criterion.as_dict() for criterion in dataset_readiness.criteria]
+                item["ready"] = dataset_readiness.ready
         except (ValueError, OSError, KeyError, TypeError) as exc:
             warnings.append(f"Registry unavailable: {exc}")
             admission["reason"] = str(exc)
 
         reports, report_values = {}, {}
-        for name, filename in (("readiness", "data-readiness.json"), ("security_audit", "security-reference-audit.json"), ("retired_prices", "missing-retired-prices.json")):
-            path = self.project_root / "reports" / filename
+        for name, filename in (("readiness", "reports/readiness/latest.json"),
+                               ("security_audit", "security-reference-audit.json"),
+                               ("retired_prices", "missing-retired-prices.json")):
+            path = self.project_root / filename
             try:
                 value = self._object(path)
                 if name == "readiness":
+                    # The computed evaluation manifest (design §5.2) replaces the
+                    # deprecated hand-written readiness report; it must cover the
+                    # currently registered datasets.
                     recorded = value.get("datasets")
-                    if not isinstance(recorded, dict) or set(recorded) != set(paths):
-                        raise ValueError("Readiness report does not cover the current registered manifests")
-                    for dataset_name, item in recorded.items():
-                        if self._inside(Path(item["manifest"])) != paths[dataset_name]:
-                            raise ValueError("Readiness report refers to an older registered manifest")
+                    if not isinstance(recorded, list) or not recorded:
+                        raise ValueError("Computed readiness manifest has no dataset results")
+                    reported = {item.get("dataset") for item in recorded if isinstance(item, dict)}
+                    if not reported <= set(paths):
+                        raise ValueError("Computed readiness manifest does not cover the current registered manifests")
                 elif name == "security_audit":
                     security = manifests.get("security_metadata")
                     if not security or self._inside(Path(value["output"])) != paths["security_metadata"].parent:
@@ -214,9 +232,14 @@ class DashboardStore:
         if invalid_runs:
             warnings.append(f"{len(invalid_runs)} demo runs contain invalid evidence")
         history_gaps = list(dict.fromkeys(gap for item in datasets for gap in item["gaps"]))
-        for gap in report_values.get("readiness", {}).get("remaining", []):
-            if isinstance(gap, str) and gap not in history_gaps:
-                history_gaps.append(gap)
+        # The noun-style gap list is deprecated (design §11): the admission
+        # answer comes from the computed criteria, so the gap surface lists the
+        # failing criterion ids next to the manifests' informational labels.
+        for dataset_readiness in criteria_by_dataset.values():
+            for failure in dataset_readiness.failures:
+                label = f"{dataset_readiness.dataset}.{failure.criterion}"
+                if label not in history_gaps:
+                    history_gaps.append(label)
         return {"project": {"name": "独立混合量化投资系统", "root": str(self.project_root), "system_version": __version__, "independent_system": True},
                 "system_version": __version__, "historical_data_admitted": admission["status"] == "admitted", "admission": admission,
                 "datasets": datasets, "warnings": warnings, "history_gaps": history_gaps, "stock_date_range": stock_range,

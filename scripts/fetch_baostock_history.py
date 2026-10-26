@@ -205,10 +205,12 @@ def main(argv=None):
     parser.add_argument("--limit", type=int)
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--pause", type=float, default=0.15)
+    parser.add_argument("--max-consecutive-failures", type=int, default=5,
+                        help="stop the batch after this many unresolved symbols in a row")
     args = parser.parse_args(argv)
     if date.fromisoformat(args.start) > date.fromisoformat(args.end) or date.fromisoformat(args.end) > datetime.now(timezone.utc).date():
         raise ValueError("Invalid history interval")
-    if args.offset < 0 or args.limit is not None and args.limit <= 0 or not 0.05 <= args.pause <= 10:
+    if args.offset < 0 or args.limit is not None and args.limit <= 0 or not 0.05 <= args.pause <= 10 or args.max_consecutive_failures < 1:
         raise ValueError("Invalid batch controls")
     items, sources = requests_for(args.mode, args.start, args.end)
     selected = items[args.offset:args.offset + args.limit if args.limit else None]
@@ -240,7 +242,17 @@ def main(argv=None):
         manifest["errors"].append({"stage": "login", "code": login.error_code, "message": login.error_msg})
         save_once(output / "manifest.json", manifest)
         raise RuntimeError("Public BaoStock login failed; original failure evidence retained")
-    socket.setdefaulttimeout(15)
+    # The live connection was opened during login, so the default timeout set
+    # here cannot reach it: setdefaulttimeout applies only to sockets created
+    # afterwards. A stalled reply on the login-time socket blocks forever,
+    # which was observed as a 21-hour hang with the manifest unchanged. The
+    # timeout is therefore applied to the connection itself as well. It must
+    # stay well above a healthy query: the provider answers a full-window
+    # query in 13-15 seconds under load, and a timeout that tight turns one
+    # slow reply into a late reply that the next query then rejects as a
+    # mismatched wire answer, burning consecutive failures in bursts.
+    socket.setdefaulttimeout(60)
+    context.default_socket.settimeout(60)
     wire = WireSocket(context.default_socket)
     context.default_socket = wire
     original_send = sockets.send_msg
@@ -308,7 +320,7 @@ def main(argv=None):
                 manifest["errors"].append(failure)
                 manifest["outcomes"].append(failure)
                 print(f"{index}/{len(selected)} {item['code']} unresolved: {exc}", flush=True)
-                if consecutive_failures >= 5:
+                if consecutive_failures >= args.max_consecutive_failures:
                     manifest["stopped_after_consecutive_failures"] = True
                     break
             finally:

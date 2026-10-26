@@ -1,14 +1,14 @@
 {
   "as_of": "2026-10-07",
-  "updated_on": "2026-10-09",
+  "updated_on": "2026-10-23",
   "datasets": {
     "stock_daily": {
       "manifest": "data/normalized/20261007T082337Z_34eda55f/manifest.json",
       "purpose": "normalized raw prices with recovered dates and retained provenance"
     },
     "etf_daily": {
-      "manifest": "data/external/etf/20261007T082601Z_01b20f93/manifest.json",
-      "purpose": "six ETF engineering samples; unadjusted"
+      "manifest": "data\\external\\etf_daily_enriched\\20261023T110643Z_aa9cc6b0\\manifest.json",
+      "purpose": "registered ETF daily bars enriched with provider turnover, volume, previous close and trade status"
     },
     "financials": {
       "manifest": "data/external/financials/20261008T235336Z_a4fbe81c/manifest.json",
@@ -25,6 +25,42 @@
     "security_metadata": {
       "manifest": "data/external/security_metadata/20261014T115907Z_5c19f323/manifest.json",
       "purpose": "official listing and termination candidates, SZSE name events, SSE current stock list, and separate current metadata; lifecycle and historical trading eligibility remain unverified"
+    },
+    "financial_availability": {
+      "manifest": "data\\external\\financial_availability\\20261020T110738Z_5e1a0c0f\\manifest.json",
+      "purpose": "announcement-date sampling against retained raw provider captures"
+    },
+    "szse_calendar": {
+      "manifest": "data\\external\\calendar_szse\\20261012T121628Z_5c189baf\\manifest.json",
+      "purpose": "SZSE scheduled sessions from official annual notices and amendments; complements the registered SSE calendar"
+    },
+    "daily_bar_enriched": {
+      "manifest": "data\\external\\daily_bar_enriched\\20261023T123208Z_ea5d3475\\manifest.json",
+      "purpose": "price-limit recheck over the acquired universe (ChiNext ETF 20% rule applied); zero breaches under derived limits"
+    },
+    "stock_status_reference": {
+      "manifest": "data\\external\\stock_status_reference\\20261011T040548Z_a714b1e6\\manifest.json",
+      "purpose": "provider-reported halt and ST observations for the 240-symbol sample; never execution eligibility"
+    },
+    "adjusted_prices": {
+      "manifest": "data/external/adjusted_prices/20261020T124242Z_b40cda78/manifest.json",
+      "purpose": "backward-adjusted price series; same-ex-date plan components combined before applying the exchange ex-reference formula"
+    },
+    "etf_universe": {
+      "manifest": "data\\external\\etf_universe\\20261015T113223Z_4b260249\\manifest.json",
+      "purpose": "baostock provider listing/termination dates for the ETF universe; provider dates not independently verified"
+    },
+    "adjustment_residuals": {
+      "manifest": "data\\external\\adjustment_residuals\\20261020T125856Z_7b7616e9\\manifest.json",
+      "purpose": "item-by-item enumeration of residual adjustment jumps beyond price limits"
+    },
+    "listing_supplement": {
+      "manifest": "data\\external\\listing_supplement\\20261020T115201Z_fe503e01\\manifest.json",
+      "purpose": "provider listing references for codes the official snapshots do not cover"
+    },
+    "delisting_boundaries": {
+      "manifest": "data\\external\\delisting_boundaries\\20261023T133459Z_634d4710\\manifest.json",
+      "purpose": "per-security delisting-boundary decision state from registered evidence"
     }
   }
 }

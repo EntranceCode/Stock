@@ -59,6 +59,9 @@ def load_series(series_dir: Path, relaxed: bool, start: date | None = None,
             securities[record["symbol"]] = Security(
                 symbol=record["symbol"], asset_type=AssetType(record["asset_type"]),
                 listed_on=date.fromisoformat(record["listed_on"]),
+                exchange=record["exchange"],
+                delist_date=(date.fromisoformat(record["delist_date"])
+                             if record.get("delist_date") else None),
                 buy_lot_size=record["buy_lot_size"], settlement_sessions=record["settlement_sessions"],
                 industry_exposure={"unclassified": 1.0} if relaxed else dict(record["industry_exposure"]),
                 tracking_index=record["tracking_index"],

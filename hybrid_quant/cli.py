@@ -46,9 +46,13 @@ def registry_status(args) -> int:
         ready, reason = True, None
     except DataNotReady as exc:
         ready, reason = False, str(exc)
+    # The printed readiness is the computed §5.2 conjunction behind the gate:
+    # per-criterion results with the evidence each answer came from.
+    readiness = registry.readiness()
     report = {"project": str(PROJECT), "version": __version__,
               "independent_system": True, "datasets": [asdict(item) for item in statuses],
-              "historical_data_admitted": ready, "admission_reason": reason}
+              "historical_data_admitted": ready, "admission_reason": reason,
+              "readiness": readiness.as_dict()}
     print(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False))
     return 0 if args.command == "status" or ready else 2
 

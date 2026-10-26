@@ -62,13 +62,18 @@ def instrument_kind(symbol: str) -> str:
 def limit_ratio(symbol: str, day: date, is_st: bool, kind: str | None = None) -> float:
     """Price-limit ratio in force for this security on this date.
 
-    STAR (688) and ChiNext (300/301) securities move 20%. The tighter 5% ST band
-    applies to main-board stocks only: a fund cannot be risk-warned, so the
-    provider's flag is ignored for funds. Special first-day and relisting windows
-    are not modelled here and are reported as violations instead.
+    STAR (688) and ChiNext (300/301) securities move 20%. Funds follow the
+    board they are listed on: ChiNext-listed funds (159xxx) move 20% from the
+    ChiNext widening, while Shanghai and cross-border funds keep 10%. The
+    tighter 5% ST band applies to main-board stocks only: a fund cannot be
+    risk-warned, so the provider's flag is ignored for funds. Special first-day
+    and relisting windows are not modelled here and are reported as violations
+    instead.
     """
     kind = kind or instrument_kind(symbol)
     if kind == "etf":
+        if symbol.startswith("159"):
+            return 0.20 if day >= CHINEXT_WIDE_LIMIT else 0.10
         return 0.10
     if symbol.startswith("688"):
         return 0.20

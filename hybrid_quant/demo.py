@@ -40,7 +40,8 @@ def synthetic_snapshots(config: dict) -> tuple[DataSnapshot, ...]:
     for index in range(stock_count):
         symbol = f"SYN_ST_{index + 1:02d}"
         securities[symbol] = Security(
-            symbol, AssetType.STOCK, dates[0], industry_exposure={sectors[index % len(sectors)]: 1.0},
+            symbol, AssetType.STOCK, dates[0], "SSE" if index % 2 else "SZSE",
+            industry_exposure={sectors[index % len(sectors)]: 1.0},
             historical_metadata_verified=True, lookthrough_verified=True, eligible_for_new_positions=True,
         )
         parameters[symbol] = (10 + index * 0.65, 0.00035 + (index % 7) * 0.00003, 0.0025 + (index % 5) * 0.0005)
@@ -52,14 +53,14 @@ def synthetic_snapshots(config: dict) -> tuple[DataSnapshot, ...]:
     for index in range(4):
         symbol = f"SYN_EQ_ETF_{index + 1}"
         securities[symbol] = Security(
-            symbol, AssetType.EQUITY_ETF, dates[0],
+            symbol, AssetType.EQUITY_ETF, dates[0], "SSE",
             industry_exposure={sector: 1 / len(sectors) for sector in sectors},
             tracking_index=f"synthetic_index_{index if index < 3 else 0}",
             historical_metadata_verified=True, lookthrough_verified=True, eligible_for_new_positions=True,
         )
         parameters[symbol] = (3 + index * 0.4, 0.0005 + index * 0.00004, 0.004 + index * 0.0005)
     bond = "SYN_BOND_ETF"
-    securities[bond] = Security(bond, AssetType.BOND_ETF, dates[0], settlement_sessions=0,
+    securities[bond] = Security(bond, AssetType.BOND_ETF, dates[0], "SSE", settlement_sessions=0,
                                historical_metadata_verified=True, lookthrough_verified=True, eligible_for_new_positions=True)
     parameters[bond] = (100.0, 0.00008, 0.000025)
     histories = {symbol: [] for symbol in securities}

@@ -106,7 +106,21 @@ def main():
             continue
         multiplier = float(event.get("shares_multiplier") or 1.0)
         cash = float(event.get("cash_per_old_unit_gross") or 0.0)
-        by_symbol.setdefault(symbol, []).append((ex_date, cash, multiplier))
+        # A plan can arrive as several rows sharing one ex-date (its cash and
+        # share components separately). The exchange computes one ex-reference
+        # for the whole plan against one previous close, so same-date events
+        # are combined - cash adds, multipliers multiply - before the factor
+        # is applied; applying them one by one would compound the cash
+        # deduction against the same previous close.
+        combined = by_symbol.setdefault(symbol, {})
+        if ex_date in combined:
+            cash0, multiplier0 = combined[ex_date]
+            combined[ex_date] = (cash0 + cash, multiplier0 * multiplier)
+        else:
+            combined[ex_date] = (cash, multiplier)
+    for symbol, plans in list(by_symbol.items()):
+        by_symbol[symbol] = [(ex_date, cash, multiplier)
+                             for ex_date, (cash, multiplier) in sorted(plans.items())]
 
     output = PROJECT / "data/external/adjusted_prices" / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid4().hex[:8])
     (output / "stocks").mkdir(parents=True)
