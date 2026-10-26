@@ -38,9 +38,36 @@ def write_json(path: Path, value) -> None:
         json.dump(value, stream, ensure_ascii=False, indent=2, default=json_value, allow_nan=False)
 
 
+def _recorded_readiness() -> dict | None:
+    """The last recorded §5.2 evaluation, if one exists.
+
+    A display command must not re-hash every registered file, so its readiness
+    answer is this record together with its timestamp, not a fresh evaluation.
+    """
+    from .readiness import LATEST_REPORT_RELATIVE
+    try:
+        value = json.loads((PROJECT / LATEST_REPORT_RELATIVE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
 def registry_status(args) -> int:
     registry = DatasetRegistry(args.registry, PROJECT)
     statuses = registry.statuses()
+    if args.command == "status":
+        # Showing the state stays cheap and never poses as a gate decision: the
+        # last recorded evaluation is reported with its timestamp, and admission
+        # is left unverified so a stale display cannot read as an admission.
+        recorded = _recorded_readiness()
+        report = {"project": str(PROJECT), "version": __version__,
+                  "independent_system": True, "datasets": [asdict(item) for item in statuses],
+                  "historical_data_admitted": None,
+                  "admission_reason": "not_verified_by_status_run_check_data",
+                  "readiness": recorded,
+                  "readiness_source": "recorded" if recorded is not None else "unavailable"}
+        print(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False))
+        return 0
     try:
         registry.validate_for_backtest()
         ready, reason = True, None
