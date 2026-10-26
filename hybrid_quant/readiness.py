@@ -53,6 +53,8 @@ UNIVERSE_DATASET = "etf_universe"
 SUPPLEMENT_DATASET = "listing_supplement"
 BOUNDARY_DATASET = "delisting_boundaries"
 AVAILABILITY_DATASET = "financial_availability"
+# The row-level layer the factor builder and the vintage criterion read.
+AVAILABILITY_ROWS_DATASET = "financial_availability_rows"
 
 # Names of the parquet column the turnover criterion accepts. The registered
 # daily files carry neither; the enriched derivative carries the second form.
@@ -195,11 +197,6 @@ def _calendar_rows(registry, dataset: str) -> tuple[Path | None, dict | None, li
 
 
 
-# Deliberately NOT registered in CRITERIA yet: the readiness fixtures carry an
-# availability layer with no file inventory, so the criterion cannot be assessed
-# there without inventing rows. Registering it needs the fixture to carry a real
-# inventory first; until then the vintage limitation is enforced by the factor
-# layer itself (unverified observations are excluded per observation).
 def _financial_usable_share(registry) -> CriterionResult:
     """financials: enough observations can carry a verified vintage basis.
 
@@ -217,14 +214,21 @@ def _financial_usable_share(registry) -> CriterionResult:
         return CriterionResult(FINANCIALS_DATASET, name, False,
                                "readiness policy is missing or invalid: " + str(exc),
                                "config/readiness-policy.json")
-    path, manifest = _manifest(registry, AVAILABILITY_DATASET)
+    # The registered availability evidence carries the sample comparison; the
+    # row-level layer is what holds the per-row update classification.
+    path, manifest = _manifest(registry, AVAILABILITY_ROWS_DATASET)
     if path is None or manifest is None:
         return CriterionResult(FINANCIALS_DATASET, name, False,
-                               "availability layer '" + AVAILABILITY_DATASET + "' is not registered",
-                               "config/datasets.json")
+                               "row-level availability layer '" + AVAILABILITY_ROWS_DATASET
+                               + "' is not registered", "config/datasets.json")
+    entries = [entry for entry in _file_entries(manifest)
+               if str(entry.get("path", "")).endswith(".parquet")]
+    if not entries:
+        return CriterionResult(FINANCIALS_DATASET, name, False,
+                               "the row-level layer lists no parquet inventory", str(path))
     usable = total = classified = 0
     try:
-        for entry in _file_entries(manifest):
+        for entry in entries:
             for row in _rows(_entry_path(path, entry), ("update_classification",)):
                 total += 1
                 value = row.get("update_classification")
@@ -570,41 +574,6 @@ def _turnover_coverage(registry, dataset: str, universe_dataset: str | None = No
         f"({share:.4f} against threshold {policy['threshold']}), floor {policy['minimum']}; "
         f"{len(excluded)} excluded and must be declared in the conclusion; {nulls} null value(s) seen",
         str(path))
-
-
-def _turnover_columns(registry, dataset: str) -> CriterionResult:
-    """<dataset>: every registered file carries a turnover column with no nulls.
-
-    Available for a dataset whose universe is genuinely closed and small; the
-    share-based criterion is used where partial coverage is the realistic outcome.
-    """
-    name = "turnover_column_complete"
-    path, manifest = _manifest(registry, dataset)
-    if path is None or manifest is None:
-        return CriterionResult(dataset, name, False, "dataset manifest is missing", "config/datasets.json")
-    entries = _file_entries(manifest)
-    if not entries:
-        return CriterionResult(dataset, name, False, "dataset has no file inventory", str(path))
-    pq = _parquet()
-    missing, nulls, checked = 0, 0, 0
-    for entry in entries:
-        parquet_path = _entry_path(path, entry)
-        try:
-            schema = pq.read_schema(parquet_path).names
-        except (OSError, ValueError) as exc:
-            return CriterionResult(dataset, name, False, f"cannot read registered file schema: {exc}", str(parquet_path))
-        column = next((value for value in TURNOVER_COLUMNS if value in schema), None)
-        if column is None:
-            missing += 1
-            continue
-        checked += 1
-        nulls += sum(1 for row in _rows(parquet_path, (column,)) if row.get(column) is None)
-    if missing:
-        return CriterionResult(dataset, name, False,
-                               f"{missing} of {len(entries)} registered files carry no turnover column; "
-                               f"{checked} checked file(s) contain {nulls} null value(s)", str(path))
-    return CriterionResult(dataset, name, nulls == 0,
-                           f"{checked} files checked; {nulls} null turnover value(s)", str(path))
 
 
 def _bare_symbol(symbol) -> str:
@@ -1009,6 +978,7 @@ CRITERIA: tuple[tuple[str, str, Callable], ...] = (
      lambda registry: _adjustment_residuals(registry, ETF_DATASET)),
     (ETF_DATASET, "universe_rebuilt_from_listing", _etf_universe),
     (FINANCIALS_DATASET, "announced_at_complete", _financial_announced_at),
+    (FINANCIALS_DATASET, "engine_usable_share", _financial_usable_share),
     (FINANCIALS_DATASET, "announced_at_sample_verified", _financial_sample_verification),
     (ACTION_DATASET, "quarantine_share_within_bound", _action_quarantine_share),
     (ACTION_DATASET, "quarantine_reasons_and_evidence_recorded", _action_quarantine_evidence),

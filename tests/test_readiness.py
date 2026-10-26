@@ -203,9 +203,16 @@ class EvidenceTree:
         self.write_json("evidence/adjusted/manifest.json", {
             "backtest_ready": True, "ex_dates_beyond_price_limit_after_adjustment": 0,
             "residual_jump_evidence": "residual_jumps.jsonl"})
+        availability_rows = [{"symbol": "000001", "report_date": "2019-12-31",
+                              "available_at": "2020-04-28",
+                              "update_classification": "unrevised"}]
+        availability_parquet = self.root / "evidence/availability/rows.parquet"
+        write_table(availability_parquet, availability_rows)
         self.write_json("evidence/availability/manifest.json", {
             "backtest_ready": True, "original_notice_dates_compared": 192,
-            "original_notice_dates_matched": 192})
+            "original_notice_dates_matched": 192,
+            "files": [{"path": str(availability_parquet), "sha256": sha256(availability_parquet),
+                       "rows": len(availability_rows)}]})
 
         self.write_json("config/datasets.json", {"datasets": {
             "stock_daily": {"manifest": "stock_daily/manifest.json"},
@@ -220,6 +227,7 @@ class EvidenceTree:
             "adjustment_residuals": {"manifest": "evidence/residuals/manifest.json"},
             "delisting_boundaries": {"manifest": "evidence/boundaries/manifest.json"},
             "financial_availability": {"manifest": "evidence/availability/manifest.json"},
+            "financial_availability_rows": {"manifest": "evidence/availability/manifest.json"},
         }})
 
     def registry(self, ttl: float = 60.0) -> DatasetRegistry:

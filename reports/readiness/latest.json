@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-10-26T11:56:07.098020+00:00",
+  "evaluated_at": "2026-10-26T12:13:32.130706+00:00",
   "ready": false,
   "datasets": [
     {
@@ -114,6 +114,13 @@
           "passed": true,
           "detail": "240/240 announcement dates matched original notices (1.0000 ≥ 0.99 over ≥192 rows required)",
           "evidence": "D:\\vscode\\Stock\\data\\external\\financial_availability\\20261020T110738Z_5e1a0c0f\\manifest.json"
+        },
+        {
+          "dataset": "financials",
+          "criterion": "engine_usable_share",
+          "passed": true,
+          "detail": "129622 of 137714 observations carry a usable vintage basis (0.9412 against threshold 0.5); 137714 classified; the remainder stays unverified and is excluded",
+          "evidence": "D:\\vscode\\Stock\\data\\external\\financial_availability\\20261012T123130Z_55e42bd5\\manifest.json"
         }
       ]
     },

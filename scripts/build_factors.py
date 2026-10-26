@@ -34,16 +34,27 @@ DEFAULT_OUTPUT = PROJECT / "data/external/factors"
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--availability", type=Path, required=True,
-                        help="财务可用时间层目录（含 manifest.json）")
+    parser.add_argument("--availability", type=Path, default=None,
+                        help="行级可用时间层目录；默认取注册表中的 financial_availability_rows")
     parser.add_argument("--symbols", default="", help="逗号分隔的证券代码；默认全部")
     parser.add_argument("--max-symbols", type=int, default=None, help="按代码排序取前 N 只")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="输出根目录")
     parser.add_argument("--no-verify-hashes", action="store_true", help="跳过已登记文件哈希校验")
     args = parser.parse_args(argv)
 
+    availability = args.availability
+    if availability is None:
+        from hybrid_quant.data_registry import DatasetRegistry
+        from hybrid_quant.readiness import _manifest
+        found, _ = _manifest(DatasetRegistry(PROJECT / "config" / "datasets.json", PROJECT),
+                             "financial_availability_rows")
+        if found is None:
+            print("系统拒绝构建：未注册行级可用时间层 financial_availability_rows", file=sys.stderr)
+            return 2
+        availability = found.parent
+
     symbols = tuple(sorted({item.strip() for item in args.symbols.split(",") if item.strip()}))
-    request = FactorRequest(availability_dir=args.availability, symbols=symbols,
+    request = FactorRequest(availability_dir=availability, symbols=symbols,
                             max_symbols=args.max_symbols,
                             verify_hashes=not args.no_verify_hashes)
     try:

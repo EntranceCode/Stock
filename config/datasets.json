@@ -65,6 +65,10 @@
     "session_gaps": {
       "manifest": "data\\external\\session_gaps\\20261026T114515Z_c95bfa4e\\manifest.json",
       "purpose": "enumerated bar-missing sessions per security, so the gate verifies registered evidence instead of re-reading every series on each run"
+    },
+    "financial_availability_rows": {
+      "manifest": "data\\external\\financial_availability\\20261012T123130Z_55e42bd5\\manifest.json",
+      "purpose": "row-level point-in-time availability (report_date, announced_at, update classification); the evidence layer registered as financial_availability carries only the 240-row sample comparison"
     }
   }
 }
