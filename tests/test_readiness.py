@@ -246,9 +246,10 @@ class ReadinessCriteriaTests(unittest.TestCase):
         # complete here, and the absolute floor is the single covered symbol.
         policy = self.root / "config/readiness-policy.json"
         policy.parent.mkdir(parents=True, exist_ok=True)
-        policy.write_text(json.dumps({"stock_turnover": {
-            "coverage_threshold": 1.0, "minimum_covered": 1,
-            "rationale": "fixture policy"}}), encoding="utf-8")
+        fixture_block = {"coverage_threshold": 1.0, "minimum_covered": 1,
+                         "rationale": "fixture policy"}
+        policy.write_text(json.dumps({"stock_turnover": fixture_block,
+                                      "etf_turnover": fixture_block}), encoding="utf-8")
         import hybrid_quant.readiness as readiness_module
         original_policy = readiness_module.POLICY_PATH
         self.addCleanup(setattr, readiness_module, "POLICY_PATH", original_policy)

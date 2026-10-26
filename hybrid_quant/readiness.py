@@ -435,27 +435,27 @@ def _daily_missing_days(registry, dataset: str) -> CriterionResult:
     return CriterionResult(dataset, "missing_days_zero_or_recorded", passed, detail, str(path))
 
 
-def turnover_policy() -> dict:
-    """The declared turnover policy; a missing or invalid policy fails closed."""
+def turnover_policy(key: str = "stock_turnover") -> dict:
+    """The declared turnover policy for one asset class; invalid input fails closed."""
     path = POLICY_PATH
     try:
         value = json.loads(Path(path).read_text(encoding="utf-8"))
-        block = value["stock_turnover"]
+        block = value[key]
         threshold = float(block["coverage_threshold"])
         minimum = int(block["minimum_covered"])
     except (OSError, ValueError, KeyError, TypeError) as exc:
-        raise ValueError(f"readiness policy is missing or invalid: {path}: {exc}") from exc
+        raise ValueError(f"readiness policy is missing or invalid: {path}: {key}: {exc}") from exc
     if not 0 < threshold <= 1 or minimum < 1:
         raise ValueError("readiness policy boundaries are out of range")
     return {"threshold": threshold, "minimum": minimum, "path": str(path)}
 
 
-def _symbols_with_turnover(registry) -> tuple[set, int]:
+def _symbols_with_turnover(registry, datasets: Sequence[str]) -> tuple[set, int]:
     """Symbols for which some registered evidence carries a non-null turnover."""
     covered: set = set()
     nulls = 0
     pq = _parquet()
-    for dataset in (ENRICHED_DATASET, STOCK_DATASET):
+    for dataset in datasets:
         path, manifest = _manifest(registry, dataset)
         if path is None or manifest is None:
             continue
@@ -477,7 +477,8 @@ def _symbols_with_turnover(registry) -> tuple[set, int]:
     return covered, nulls
 
 
-def _turnover_coverage(registry, dataset: str) -> CriterionResult:
+def _turnover_coverage(registry, dataset: str, universe_dataset: str | None = None,
+                      policy_key: str = "stock_turnover") -> CriterionResult:
     """<dataset>: enough of the declared universe carries a real turnover value.
 
     A single file without the column must not fail the dataset, and a tiny
@@ -486,17 +487,23 @@ def _turnover_coverage(registry, dataset: str) -> CriterionResult:
     """
     name = "turnover_coverage"
     try:
-        policy = turnover_policy()
+        policy = turnover_policy(policy_key)
     except ValueError as exc:
         return CriterionResult(dataset, name, False, str(exc), "config/readiness-policy.json")
     path, manifest = _manifest(registry, dataset)
     if path is None or manifest is None:
         return CriterionResult(dataset, name, False, "dataset manifest is missing", "config/datasets.json")
-    universe = {_bare_symbol(entry.get("symbol", "")) for entry in _file_entries(manifest)}
+    # The denominator may come from a separate declared universe: the registered
+    # price files are what we hold, not what the strategy is allowed to choose.
+    universe_path, universe_manifest = _manifest(registry, universe_dataset or dataset)
+    if universe_path is None or universe_manifest is None:
+        return CriterionResult(dataset, name, False,
+                               f"declared universe '{universe_dataset}' is not registered", "config/datasets.json")
+    universe = {_bare_symbol(entry.get("symbol", "")) for entry in _file_entries(universe_manifest)}
     universe.discard("")
     if not universe:
-        return CriterionResult(dataset, name, False, "dataset has no file inventory to serve as the universe", str(path))
-    covered, nulls = _symbols_with_turnover(registry)
+        return CriterionResult(dataset, name, False, "the declared universe holds no symbols", str(universe_path))
+    covered, nulls = _symbols_with_turnover(registry, (dataset, ENRICHED_DATASET))
     covered &= universe
     share = len(covered) / len(universe)
     passed = share >= policy["threshold"] and len(covered) >= policy["minimum"]
@@ -512,9 +519,8 @@ def _turnover_coverage(registry, dataset: str) -> CriterionResult:
 def _turnover_columns(registry, dataset: str) -> CriterionResult:
     """<dataset>: every registered file carries a turnover column with no nulls.
 
-    Kept for datasets whose universe is small enough that per-file completeness
-    is the meaningful test; the share-based criterion is used where the universe
-    is large enough that partial coverage is the realistic outcome.
+    Available for a dataset whose universe is genuinely closed and small; the
+    share-based criterion is used where partial coverage is the realistic outcome.
     """
     name = "turnover_column_complete"
     path, manifest = _manifest(registry, dataset)
@@ -936,8 +942,11 @@ CRITERIA: tuple[tuple[str, str, Callable], ...] = (
      lambda registry: _adjustment_residuals(registry, STOCK_DATASET)),
     (ETF_DATASET, "missing_days_zero_or_recorded",
      lambda registry: _daily_missing_days(registry, ETF_DATASET)),
-    (ETF_DATASET, "turnover_column_complete",
-     lambda registry: _turnover_columns(registry, ETF_DATASET)),
+    # The ETF universe artifact is one table of 1,706 products rather than a
+    # per-symbol inventory, so it cannot serve as a denominator. The absolute
+    # floor is what keeps six registered products from passing.
+    (ETF_DATASET, "turnover_coverage",
+     lambda registry: _turnover_coverage(registry, ETF_DATASET, policy_key="etf_turnover")),
     (ETF_DATASET, "price_limit_recheck_zero_breaches",
      lambda registry: _limit_recheck(registry, ETF_DATASET)),
     (ETF_DATASET, "adjustment_residual_jumps_logged",
