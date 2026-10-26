@@ -166,7 +166,8 @@ class SnapshotSeriesTests(unittest.TestCase):
             listed_on = SESSIONS[10] if symbol == "600006" else SESSIONS[0] - timedelta(days=30)
             candidates.append({"symbol": symbol,
                                "exchange": "SZSE" if symbol == "000001" else "SSE",
-                               "source_listing_date": listed_on})
+                               "source_listing_date": listed_on,
+                               "source_termination_date": None})
         meta = self.root / "data/meta"
         listing_path = meta / "listing_candidates.parquet"
         write_table(listing_path, candidates)
@@ -264,8 +265,23 @@ class SnapshotSeriesTests(unittest.TestCase):
         self.assertIn("listing_date_from_candidate_unverified", gaps)
         self.assertIn("registry_admission_not_granted", gaps)
         self.assertIn("calendar_exchange_unverified:SZSE", gaps)
-        self.assertFalse(manifest["backtest_ready"])
+        # DailyBar.volume stays pending on decision D3 in every bundle.
+        self.assertIn("daily_bar_volume_pending_decision_D3", gaps)
+        # A hand-written ready flag is no longer written or consulted: the
+        # bundle carries its declared gaps and the registry gate decides.
+        self.assertNotIn("backtest_ready", manifest)
         self.assertEqual(manifest["payload"], "payload.json")
+
+    def test_bundles_carry_the_security_master_and_explicit_volume_null(self):
+        index = self.build()
+        payload = self.payloads(index)[index["sessions"][-1]["trade_date"]]
+        by_symbol = {item["symbol"]: item for item in payload["securities"]}
+        self.assertEqual(by_symbol["000001"]["exchange"], "SZSE")
+        self.assertEqual(by_symbol["600000"]["exchange"], "SSE")
+        self.assertIsNone(by_symbol["600000"]["delist_date"])
+        for bar in payload["bars"]:
+            self.assertIn("volume", bar)
+            self.assertIsNone(bar["volume"])
 
     def test_point_in_time_window_excludes_future_bars(self):
         index = self.build(end=SESSIONS[29])
@@ -401,7 +417,7 @@ class SnapshotSeriesTests(unittest.TestCase):
             path = directory / "symbols" / f"{symbol}_etf.parquet"
             write_table(path, rows)
             entries.append({"symbol": symbol, "asset_type": asset_type, "name": symbol,
-                            "exchange": "SSE", "listed_on": "2012-05-28",
+                            "exchange": "SSE", "listed_on": "2012-05-28", "terminated_on": None,
                             "tracking_index": index_name,
                             "path": str(path), "sha256": sha256(path), "rows": len(rows)})
         (directory / "manifest.json").write_text(json.dumps(

@@ -80,12 +80,14 @@ class MarketDataTests(unittest.TestCase):
 
     def bundle(self):
         payload = {"schema_version": "1.0", "source_kind": "verified_history", "decision_at": "2024-01-03T16:30:00+08:00",
-                   "securities": [{"symbol": "000001", "asset_type": "stock", "listed_on": "2020-01-01", "buy_lot_size": 100,
+                   "securities": [{"symbol": "000001", "exchange": "SZSE", "asset_type": "stock",
+                                   "listed_on": "2020-01-01", "delist_date": None, "buy_lot_size": 100,
                                    "settlement_sessions": 1, "industry_exposure": {"industry": 1.0}, "tracking_index": None,
-                                   "historical_metadata_verified": True, "lookthrough_verified": True, "eligible_for_new_positions": True}],
+                                   "historical_metadata_verified": True, "lookthrough_verified": True,
+                                   "eligible_for_new_positions": True}],
                    "bars": [dict(symbol="000001", trade_date="2024-01-03", open=10, high=11, low=9, close=10.5,
                                  turnover=10000, available_at="2024-01-03T16:00:00+08:00", adjusted_close=10.5,
-                                 tradable=True, buyable=True, sellable=True)],
+                                 volume=None, tradable=True, buyable=True, sellable=True)],
                    "factors": [{"symbol": "000001", "quality": 0.1, "value": 0.05, "available_at": "2024-01-04T10:00:00+08:00", "original_version_verified": False}],
                    "listing_age_sessions": {"000001": 300}}
         return payload
@@ -94,8 +96,9 @@ class MarketDataTests(unittest.TestCase):
         content = json.dumps(payload).encode()
         (self.root / "snapshot.json").write_bytes(content)
         path = self.root / "bundle.json"
-        path.write_text(json.dumps({"schema_version": "1.0", "source_kind": "verified_history", "backtest_ready": True,
-                                    "readiness_gaps": [], "payload": "snapshot.json", "payload_sha256": hashlib.sha256(content).hexdigest()}), encoding="utf-8")
+        path.write_text(json.dumps({"schema_version": "1.0", "source_kind": "verified_history",
+                                    "readiness_gaps": [], "payload": "snapshot.json",
+                                    "payload_sha256": hashlib.sha256(content).hexdigest()}), encoding="utf-8")
         return path
 
     def test_engine_boundary_rejects_real_staged_registry_before_bundle_read(self):
@@ -119,5 +122,36 @@ class MarketDataTests(unittest.TestCase):
             self.adapter.load_snapshot(self.save_bundle(payload))
         payload = self.bundle()
         payload["securities"][0]["historical_metadata_verified"] = "false"
+        with self.assertRaises(ValueError):
+            self.adapter.load_snapshot(self.save_bundle(payload))
+
+    def test_hand_written_ready_flag_cannot_admit_a_bundle(self):
+        # A manifest flag is not evidence (design §5.2): the registry gate plus
+        # an empty declared-gap list decide, and a flag alone changes nothing.
+        self.registry.validate_for_backtest = Mock(side_effect=DataNotReady("criteria not met"))
+        with self.assertRaises(DataNotReady):
+            self.adapter.load_snapshot(self.save_bundle(self.bundle()))
+
+    def test_pending_derivation_gaps_refuse_the_bundle(self):
+        self.registry.validate_for_backtest = Mock(return_value=None)
+        path = self.save_bundle(self.bundle())
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        manifest["readiness_gaps"] = ["bar_available_at_assumed_session_close"]
+        path.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaises(DataNotReady):
+            self.adapter.load_snapshot(path)
+
+    def test_security_master_and_volume_fields_must_be_explicit(self):
+        self.registry.validate_for_backtest = Mock(return_value=None)
+        payload = self.bundle()
+        del payload["securities"][0]["exchange"]
+        with self.assertRaises(ValueError):
+            self.adapter.load_snapshot(self.save_bundle(payload))
+        payload = self.bundle()
+        payload["securities"][0]["exchange"] = "BSE"
+        with self.assertRaises(ValueError):
+            self.adapter.load_snapshot(self.save_bundle(payload))
+        payload = self.bundle()
+        payload["bars"][0]["volume"] = -5
         with self.assertRaises(ValueError):
             self.adapter.load_snapshot(self.save_bundle(payload))

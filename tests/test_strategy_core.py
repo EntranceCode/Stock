@@ -13,6 +13,7 @@ DECISION = datetime(2025, 1, 31, 16, 0, tzinfo=TZ)
 
 def security(symbol, asset_type=AssetType.STOCK, tracking_index=None):
     return Security(symbol=symbol, asset_type=asset_type, listed_on=date(2020, 1, 1),
+                    exchange="SSE" if symbol.startswith("6") else "SZSE",
                     historical_metadata_verified=True, eligible_for_new_positions=True,
                     tracking_index=tracking_index)
 
@@ -90,7 +91,10 @@ class StockStrategyTests(unittest.TestCase):
         histories = {item: history(item) for item in symbols}
         histories[symbols[0]] = histories[symbols[0]][:-1] + (replace(histories[symbols[0]][-1], tradable=False),)
         missing = list(histories[symbols[1]])
-        missing[-40] = replace(missing[-40], adjusted_close=None)
+        # A session without a contract-valid bar (no adjusted close, no
+        # turnover, unknown availability) never reaches the engine: the
+        # snapshot builder excludes it, so the history carries a hole.
+        del missing[-40]
         histories[symbols[1]] = tuple(missing)
         halted = list(histories[symbols[2]])
         halted[-20] = replace(halted[-20], tradable=False)
@@ -152,19 +156,26 @@ class EtfStrategyTests(unittest.TestCase):
         self.assertEqual(set(target.weights), {"510002", "510004"})
         self.assertAlmostEqual(sum(target.weights.values()), 2 / 3)
 
-    def test_etf_requires_trend_current_bar_and_complete_adjustments(self):
+    def test_etf_requires_trend_current_bar_and_contract_valid_history(self):
         securities = [security(f"51000{index}", AssetType.EQUITY_ETF, f"index-{index}")
                       for index in range(1, 5)]
         histories = {
-            "510001": history("510001", [120 - index * 0.2 for index in range(121)]),
-            "510002": history("510002")[:-1],
-            "510003": history("510003"),
-            "510004": history("510004")[-119:],
+            "510001": history("510001", [120 - index * 0.2 for index in range(121)]),  # no trend
+            "510002": history("510002")[:-1],                                           # no decision-date bar
+            "510003": history("510003"),                                                # contract-valid
+            "510004": history("510004")[-119:],                                         # too short
         }
+        # A bar the builder could not validate (e.g. without its adjusted
+        # close) never enters the series, so "incomplete adjustments" cannot
+        # reach the engine: it excludes the symbol at build time instead
+        # (tests/test_snapshot_series.py), and here the history just carries
+        # a hole that the calendar check owns.
         incomplete = list(histories["510003"])
-        incomplete[-100] = replace(incomplete[-100], adjusted_close=None)
+        del incomplete[-100]
         histories["510003"] = tuple(incomplete)
-        self.assertEqual(etf_target(snapshot(securities, histories=histories)).weights, {})
+        target = etf_target(snapshot(securities, histories=histories))
+        self.assertEqual(set(target.weights), {"510003"})
+        self.assertAlmostEqual(sum(target.weights.values()), 1 / 3)
 
     def test_etf_inverse_volatility_allocates_less_to_more_variable_returns(self):
         securities = [security("510001", AssetType.EQUITY_ETF, "a"),

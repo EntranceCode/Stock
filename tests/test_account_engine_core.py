@@ -16,7 +16,7 @@ FREE = FeeConfig(0, 0, 0, 0)
 
 
 def security(symbol="A", asset=AssetType.STOCK, settlement=1, *, verified=True):
-    return Security(symbol, asset, date(2000, 1, 1), settlement_sessions=settlement,
+    return Security(symbol, asset, date(2000, 1, 1), "SSE", settlement_sessions=settlement,
                     historical_metadata_verified=verified, eligible_for_new_positions=True,
                     lookthrough_verified=True, industry_exposure={"industry": 1} if asset != AssetType.BOND_ETF else {})
 

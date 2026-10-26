@@ -11,23 +11,29 @@ verified volume. Dates are read from the normalized ``trade_date`` column;
 source epoch integers and filesystem timestamps are not publication evidence.
 
 ``load_snapshot(bundle_path)`` accepts an independent manifest inside the
-project only after ``registry.validate_for_backtest()`` succeeds. Both manifest
-and JSON payload require ``schema_version: '1.0'`` and
-``source_kind: 'verified_history'``. The manifest also requires
-``backtest_ready: true``, ``readiness_gaps: []``, ``payload`` (a relative JSON
-path) and ``payload_sha256``. The payload has these explicit fields:
+project only after ``registry.validate_for_backtest()`` succeeds, which now
+means the computed §5.1 readiness conjunction (design §5.2), not a hand-written
+flag. Both manifest and JSON payload require ``schema_version: '1.0'`` and
+``source_kind: 'verified_history'``. The manifest also requires an empty
+``readiness_gaps`` list - the explicit record that no declared derivation
+(documented assumption) is still pending - and provides ``payload`` (a relative
+JSON path) and ``payload_sha256``. The payload has these explicit fields:
 
 * ``decision_at``: timezone-aware ISO timestamp, e.g. 2024-01-02T16:30:00+08:00.
 * ``securities``: list of objects containing every Security field: symbol,
-  asset_type, listed_on, buy_lot_size, settlement_sessions, industry_exposure,
-  tracking_index, historical_metadata_verified, lookthrough_verified and
+  exchange, asset_type, listed_on, delist_date, buy_lot_size,
+  settlement_sessions, industry_exposure, tracking_index,
+  historical_metadata_verified, lookthrough_verified and
   eligible_for_new_positions. Unknown metadata must be explicitly unverified
-  and ineligible; current snapshots cannot fill historical metadata.
+  and ineligible; current snapshots cannot fill historical metadata. A missing
+  termination record is an explicit ``delist_date: null``.
 * ``bars``: list containing every DailyBar field: symbol, trade_date, open,
-  high, low, close, turnover, available_at, adjusted_close, tradable, buyable,
-  sellable. Adjusted close and turnover cannot be null or inferred. Dates per
-  symbol must be unique and ascending. Future/unavailable observations remain
-  in the snapshot and are excluded by ``DataSnapshot.known_history``.
+  high, low, close, turnover, available_at, adjusted_close, volume, tradable,
+  buyable, sellable. Adjusted close and turnover cannot be null or inferred;
+  ``volume`` is the D3-pending exception and may be an explicit null, never a
+  zero-filled guess. Dates per symbol must be unique and ascending.
+  Future/unavailable observations remain in the snapshot and are excluded by
+  ``DataSnapshot.known_history``.
 * ``factors``: list containing every StockFactorObservation field: symbol,
   quality, value, available_at and original_version_verified. Unknown factor
   values may be null and unverified versions remain explicitly false.
@@ -280,7 +286,7 @@ class StagedMarketData:
         manifest_path = self._inside(path if path.is_absolute() else self.project_root / path)
         manifest = _read_json(manifest_path.read_bytes())
         if (manifest.get("schema_version") != "1.0" or manifest.get("source_kind") != "verified_history"
-                or manifest.get("backtest_ready") is not True or manifest.get("readiness_gaps") != []
+                or manifest.get("readiness_gaps") != []
                 or manifest.get("errors", [])):
             raise DataNotReady("Snapshot manifest has not passed historical admission")
         filename, digest = manifest.get("payload"), manifest.get("payload_sha256")
@@ -308,6 +314,10 @@ class StagedMarketData:
                 raise ValueError("Security symbols must be nonempty and unique")
             values["asset_type"] = AssetType(values["asset_type"])
             values["listed_on"] = _iso_date(values["listed_on"], "listed_on")
+            if not isinstance(values["exchange"], str) or not values["exchange"]:
+                raise ValueError("exchange must be an explicit listing venue")
+            if values["delist_date"] is not None:
+                values["delist_date"] = _iso_date(values["delist_date"], "delist_date")
             if not isinstance(values["industry_exposure"], dict):
                 raise ValueError("industry_exposure must be an explicit mapping")
             for sector, weight in values["industry_exposure"].items():
@@ -332,6 +342,9 @@ class StagedMarketData:
             for key in ("open", "high", "low", "close", "adjusted_close"):
                 _number(values[key], key, positive=True)
             _number(values["turnover"], "turnover")
+            if values["volume"] is not None:
+                if isinstance(values["volume"], bool) or not isinstance(values["volume"], int) or values["volume"] < 0:
+                    raise ValueError("volume must be a nonnegative integer or an explicit null")
             bar = DailyBar(**values)
             if bar.trade_date < securities[bar.symbol].listed_on:
                 raise ValueError("Verified price history cannot precede the listing date")

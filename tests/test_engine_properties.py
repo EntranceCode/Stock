@@ -40,7 +40,8 @@ QUIET = dict(max_examples=100, deadline=None, suppress_health_check=[HealthCheck
 def bar(symbol: str, day: date, available_at: datetime) -> DailyBar:
     """A bar with valid OHLC, carrying only the fields these properties need."""
     return DailyBar(symbol=symbol, trade_date=day, open=10.0, high=11.0, low=9.0,
-                    close=10.5, turnover=1000.0, available_at=available_at)
+                    close=10.5, turnover=1000.0, available_at=available_at,
+                    adjusted_close=10.5)
 
 
 def snapshot(decision_at: datetime, histories: dict) -> DataSnapshot:

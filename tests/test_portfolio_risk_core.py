@@ -14,7 +14,7 @@ DECISION_AT = datetime(2026, 7, 7, 16, tzinfo=timezone(timedelta(hours=8)))
 
 def security(symbol, asset_type=AssetType.EQUITY_ETF, industry="technology"):
     return Security(
-        symbol, asset_type, date(2010, 1, 1),
+        symbol, asset_type, date(2010, 1, 1), "SSE",
         industry_exposure={} if asset_type == AssetType.BOND_ETF else {industry: 1.0},
         historical_metadata_verified=True, lookthrough_verified=True,
         eligible_for_new_positions=True,
@@ -195,7 +195,6 @@ class PortfolioRiskTests(unittest.TestCase):
         bad_windows = (
             full[-30:],
             full[:-1],
-            full[:-2] + (replace(full[-2], adjusted_close=None), full[-1]),
             full[:-2] + (replace(full[-2], tradable=False), full[-1]),
             full[:-1] + (replace(full[-1], buyable=False),),
         )

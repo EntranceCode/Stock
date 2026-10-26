@@ -21,6 +21,10 @@ Honesty rules, in order of importance:
   bundle admissible.
 * Unverified security metadata stays explicitly unverified, so the engine
   excludes those securities instead of trading on a guess.
+* ``DailyBar.volume`` stays an explicit null everywhere: its share/lot caliber
+  is decision **D3** and no ETF-side provider exists, so the field is recorded
+  as a standing gap (``daily_bar_volume_pending_decision_D3``) instead of being
+  filled from a raw value whose unit nobody has fixed.
 * No admission bypass exists here. The series records the registry admission
   state at build time and stops; loading a series still requires the registry
   gate to pass on its own evidence.
@@ -94,6 +98,9 @@ FACTOR_GAP = "factor_observations_not_yet_constructed"
 FACTOR_VERSION_GAP = "factor_original_versions_unverified"
 LISTING_GAP = "listing_date_from_candidate_unverified"
 ADMISSION_GAP = "registry_admission_not_granted"
+# DailyBar.volume is contract-optional pending decision D3 (share/lot caliber)
+# and an ETF-side provider; every bundle records the pending field as a gap.
+VOLUME_GAP = "daily_bar_volume_pending_decision_D3"
 
 
 class SeriesError(ValueError):
@@ -137,7 +144,9 @@ class SymbolSource:
     asset_type: AssetType | None
     rows: tuple[dict, ...]
     source_path: Path
+    exchange: str | None = None
     provider_listed_on: date | None = None
+    provider_delist_date: date | None = None
     provider_tracking_index: str | None = None
 
 
@@ -286,11 +295,16 @@ def _load_listing_candidates(registry: DatasetRegistry) -> dict[str, dict]:
         file_path = _entry_path(path, entry)
         if "listing" not in file_path.name:
             continue
-        for row in _read_rows(file_path, ("symbol", "exchange", "source_listing_date")):
+        for row in _read_rows(file_path, ("symbol", "exchange", "source_listing_date",
+                                          "source_termination_date")):
             symbol = row.get("symbol")
             listed_on = row.get("source_listing_date")
+            terminated_on = row.get("source_termination_date")
+            if isinstance(terminated_on, datetime):
+                terminated_on = terminated_on.date()
             if isinstance(symbol, str) and isinstance(listed_on, date):
-                candidates[symbol] = {"listed_on": listed_on, "exchange": row.get("exchange")}
+                candidates[symbol] = {"listed_on": listed_on, "exchange": row.get("exchange"),
+                                      "delist_date": terminated_on if isinstance(terminated_on, date) else None}
     if not candidates:
         raise SeriesError("Security metadata registers no listing candidates")
     return candidates
@@ -388,6 +402,13 @@ def _etf_sources(derivatives: _DerivativeIndex, request: SeriesRequest
         if not isinstance(listed_on, date):
             skipped.append({"symbol": symbol, "reason": "provider_listing_date_missing"})
             continue
+        terminated_on = entry.get("terminated_on")
+        if isinstance(terminated_on, str):
+            try:
+                terminated_on = date.fromisoformat(terminated_on)
+            except ValueError:
+                terminated_on = None
+        exchange = entry.get("exchange")
         rows = []
         for day, row in sorted(derivatives.etf_bar_table(symbol).items()):
             rows.append({"trade_date": date.fromisoformat(day), "open": row.get("open"),
@@ -398,7 +419,10 @@ def _etf_sources(derivatives: _DerivativeIndex, request: SeriesRequest
             continue
         tracking_index = entry.get("tracking_index")
         sources.append(SymbolSource(symbol, "etf_evidence", asset_type, tuple(rows),
-                                    Path(entry.get("path", "")), provider_listed_on=listed_on,
+                                    Path(entry.get("path", "")),
+                                    exchange=exchange if isinstance(exchange, str) else None,
+                                    provider_listed_on=listed_on,
+                                    provider_delist_date=terminated_on if isinstance(terminated_on, date) else None,
                                     provider_tracking_index=tracking_index if isinstance(tracking_index, str) else None))
     return sources, skipped
 
@@ -476,6 +500,7 @@ def _session_bars(source: SymbolSource, session: date, derivatives: _DerivativeI
                 turnover=float(bar["turnover"]),
                 available_at=decision_at,
                 adjusted_close=float(bar["adjusted_close"]),
+                volume=None,
                 tradable=tradable,
                 buyable=tradable if "buy_sell_equal_to_tradable" in assume else tradable,
                 sellable=tradable if "buy_sell_equal_to_tradable" in assume else tradable,
@@ -489,6 +514,7 @@ def _session_bars(source: SymbolSource, session: date, derivatives: _DerivativeI
             turnover=float(enriched["turnover_cny_reported"]),
             available_at=decision_at,
             adjusted_close=derivatives.adjusted_close(source.symbol, key),
+            volume=None,
             tradable=tradable,
             buyable=tradable if "buy_sell_equal_to_tradable" in assume else tradable,
             sellable=tradable if "buy_sell_equal_to_tradable" in assume else tradable,
@@ -502,33 +528,46 @@ def _build_securities(eligible: Sequence[SymbolSource], candidates: Mapping[str,
     excluded: list[dict] = []
     for source in eligible:
         if source.dataset == "etf_evidence":
-            listed_on = source.provider_listed_on
+            listed_on, delist_date, exchange = (source.provider_listed_on, source.provider_delist_date,
+                                                source.exchange)
         else:
             candidate = candidates.get(source.symbol)
             if candidate is None:
                 excluded.append({"symbol": source.symbol, "reason": "listing_date_candidate_missing"})
                 continue
-            listed_on = candidate["listed_on"]
+            listed_on, delist_date = candidate["listed_on"], candidate.get("delist_date")
+            exchange = candidate.get("exchange")
+        if not isinstance(exchange, str) or not exchange:
+            excluded.append({"symbol": source.symbol, "reason": "exchange_unavailable"})
+            continue
         if "lot_size_conventional_default" not in assume:
             excluded.append({"symbol": source.symbol, "reason": "buy_lot_size_assumption_not_granted"})
             continue
         if "settlement_conventional_default" not in assume:
             excluded.append({"symbol": source.symbol, "reason": "settlement_assumption_not_granted"})
             continue
-        securities[source.symbol] = Security(
-            symbol=source.symbol,
-            asset_type=source.asset_type,
-            listed_on=listed_on,
-            buy_lot_size=100,
-            settlement_sessions=1,
-            industry_exposure={},
-            # ETF tracking indices come from the provider evidence product and
-            # stay declared as name-derived; stocks keep None until a source exists.
-            tracking_index=source.provider_tracking_index,
-            historical_metadata_verified=False,
-            lookthrough_verified=False,
-            eligible_for_new_positions=False,
-        )
+        try:
+            securities[source.symbol] = Security(
+                symbol=source.symbol,
+                asset_type=source.asset_type,
+                listed_on=listed_on,
+                exchange=exchange,
+                delist_date=delist_date,
+                buy_lot_size=100,
+                settlement_sessions=1,
+                industry_exposure={},
+                # ETF tracking indices come from the provider evidence product and
+                # stay declared as name-derived; stocks keep None until a source exists.
+                tracking_index=source.provider_tracking_index,
+                historical_metadata_verified=False,
+                lookthrough_verified=False,
+                eligible_for_new_positions=False,
+            )
+        except ValueError as exc:
+            # A contradictory security master (e.g. termination before listing)
+            # excludes the symbol with the contract's own reason, never a guess.
+            excluded.append({"symbol": source.symbol, "reason": "security_master_invalid",
+                             "detail": str(exc)})
     return securities, excluded
 
 
@@ -584,7 +623,7 @@ def build_series(project_root: Path, request: SeriesRequest, output_root: Path,
     sources = unique
 
     assume = frozenset(request.assume)
-    gaps = {LISTING_GAP}
+    gaps = {LISTING_GAP, VOLUME_GAP}
     factor_index: dict[str, dict[str, dict]] = {}
     if request.factors_dir is not None:
         from .factors import load_factor_index
@@ -678,8 +717,10 @@ def build_series(project_root: Path, request: SeriesRequest, output_root: Path,
             "decision_at": _iso(decision_at),
             "securities": [{
                 "symbol": security.symbol,
+                "exchange": security.exchange,
                 "asset_type": security.asset_type.value,
                 "listed_on": _iso(security.listed_on),
+                "delist_date": _iso(security.delist_date) if security.delist_date else None,
                 "buy_lot_size": security.buy_lot_size,
                 "settlement_sessions": security.settlement_sessions,
                 "industry_exposure": dict(security.industry_exposure),
@@ -692,8 +733,8 @@ def build_series(project_root: Path, request: SeriesRequest, output_root: Path,
                 "symbol": bar.symbol, "trade_date": _iso(bar.trade_date),
                 "open": bar.open, "high": bar.high, "low": bar.low, "close": bar.close,
                 "turnover": bar.turnover, "available_at": _iso(bar.available_at),
-                "adjusted_close": bar.adjusted_close, "tradable": bar.tradable,
-                "buyable": bar.buyable, "sellable": bar.sellable,
+                "adjusted_close": bar.adjusted_close, "volume": bar.volume,
+                "tradable": bar.tradable, "buyable": bar.buyable, "sellable": bar.sellable,
             } for bar in bars],
             "factors": factors,
             "listing_age_sessions": {
@@ -704,7 +745,6 @@ def build_series(project_root: Path, request: SeriesRequest, output_root: Path,
         manifest = {
             "schema_version": SCHEMA_VERSION,
             "source_kind": SOURCE_KIND,
-            "backtest_ready": False,
             "readiness_gaps": sorted(gaps),
             "payload": "payload.json",
             "payload_sha256": hashlib.sha256(_json_bytes(payload)).hexdigest(),
@@ -792,7 +832,9 @@ def _verify_series(series_dir: Path, index: Mapping) -> dict:
         securities = {}
         for record in payload["securities"]:
             security = Security(**{**record, "asset_type": AssetType(record["asset_type"]),
-                                    "listed_on": date.fromisoformat(record["listed_on"])})
+                                    "listed_on": date.fromisoformat(record["listed_on"]),
+                                    "delist_date": (date.fromisoformat(record["delist_date"])
+                                                    if record.get("delist_date") else None)})
             securities[security.symbol] = security
         histories: dict[str, list[DailyBar]] = {symbol: [] for symbol in securities}
         for record in payload["bars"]:
@@ -801,7 +843,8 @@ def _verify_series(series_dir: Path, index: Mapping) -> dict:
                 open=record["open"], high=record["high"], low=record["low"], close=record["close"],
                 turnover=record["turnover"],
                 available_at=datetime.fromisoformat(record["available_at"]),
-                adjusted_close=record["adjusted_close"], tradable=record["tradable"],
+                adjusted_close=record["adjusted_close"], volume=record.get("volume"),
+                tradable=record["tradable"],
                 buyable=record["buyable"], sellable=record["sellable"]))
         stock_factors: dict[str, list] = {symbol: [] for symbol in securities}
         for record in payload["factors"]:

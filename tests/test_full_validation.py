@@ -38,8 +38,8 @@ def write_series(root: Path) -> Path:
     for index, day in enumerate(SESSIONS):
         directory = series_dir / "sessions" / day.isoformat()
         directory.mkdir()
-        securities = [{"symbol": symbol, "asset_type": "stock",
-                       "listed_on": "1999-11-10", "buy_lot_size": 100,
+        securities = [{"symbol": symbol, "exchange": "SSE", "asset_type": "stock",
+                       "listed_on": "1999-11-10", "delist_date": None, "buy_lot_size": 100,
                        "settlement_sessions": 1, "industry_exposure": {},
                        "tracking_index": None, "historical_metadata_verified": False,
                        "lookthrough_verified": False, "eligible_for_new_positions": False}
@@ -53,7 +53,8 @@ def write_series(root: Path) -> Path:
                              "open": price, "high": price, "low": price, "close": price,
                              "turnover": 1e8,
                              "available_at": datetime.combine(bar_day, time(16, 30), TZ).isoformat(),
-                             "adjusted_close": price, "tradable": True, "buyable": True, "sellable": True})
+                             "adjusted_close": price, "volume": None,
+                             "tradable": True, "buyable": True, "sellable": True})
         factors = []
         for symbol in SYMBOLS:
             if index >= 2:
