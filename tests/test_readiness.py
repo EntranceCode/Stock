@@ -249,7 +249,10 @@ class ReadinessCriteriaTests(unittest.TestCase):
         fixture_block = {"coverage_threshold": 1.0, "minimum_covered": 1,
                          "rationale": "fixture policy"}
         policy.write_text(json.dumps({"stock_turnover": fixture_block,
-                                      "etf_turnover": fixture_block}), encoding="utf-8")
+                                      "etf_turnover": fixture_block,
+                                      "financials_usable": {"share_threshold": 0.0,
+                                                            "rationale": "fixture policy"}}),
+                           encoding="utf-8")
         import hybrid_quant.readiness as readiness_module
         original_policy = readiness_module.POLICY_PATH
         self.addCleanup(setattr, readiness_module, "POLICY_PATH", original_policy)

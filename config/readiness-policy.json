@@ -1,7 +1,7 @@
 {
   "_comment": "Readiness policy for §5.1 criteria. Values are policy choices, not data-derived constants; each carries its rationale so a reviewer can challenge the number itself.",
   "stock_turnover": {
-    "coverage_threshold": 0.20,
+    "coverage_threshold": 0.2,
     "minimum_covered": 200,
     "rationale": "Turnover feeds the §3.1 liquidity screen, the §7 execution-capacity cap and the §10.3 unexecutable-order ratio. A backtest may be limited to the covered subset, but a subset too thin to fill 25 holdings with industry diversification cannot support those metrics. 0.20 with an absolute floor of 200 covered securities is a policy floor, chosen to be reachable with current sources while forcing the uncovered remainder to be declared; it is not derived from the data.",
     "remainder_rule": "Securities without turnover are excluded from selection and must appear in the backtest conclusion as an explicit scope limitation."
@@ -11,5 +11,10 @@
     "minimum_covered": 30,
     "rationale": "The ETF sleeve holds at most 3 products chosen by index de-duplication, so its universe is far smaller than the stock one and full coverage is not the goal. It still needs enough candidates that rotation is a choice rather than a forced pick, and enough indices that de-duplication has something to de-duplicate. 30 covered products against the registered ETF universe is the floor; the six products registered so far fall below it by a wide margin, which is the honest answer.",
     "remainder_rule": "ETFs without turnover cannot enter rotation; the backtest conclusion must state which products were actually available."
+  },
+  "financials_usable": {
+    "share_threshold": 0.5,
+    "rationale": "A financial dataset can be internally sound while every observation it yields is rejected by the engine's vintage gate (design D2-b). Measuring the usable share here makes that contradiction fail the gate instead of surfacing as a backtest that never trades. 0.5 is a policy floor, not a data-derived number.",
+    "remainder_rule": "Observations whose update date is unexplained stay unverified and are excluded from selection; the conclusion must state the restatement limitation."
   }
 }

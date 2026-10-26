@@ -56,6 +56,13 @@ CHINA_TIME = timezone(timedelta(hours=8))
 # An announcement states a date, not a time; the data becomes usable for
 # decisions from the next day's open at the earliest.
 AVAILABILITY_LAG = timedelta(days=1)
+# Design decision D2-b: the provider keeps one row per report period, so a
+# first-disclosure vintage cannot be proven. What can be checked is whether the
+# provider's update date is explained by a next-year comparison or by the row
+# never having been revised. Those two classes are treated as usable and every
+# other class stays unverified, which keeps the engine excluding it rather than
+# quietly assuming the number was never restated.
+VERIFIED_CLASSIFICATIONS = ("unrevised", "next_year_comparable")
 FACTOR_COLUMNS = ("symbol", "report_date", "available_at", "quality", "value",
                   "original_version_verified", "ttm_net_profit", "ttm_equity",
                   "price_basis", "currency", "reasons")
@@ -108,8 +115,9 @@ def _as_date(value) -> date | None:
     return None
 
 
-def _availability_index(availability_dir: Path) -> dict[tuple[str, date], date]:
-    """(symbol, report date) -> announcement date, from the availability layer."""
+def _availability_index(availability_dir: Path
+                        ) -> dict[tuple[str, date], tuple[date, str | None]]:
+    """(symbol, report date) -> (announcement date, update classification)."""
     manifest_path = Path(availability_dir) / "manifest.json"
     if not manifest_path.is_file():
         raise FactorError(f"Availability layer manifest not found: {manifest_path}")
@@ -117,17 +125,27 @@ def _availability_index(availability_dir: Path) -> dict[tuple[str, date], date]:
     entries = manifest.get("files")
     if not isinstance(entries, list) or not entries:
         raise FactorError(f"Availability layer has no file inventory: {manifest_path}")
-    index: dict[tuple[str, date], date] = {}
+    index: dict[tuple[str, date], tuple[date, str | None]] = {}
     for entry in entries:
         path = _entry_path(manifest_path, entry)
         if not path.is_file():
             raise FactorError(f"Availability file not found: {path}")
-        for row in _read_rows(path, ("symbol", "report_date", "available_at")):
+        # An availability layer produced before the classification existed carries
+        # no such column; it is read as unclassified, which keeps the observation
+        # unverified instead of failing the whole build on a schema mismatch.
+        try:
+            rows = _read_rows(path, ("symbol", "report_date", "available_at",
+                                     "update_classification"))
+        except Exception:
+            rows = [dict(row, update_classification=None)
+                    for row in _read_rows(path, ("symbol", "report_date", "available_at"))]
+        for row in rows:
             symbol = row.get("symbol")
             report_date = _as_date(row.get("report_date"))
             available = _as_date(row.get("available_at"))
             if isinstance(symbol, str) and report_date is not None and available is not None:
-                index[(symbol, report_date)] = available
+                classification = row.get("update_classification")
+                index[(symbol, report_date)] = (available, classification if isinstance(classification, str) else None)
     if not index:
         raise FactorError("Availability layer carries no usable rows")
     return index
@@ -176,7 +194,8 @@ def _ttm_net_profit(rows: Sequence[Mapping], index: int) -> tuple[float | None, 
 
 
 def _symbol_factors(financial_rows: Sequence[Mapping], price_rows: Sequence[dict],
-                    availability: Mapping[tuple[str, date], date], symbol: str) -> list[dict]:
+                    availability: Mapping[tuple[str, date], tuple[date, str | None]],
+                    symbol: str) -> list[dict]:
     """Factor observations for one symbol, ordered by report date."""
     rows = sorted(financial_rows, key=lambda row: row["REPORT_DATE"])
     observations: list[dict] = []
@@ -187,7 +206,9 @@ def _symbol_factors(financial_rows: Sequence[Mapping], price_rows: Sequence[dict
             observations.append(_observation(symbol, report_date, None, None, None, None, None, None,
                                              row.get("CURRENCY"), ["announcement_date_unknown"]))
             continue
-        announcement = availability.get((symbol, report_date))
+        found = availability.get((symbol, report_date))
+        announcement = found[0] if found else None
+        classification = found[1] if found else None
         if announcement is None:
             observations.append(_observation(symbol, report_date, None, None, None, None, None, None,
                                              row.get("CURRENCY"), ["availability_layer_missing"]))
@@ -214,15 +235,19 @@ def _symbol_factors(financial_rows: Sequence[Mapping], price_rows: Sequence[dict
             reasons.append("price_or_shares_unavailable")
         else:
             value = ttm / (price * float(shares))
+        verified = classification in VERIFIED_CLASSIFICATIONS
+        if not verified:
+            reasons.append("first_disclosure_unverified:" + str(classification or "unknown"))
         observations.append(_observation(symbol, report_date, available_at, quality, value,
-                                         ttm, equity, price, row.get("CURRENCY"), reasons))
+                                         ttm, equity, price, row.get("CURRENCY"), reasons,
+                                         verified))
     return observations
 
 
 def _observation(symbol, report_date, available_at, quality, value, ttm, equity, price,
-                 currency, reasons) -> dict:
+                 currency, reasons, verified: bool = False) -> dict:
     return {"symbol": symbol, "report_date": report_date, "available_at": available_at,
-            "quality": quality, "value": value, "original_version_verified": False,
+            "quality": quality, "value": value, "original_version_verified": verified,
             "ttm_net_profit": ttm, "ttm_equity": equity, "price_basis": price,
             "currency": currency, "reasons": tuple(reasons)}
 

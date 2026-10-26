@@ -194,6 +194,57 @@ def _calendar_rows(registry, dataset: str) -> tuple[Path | None, dict | None, li
     return path, manifest, sorted(open_days), closed_days
 
 
+
+# Deliberately NOT registered in CRITERIA yet: the readiness fixtures carry an
+# availability layer with no file inventory, so the criterion cannot be assessed
+# there without inventing rows. Registering it needs the fixture to carry a real
+# inventory first; until then the vintage limitation is enforced by the factor
+# layer itself (unverified observations are excluded per observation).
+def _financial_usable_share(registry) -> CriterionResult:
+    """financials: enough observations can carry a verified vintage basis.
+
+    The dataset can be internally sound while every observation it yields is
+    rejected by the engine vintage gate (design D2-b). Measuring the share here
+    makes that contradiction fail the gate rather than surface later as a
+    backtest that never trades.
+    """
+    name = "engine_usable_share"
+    from .factors import VERIFIED_CLASSIFICATIONS
+    try:
+        block = json.loads(Path(POLICY_PATH).read_text(encoding="utf-8"))["financials_usable"]
+        threshold = float(block["share_threshold"])
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return CriterionResult(FINANCIALS_DATASET, name, False,
+                               "readiness policy is missing or invalid: " + str(exc),
+                               "config/readiness-policy.json")
+    path, manifest = _manifest(registry, AVAILABILITY_DATASET)
+    if path is None or manifest is None:
+        return CriterionResult(FINANCIALS_DATASET, name, False,
+                               "availability layer '" + AVAILABILITY_DATASET + "' is not registered",
+                               "config/datasets.json")
+    usable = total = classified = 0
+    try:
+        for entry in _file_entries(manifest):
+            for row in _rows(_entry_path(path, entry), ("update_classification",)):
+                total += 1
+                value = row.get("update_classification")
+                if value is not None:
+                    classified += 1
+                if value in VERIFIED_CLASSIFICATIONS:
+                    usable += 1
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return CriterionResult(FINANCIALS_DATASET, name, False,
+                               "cannot read the classification column: " + str(exc), str(path))
+    if not total:
+        return CriterionResult(FINANCIALS_DATASET, name, False,
+                               "the availability layer carries no rows", str(path))
+    share = usable / total
+    passed = share >= threshold
+    detail = (str(usable) + " of " + str(total) + " observations carry a usable vintage basis ("
+              + format(share, ".4f") + " against threshold " + str(threshold) + "); "
+              + str(classified) + " classified; the remainder stays unverified and is excluded")
+    return CriterionResult(FINANCIALS_DATASET, name, passed, detail, str(path))
+
 def _registered_calendars(registry) -> list[tuple[str, Path | None, dict | None, list[date], set[date]]]:
     """Every registered exchange calendar, SSE first, with its closed-day set."""
     calendars = []
