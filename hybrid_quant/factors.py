@@ -17,10 +17,12 @@ preparation documents already committed to:
 * **No zero-fill, no fake positives.** A missing ROE or equity gives ``None``
   quality. Non-positive TTM earnings give ``None`` value, because a negative
   earner must not be ranked as if it had a positive earnings yield.
-* **Versions stay unverified.** The snapshot keeps one row per report period
-  (the provider's latest), so ``original_version_verified`` is False for every
-  observation. The engine excludes those securities from selection until the
-  original announcement vintages exist; this builder never asserts otherwise.
+* **Versions decided per row (design D2-b).** The snapshot keeps one row per
+  report period (the provider's latest), so a first-disclosure vintage cannot be
+  proven. What the availability layer can say is whether the provider's update
+  date is explained by a next-year comparison or by the row never being revised;
+  those two classes are marked verified and every other class stays unverified,
+  which keeps the engine excluding it rather than assuming no restatement.
 * **Conservative availability.** An announcement states a date, not a time;
   an evening disclosure cannot be used for the same day's decision. The
   observation's ``available_at`` is therefore the day after the announcement
@@ -125,6 +127,11 @@ def _availability_index(availability_dir: Path
     entries = manifest.get("files")
     if not isinstance(entries, list) or not entries:
         raise FactorError(f"Availability layer has no file inventory: {manifest_path}")
+    # The layer also carries non-parquet artifacts (a JSONL sample comparison),
+    # so only parquet entries are read; a layer with none is an error, not empty.
+    entries = [entry for entry in entries if str(entry.get("path", "")).endswith(".parquet")]
+    if not entries:
+        raise FactorError(f"Availability layer lists no parquet inventory: {manifest_path}")
     index: dict[tuple[str, date], tuple[date, str | None]] = {}
     for entry in entries:
         path = _entry_path(manifest_path, entry)

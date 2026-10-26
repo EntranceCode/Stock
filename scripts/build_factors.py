@@ -2,9 +2,11 @@
 
 Reads the registered financial snapshot and daily prices plus the named
 availability layer, and writes one Parquet file per symbol with a manifest.
-Observations keep ``original_version_verified=false`` because the snapshot has
-no original announcement vintages; missing components produce no score and an
-explicit reason instead of an estimate.
+Each observation carries ``original_version_verified`` decided per row from the
+availability layer's update classification (design D2-b): the classes explained by
+a next-year comparison or by the row never being revised are treated as verified,
+and every other class stays unverified so the engine keeps excluding it. Missing
+components produce no score and an explicit reason instead of an estimate.
 
 Usage (from the project root)::
 
