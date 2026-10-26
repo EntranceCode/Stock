@@ -61,6 +61,10 @@
     "delisting_boundaries": {
       "manifest": "data\\external\\delisting_boundaries\\20261023T133459Z_634d4710\\manifest.json",
       "purpose": "per-security delisting-boundary decision state from registered evidence"
+    },
+    "session_gaps": {
+      "manifest": "data\\external\\session_gaps\\20261026T114515Z_c95bfa4e\\manifest.json",
+      "purpose": "enumerated bar-missing sessions per security, so the gate verifies registered evidence instead of re-reading every series on each run"
     }
   }
 }

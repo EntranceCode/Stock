@@ -25,6 +25,8 @@ from pathlib import Path
 import sys
 from typing import Callable, Mapping, Sequence
 
+from . import session_gaps
+
 # Registered dataset names (design §5.1 rows), mapped to the registry keys.
 # Both exchanges' calendars are registered separately; the criteria aggregate
 # them (union of closed days for the reverse check, both registrations required
@@ -380,9 +382,12 @@ def _daily_missing_days(registry, dataset: str) -> CriterionResult:
         return CriterionResult(dataset, "missing_days_zero_or_recorded", False,
                                "no exchange calendar is registered; expected sessions cannot be counted",
                                "config/datasets.json")
-    exchange_of = _security_exchange_map(registry)
     recorded = manifest.get("session_gap_records")
     recorded = recorded if isinstance(recorded, list) else []
+    fast = session_gaps.summarise(registry, dataset, manifest, recorded, STOCK_DATASET)
+    if fast is not None:
+        return CriterionResult(dataset, "missing_days_zero_or_recorded", fast[0], fast[1], fast[2])
+    exchange_of = _security_exchange_map(registry)
     incomplete = [item for item in recorded
                   if not (isinstance(item, dict) and item.get("symbol")
                           and isinstance(item.get("dates"), list) and item.get("cause"))]
